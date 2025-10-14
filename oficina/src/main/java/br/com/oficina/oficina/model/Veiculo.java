@@ -19,28 +19,33 @@ public class Veiculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "placa")
     private String placa;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "modelo")
     private String modelo;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "marca")
     private String marca;
 
+    @Column(nullable = true, name = "ano")
     private Integer ano;
 
+    @Column(nullable = true)
     private Double quilometragem;
 
-    @Column(name = "data_cadastro")
+    @Column(nullable = false, name = "data_cadastro")
     private LocalDateTime dataCadastro;
 
+    //Carrega o cliente só quando for acessado(lazy loading)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+    //Por padrão @OneToMany usa lazy loading, então atendimentos só é carregado
+    //quando for acessado
     @OneToMany(mappedBy = "veiculo")
-    private java.util.List<Atendimento> atendimentos;
+    private List<Atendimento> atendimentos;
 
     @PrePersist
     protected void onCreate() {
