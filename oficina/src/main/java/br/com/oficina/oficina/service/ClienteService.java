@@ -2,42 +2,56 @@ package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.repository.ClienteRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ViaCepService viaCepService;
 
-    public List<Cliente> listarTodos() {
+    public ClienteService(ClienteRepository clienteRepository, ViaCepService viaCepService) {
+        this.clienteRepository = clienteRepository;
+        this.viaCepService = viaCepService;
+    }
+
+    public void cadastrarCliente(Cliente cliente) {
+        clienteRepository.save(cliente);
+    }
+
+    public List<Cliente> listarTodosClientes() {
         return clienteRepository.findAll();
     }
 
-    public Optional<Cliente> buscarPorId(Long id) {
+    public Optional<Cliente> buscarClientePorId(Long id) {
         return clienteRepository.findById(id);
     }
 
-    public Cliente salvar(Cliente cliente) {
-        return clienteRepository.save(cliente);
-    }
-
-    public Cliente atualizar(Long id, Cliente clienteAtualizado) {
-        return clienteRepository.findById(id).map(cliente -> {
-            cliente.setNome(clienteAtualizado.getNome());
-//            cliente.setCpfCnpj(clienteAtualizado.getCpfCnpj()); //loucura
-            cliente.setEmail(clienteAtualizado.getEmail());
-            cliente.setTelefone(clienteAtualizado.getTelefone());
-            cliente.setTipoCliente(clienteAtualizado.getTipoCliente());
-            return clienteRepository.save(cliente);
-        }).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-    }
-
-    public void excluir(Long id) {
+    public void deletarClientePorId(Long id) {
         clienteRepository.deleteById(id);
+    }
+
+    public void cadastrarClienteCompleto(
+            String nome,
+            String cpf,
+            String telefone,
+            String email,
+            String cep,
+            String numero,
+            String complemento) {
+
+        var endereco = viaCepService.buscarEConstruirEndereco(cep, numero, complemento);
+
+        Cliente cliente = new Cliente();
+        cliente.setNome(nome);
+        cliente.setCpf(cpf);
+        cliente.setTelefone(telefone);
+        cliente.setEmail(email);
+        cliente.setEndereco(endereco);
+
+        clienteRepository.save(cliente);
     }
 }
