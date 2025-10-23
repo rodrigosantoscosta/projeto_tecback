@@ -2,12 +2,14 @@ package br.com.oficina.oficina.controller;
 
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.service.ClienteService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/clientes")
@@ -19,19 +21,15 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastrarCliente(@RequestBody Map<String, Object> requestMap) {
-
-        clienteService.cadastrarClienteCompleto(
-                (String) requestMap.get("nome"),
-                (String) requestMap.get("cpf"),
-                (String) requestMap.get("telefone"),
-                (String) requestMap.get("email"),
-                (String) requestMap.get("cep"),
-                (String) requestMap.get("numero"),
-                (String) requestMap.get("complemento")
-        );
-        return ResponseEntity.ok("Cliente cadastrado com sucesso!");
+    @PostMapping
+    public ResponseEntity<String> cadastrarClienteCompleto(@RequestBody Map<String, Object> requestMap) {
+        try {
+            clienteService.cadastrarClienteCompleto(requestMap);
+            return ResponseEntity.ok("Cliente cadastrado com sucesso");
+        } catch (Exception e) {
+            System.out.println("Erro no Controller: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao cadastrar cliente: " + e.getMessage());
+        }
     }
 
     @GetMapping
@@ -41,14 +39,26 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Cliente>> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable UUID id) {
         Optional<Cliente> cliente = clienteService.buscarClientePorId(id);
-        return ResponseEntity.ok(cliente);
+
+        if (cliente.isPresent()) {
+            return ResponseEntity.ok(cliente.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Cliente não encontrado" );
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarPorId(@PathVariable Long id) {
-        clienteService.deletarClientePorId(id);
-        return ResponseEntity.ok("Cliente deletado com sucesso!");
+    public ResponseEntity<String> deletarPorId(@PathVariable UUID id) {
+        try {
+
+            clienteService.deletarClientePorId(id);
+            return ResponseEntity.ok("Cliente deletado com sucesso!");
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao deletar cliente: " + e.getMessage());
+        }
     }
 }

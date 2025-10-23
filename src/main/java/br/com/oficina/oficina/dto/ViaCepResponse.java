@@ -1,4 +1,4 @@
-package br.com.oficina.oficina.dto.response;
+package br.com.oficina.oficina.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
