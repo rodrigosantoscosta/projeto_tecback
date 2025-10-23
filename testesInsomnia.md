@@ -1,30 +1,66 @@
 # Testes dos endpoints
-## cadastrarCliente
-### localhost:8080/clientes/cadastro
+
+# Cliente
+###  url: ```localhost:8080/clientes```
+
+### cadastrarClienteCompleto
 ### Exemplos:
-`{
-"nome": "João Silva",
-"cpf": "12345678901",
+
+#### Cadastro com sucesso
+```json
+{
+"nomeCompleto": "João Silva Santos Oliveira",
+"cpfCNPJ": "123.456.789-09",
 "telefone": "(11) 99999-9999",
-"email": "joao@email.com",
+"email": "joao.silva@email.com",
 "cep": "01001000",
 "numero": "123",
 "complemento": "Apt 45"
-} `
+}
+```
 
-` {
- "nome": "Ana Costa",
-  "cpf": "55566677788",
-  "telefone": "(31) 66666-6666",
-  "email": "ana.costa@email.com",
-  "cep": "30130010",
-  "numero": "101",
-  "complemento": "Sala 201"
-}`
+```json
+{
+  "nomeCompleto": "Maria Santos Costa",
+  "cpfCNPJ": "987.654.321-00",
+  "telefone": "(21) 88888-8888",
+  "email": "maria.santos@email.com",
+  "cep": "22010010",
+  "numero": "456"
+}
+```
+
+#### Cadastro com CPF inválido 
+```json
+{
+"nomeCompleto": "Carlos Pereira",
+"cpfCNPJ": "123",
+"telefone": "(11) 90000-0000",
+"email": "carlos@email.com",
+"cep": "12345678",
+"numero": "100"
+}
+```
+
+#### E-mail já cadastrado
+```json
+{
+"nomeCompleto": "Joana Lima",
+"cpfCNPJ": "321.654.987-00",
+"telefone": "(31) 91111-1111",
+"email": "joao.silva@email.com",
+"cep": "30140071",
+"numero": "22"
+}
+```
 
 ## listarTodosClientes
+``` locahost:8080/clientes ```
 
-### localhost:8080/clientes
+## listarClientePorId
+
+``` locahost:8080/clientes/<id> ```
+
 
 ## deletarClientePorId
 
