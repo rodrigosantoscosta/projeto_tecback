@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.model;
 
 import br.com.oficina.oficina.validator.annotation.CPFouCNPJ;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "clientes")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

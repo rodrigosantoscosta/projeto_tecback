@@ -1,6 +1,6 @@
 # Testes dos endpoints
 
-# Cliente
+## 1) Cliente
 ###  url: ```localhost:8080/clientes```
 
 ### cadastrarClienteCompleto
@@ -70,4 +70,151 @@
 1. Crie uma variavel no Insomnia: base_url = http://localhost:8080 <br>
 2. Para referenciar use assim na URL: `{{ base_url }}/clientes/1`
 
+---
 
+## 2) Veículo
+### url: ```localhost:8080/veiculos```
+
+### cadastrarVeiculoCompleto (POST)
+**Endpoint:** `POST {{ base_url }}/veiculos`
+
+#### Cadastro com sucesso - Veículo completo
+```json
+{
+  "placa": "ABC1D23",
+  "marca": "Volkswagen",
+  "modelo": "Gol",
+  "ano": 2020,
+  "cor": "Prata",
+  "quilometragem": 45000.5,
+  "clienteId": "seu-uuid-de-cliente-aqui"
+}
+```
+
+#### Cadastro com sucesso - Veículo padrão antigo
+```json
+{
+  "placa": "DEF4567",
+  "marca": "Fiat",
+  "modelo": "Palio",
+  "ano": 2015,
+  "cor": "Branco",
+  "quilometragem": 120000,
+  "clienteId": "seu-uuid-de-cliente-aqui"
+}
+```
+
+#### Cadastro sem campos opcionais
+```json
+{
+  "placa": "GHI5J89",
+  "marca": "Chevrolet",
+  "modelo": "Onix",
+  "ano": 2023,
+  "clienteId": "seu-uuid-de-cliente-aqui"
+}
+```
+
+#### Cadastro com placa inválida (deve falhar)
+```json
+{
+  "placa": "ABC123",
+  "marca": "Honda",
+  "modelo": "Civic",
+  "ano": 2022,
+  "cor": "Preto",
+  "quilometragem": 15000,
+  "clienteId": "seu-uuid-de-cliente-aqui"
+}
+```
+
+#### Cadastro com ano inválido (deve falhar)
+```json
+{
+  "placa": "JKL6M78",
+  "marca": "Toyota",
+  "modelo": "Corolla",
+  "ano": 1800,
+  "cor": "Azul",
+  "quilometragem": 50000,
+  "clienteId": "seu-uuid-de-cliente-aqui"
+}
+```
+
+#### Cadastro com cliente inexistente (deve falhar)
+```json
+{
+  "placa": "MNO7P89",
+  "marca": "Hyundai",
+  "modelo": "HB20",
+  "ano": 2021,
+  "cor": "Vermelho",
+  "quilometragem": 30000,
+  "clienteId": "00000000-0000-0000-0000-000000000000"
+}
+```
+
+---
+
+### listarTodos (GET)
+**Endpoint:** `GET {{ base_url }}/veiculos`
+
+*Sem body necessário*
+
+---
+
+### buscarPorId (GET)
+**Endpoint:** `GET {{ base_url }}/veiculos/<uuid-do-veiculo>`
+
+**Exemplo:** `GET {{ base_url }}/veiculos/123e4567-e89b-12d3-a456-426614174000`
+
+*Sem body necessário*
+
+---
+
+### buscarPorPlaca (GET)
+**Endpoint:** `GET {{ base_url }}/veiculos/placa/<placa>`
+
+**Exemplo:** `GET {{ base_url }}/veiculos/placa/ABC1D23`
+
+*Sem body necessário*
+
+---
+
+### listarVeiculosPorCliente (GET)
+**Endpoint:** `GET {{ base_url }}/veiculos/cliente/<uuid-do-cliente>`
+
+**Exemplo:** `GET {{ base_url }}/veiculos/cliente/123e4567-e89b-12d3-a456-426614174000`
+
+*Sem body necessário*
+
+---
+
+### associarVeiculoAoCliente(no momento não é necessário) (PUT)
+**Endpoint:** `PUT {{ base_url }}/veiculos/<uuid-do-veiculo>/associar/<uuid-do-cliente>`
+
+**Exemplo:** `PUT {{ base_url }}/veiculos/123e4567-e89b-12d3-a456-426614174000/associar/987e6543-e21b-12d3-a456-426614174000`
+
+*Sem body necessário*
+
+---
+
+### deletarPorId (DELETE)
+**Endpoint:** `DELETE {{ base_url }}/veiculos/<uuid-do-veiculo>`
+
+**Exemplo:** `DELETE {{ base_url }}/veiculos/123e4567-e89b-12d3-a456-426614174000`
+
+*Sem body necessário*
+
+---
+
+## Observações sobre Veículos:
+- **Formato de Placa:** Aceita padrão Mercosul (ABC1D23) e antigo (ABC1234)
+- **Placa:** Sempre em maiúsculas, 7 caracteres
+- **Ano:** Deve estar entre 1900 e 2100
+- **Quilometragem:** Opcional, não pode ser negativa
+- **Cor:** Opcional, máximo 30 caracteres
+- **ClienteId:** Obrigatório e deve ser um UUID válido de um cliente existente
+
+
+ 
