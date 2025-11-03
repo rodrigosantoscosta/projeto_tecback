@@ -11,7 +11,7 @@
 ## 2) Modelo relacional (tabelas) mapeado com ORM
 
 ### 2.1 `clientes`
-- `id` UUID **PK** (GenerationType.AUTO)
+- `id` UUID **PK** 
 - `nome_completo` VARCHAR(150) **NOT NULL**
 - `cpf_cnpj` VARCHAR(14) **UNIQUE NOT NULL**
 - `telefone` VARCHAR(20) **NOT NULL**
@@ -26,23 +26,23 @@
 - `numero` VARCHAR(10) **NOT NULL**
 - `complemento` VARCHAR(100)
 - `bairro` VARCHAR(100) **NOT NULL/*
-- `localidade` VARCHAR(100) **NOT NULL/*
+- `localidade` VARCHAR(100) **NOT NULL**
 - `uf` VARCHAR(2) **NOT NULL**
 
 ### 2.3 `veiculos` 
 - `id` UUID **PK** 
-- `placa` VARCHAR(7) **UNIQUE NOT NULL/*
-- `modelo` VARCHAR(50) **NOT NULL/*
-- `marca` VARCHAR(50) **NOT NULL/*
-- `ano` SMALLINT **NOT NULL/*
+- `placa` VARCHAR(7) **UNIQUE NOT NULL*
+- `modelo` VARCHAR(50) **NOT NULL*
+- `marca` VARCHAR(50) **NOT NULL*
+- `ano` SMALLINT **NOT NULL*
 - `cor` VARCHAR(30)
 - `quilometragem` DOUBLE
-- `data_cadastro` TIMESTAMP **NOT NULL/*
+- `data_cadastro` TIMESTAMP **NOT NULL*
 - `cliente_id` UUID **FK** → `clientes(id)`
 
 ### 2.4 `atendimentos` 
 - `id` UUID **PK**
-- `descricao` TEXT **NOT NULL/*
+- `descricao` TEXT **NOT NULL*
 - `status` VARCHAR(20) **NOT NULL** (`AGENDADO` | `EM_ANDAMENTO` | `CONCLUIDO` | `CANCELADO`)
 - `data_entrada` TIMESTAMP **NOT NULL**
 - `data_saida` TIMESTAMP
@@ -89,4 +89,3 @@
 - Java 17+
 - PostgreSQL
 - Maven 3.6+
-
