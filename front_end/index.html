@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="validation.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Oficina Mecânica</h1>
+        </header>
+
+        <main>
+            <div class="form-container">
+                <h2>Cadastrar cliente</h2>
+                
+                <form id="clienteForm">
+                    <div class="form-group">
+                        <label for="nomeCompleto">Nome Completo *</label>
+                        <input type="text" id="nomeCompleto" name="nomeCompleto" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cpfCNPJ">CPF/CNPJ *</label>
+                        <input type="text" id="cpfCNPJ" name="cpfCNPJ" placeholder="000.000.000-00 ou 00.000.000/0000-00" required maxlength="14">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone">Telefone *</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(11) 9999-9999" required maxlength="15"> 
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" name="email" placeholder="cliente@email.com" required maxlength="254">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cep">CEP *</label>
+                            <input type="text" id="cep" name="cep" placeholder="00000-000" required maxlength="9">
+                            <button type="button" id="buscarCep" class="btn-secondary">Buscar CEP</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="numero">Número *</label>
+                            <input type="text" id="numero" name="numero" required maxlength="10">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="logradouro">Logradouro</label>
+                        <input type="text" id="logradouro" name="logradouro" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" id="complemento" name="complemento" placeholder="Apartamento, Bloco, etc.">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bairro">Bairro</label>
+                            <input type="text" id="bairro" name="bairro" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" name="cidade" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <input type="text" id="estado" name="estado" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Cadastrar Cliente</button>
+                        <button type="button" id="limparForm" class="btn-secondary">Limpar Formulário</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="message" id="message"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
