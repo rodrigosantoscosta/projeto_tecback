@@ -19,17 +19,25 @@ public class ViaCepService {
     }
 
     public Endereco buscarEConstruirEndereco(String cep, String numero, String complemento) {
-        ViaCepResponse response = consultarCep(cep);
+        try {
+            ViaCepResponse response = consultarCep(cep);
+            
+            if (response == null || response.isErro()) {
+                throw new RuntimeException("CEP não encontrado ou inválido");
+            }
 
-        Endereco endereco = new Endereco();
-        endereco.setCep(response.getCep());
-        endereco.setLogradouro(response.getLogradouro());
-        endereco.setNumero(numero);
-        endereco.setComplemento(complemento);
-        endereco.setBairro(response.getBairro());
-        endereco.setLocalidade(response.getLocalidade());
-        endereco.setUf(response.getUf());
+            Endereco endereco = new Endereco();
+            endereco.setCep(response.getCep());
+            endereco.setLogradouro(response.getLogradouro());
+            endereco.setNumero(numero);
+            endereco.setComplemento(complemento);
+            endereco.setBairro(response.getBairro());
+            endereco.setLocalidade(response.getLocalidade());
+            endereco.setUf(response.getUf());
 
-        return endereco;
+            return endereco;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar CEP: " + e.getMessage(), e);
+        }
     }
 }
