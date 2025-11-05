@@ -3,6 +3,7 @@ package br.com.oficina.oficina.controller;
 import br.com.oficina.oficina.model.Veiculo;
 import br.com.oficina.oficina.service.VeiculoService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/veiculos")
 public class VeiculoController {
 
     private final VeiculoService veiculoService;
-
-    public VeiculoController(VeiculoService veiculoService) {
-        this.veiculoService = veiculoService;
-    }
 
     @PostMapping
     public ResponseEntity<String> cadastrarVeiculoCompleto(@RequestBody Map<String, Object> requestMap) {

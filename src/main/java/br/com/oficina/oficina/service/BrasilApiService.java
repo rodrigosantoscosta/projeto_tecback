@@ -23,6 +23,10 @@ public class BrasilApiService {
                 .toUriString();
 
         FeriadoNacionalResponse[] feriados = restTemplate.getForObject(url, FeriadoNacionalResponse[].class);
-        return Arrays.asList(feriados);
+
+        List<FeriadoNacionalResponse> list = Arrays.asList(feriados);
+
+        return list;
+    }
 
 }
