@@ -216,5 +216,86 @@
 - **Cor:** Opcional, máximo 30 caracteres
 - **ClienteId:** Obrigatório e deve ser um UUID válido de um cliente existente
 
+## 3) Funcionário
+### url: ```localhost:8080/funcionarios```
 
- 
+### Registrar Funcionário (POST)
+**Endpoint:** `POST {{ base_url }}/funcionarios`
+
+#### Exemplo válido:
+```json
+{
+  "nome": "João Silva",
+  "cpf": "12345678909",
+  "cargo": "Mecânico",
+  "telefone": "11999999999",
+  "email": "joao@email.com",
+  "usuario": "joaosilva",
+  "senha": "senha123"
+}
+```
+#### Exemplo de erro (CPF duplicado):
+```json
+{
+  "nome": "Maria Santos",
+  "cpf": "12345678909",
+  "cargo": "Atendente",
+  "telefone": "21888888888",
+  "email": "maria@email.com",
+  "usuario": "marias",
+  "senha": "outrasenha"
+}
+```
+
+#### Exemplo de erro (CPF inválido - menos de 11 dígitos):
+```json
+{
+  "nome": "Bruno Lima",
+  "cpf": "123",
+  "cargo": "Atendente",
+  "telefone": "21977776666",
+  "email": "bruno.lima@oficina.com",
+  "usuario": "brunolima",
+  "senha": "OutraSenha456"
+}
+```
+
+### Listar Todos os Funcionários (GET)
+**Endpoint:** `GET {{ base_url }}/funcionarios`
+
+*Sem body necessário*
+
+### Buscar Funcionário por ID (GET)
+**Endpoint:** `GET {{ base_url }}/funcionarios/<uuid-do-funcionario>`
+
+**Exemplo:** `GET {{ base_url }}/funcionarios/123e4567-e89b-12d3-a456-426614174000`
+
+*Sem body necessário*
+
+### Login (POST)
+**Endpoint:** `POST {{ base_url }}/funcionarios/login`
+
+#### Exemplo de login válido:
+```json
+{
+  "usuario": "joaosilva",
+  "senha": "senha123"
+}
+```
+
+#### Exemplo de login inválido:
+```json
+{
+  "usuario": "joaosilva",
+  "senha": "senhaerrada"
+}
+```
+
+### Observações:
+- O campo `usuario` deve ser único
+- A `senha` deve ter no mínimo 6 caracteres
+- O `cpf` deve ter exatamente 11 dígitos numéricos (sem formatação)
+- O `telefone` deve ter 10 ou 11 dígitos numéricos (sem formatação)
+- O `email` deve ser válido
+- O `usuario` deve ter entre 3 e 50 caracteres
+- Campos obrigatórios: nome, cpf, cargo, telefone, email, usuario, senha
