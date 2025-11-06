@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,12 +20,24 @@ public class BrasilApiService {
 
 
     public List<FeriadoNacionalResponse> buscarFeriadosPorAno(int ano) {
-        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + ano)
-                .toUriString();
+        List<FeriadoNacionalResponse> list = new ArrayList<>();
 
-        FeriadoNacionalResponse[] feriados = restTemplate.getForObject(url, FeriadoNacionalResponse[].class);
+        try {
+            String url = UriComponentsBuilder.newInstance()
+                    .scheme("https")
+                    .host("brasilapi.com.br")
+                    .path("/api/feriados/v1/{ano}")
+                    .buildAndExpand(ano)
+                    .toUriString();
 
-        List<FeriadoNacionalResponse> list = Arrays.asList(feriados);
+            // Realiza a consulta na API Brasil API
+            FeriadoNacionalResponse[] feriados = restTemplate.getForObject(url, FeriadoNacionalResponse[].class);
+
+            // Converte o array para uma lista
+            list = Arrays.asList(feriados);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar feriados nacionais: " + e.getMessage(), e);
+        }
 
         return list;
     }

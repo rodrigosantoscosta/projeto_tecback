@@ -105,6 +105,4 @@ public class VeiculoController {
             return ResponseEntity.badRequest().body("Erro ao deletar veículo: " + e.getMessage());
         }
     }
-
-
 }

@@ -5,19 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FeriadoNacionalResponse {
     private String date;
     private String name;
     private String type;
-
-    public FeriadoNacionalResponse() {
-    }
-
-    public FeriadoNacionalResponse(String date, String name, String type) {
-        this.date = date;
-        this.name = name;
-        this.type = type;
-    }
 
     @JsonProperty("date")
     public String getDate() {

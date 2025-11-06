@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/viacep")
 @CrossOrigin(origins = "*")
-public class ViaCEPController {
+public class ViaCepController {
 
     @Autowired
     private ViaCepService viaCepService;

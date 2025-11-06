@@ -44,7 +44,7 @@ public class ClienteService {
             // System.out.println("=== INICIANDO CADASTRO DE CLIENTE ===");
             // System.out.println("Dados recebidos: " + requestMap);
             
-            //Ideal seria utilizar um metodo DTO, mas pra praticidade este metodo pega o JSON e converte para String usando
+            //Ideal seria utilizar um metodo DTO, mas por praticidade este metodo pega o JSON e converte para String usando
             // casting (String)
             String nomeCompleto = (String) requestMap.get("nomeCompleto");
             String cpfCNPJ = (String) requestMap.get("cpfCNPJ");
