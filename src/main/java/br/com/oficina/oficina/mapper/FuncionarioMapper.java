@@ -13,6 +13,7 @@ public interface FuncionarioMapper {
     @Mapping(target = "senhaHash", ignore = true)
     @Mapping(target = "dataCadastro", ignore = true)
     @Mapping(target = "atendimentos", ignore = true)
+
     Funcionario toEntity(CriarFuncionarioDTO dto);
 
     FuncionarioDTO toDTO(Funcionario funcionario);

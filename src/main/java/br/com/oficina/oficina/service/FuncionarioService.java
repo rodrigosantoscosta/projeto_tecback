@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.funcionario.CriarFuncionarioDTO;
+import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final FuncionarioMapper funcionarioMapper;
 
     public List<Funcionario> listarTodosFuncionarios() {
         return funcionarioRepository.findAll();
@@ -29,18 +31,21 @@ public class FuncionarioService {
     }
 
 
-    public void cadastrarFuncionario(CriarFuncionarioDTO funcionarioDTO, String senhaAberta) {
+    @Transactional
+    public Funcionario cadastrarFuncionario(CriarFuncionarioDTO funcionarioDTO) {
         if (funcionarioDTO == null) {
             throw new IllegalArgumentException("Dados do funcionário são obrigatórios");
         }
-        if (!StringUtils.hasText(senhaAberta)) {
-            throw new IllegalArgumentException("Senha é obrigatória");
+
+        // Validar se o CPF/CNPJ está presente (validação principal)
+        if (!StringUtils.hasText(funcionarioDTO.getCpfCNPJ())) {
+            throw new IllegalArgumentException("CPF/CNPJ é obrigatório");
         }
 
         // Normalização de dados
         funcionarioDTO.setNome(funcionarioDTO.getNome().trim());
         funcionarioDTO.setCargo(funcionarioDTO.getCargo().trim());
-        
+
         if (funcionarioDTO.getEmail() != null) {
             String emailNormalizado = funcionarioDTO.getEmail().trim().toLowerCase();
             funcionarioDTO.setEmail(emailNormalizado.isEmpty() ? null : emailNormalizado);
@@ -51,23 +56,18 @@ public class FuncionarioService {
             funcionarioDTO.setTelefone(telefoneNormalizado.isEmpty() ? null : telefoneNormalizado);
         }
 
-        // Normalizar CPF/CNPJ (remover caracteres não numéricos, se existir)
-        if (funcionarioDTO.getCpfCNPJ() != null && !funcionarioDTO.getCpfCNPJ().isBlank()) {
-            String cpfNormalizado = funcionarioDTO.getCpfCNPJ().replaceAll("\\D", "");
-            funcionarioDTO.setCpfCNPJ(cpfNormalizado);
-        } else {
+        // Normalizar CPF/CNPJ (remover caracteres não numéricos)
+        String cpfNormalizado = funcionarioDTO.getCpfCNPJ().replaceAll("\\D", "");
+        if (!StringUtils.hasText(cpfNormalizado)) {
             throw new IllegalArgumentException("CPF/CNPJ é obrigatório");
         }
+        funcionarioDTO.setCpfCNPJ(cpfNormalizado);
 
-        Funcionario funcionario = new Funcionario();
-        funcionario.setNome(funcionarioDTO.getNome());
-        funcionario.setCargo(funcionarioDTO.getCargo());
-        funcionario.setEmail(funcionarioDTO.getEmail());
-        funcionario.setTelefone(funcionarioDTO.getTelefone());
-        funcionario.setCpfCNPJ(funcionarioDTO.getCpfCNPJ());
-        funcionario.setUsuario(funcionarioDTO.getUsuario());
-        funcionario.setSenhaHash(passwordEncoder.encode(senhaAberta));
+        // Usar o mapper para criar a entidade
+        Funcionario funcionario = funcionarioMapper.toEntity(funcionarioDTO);
 
+        // Configurar campos adicionais que não são mapeados automaticamente
+        funcionario.setSenhaHash(passwordEncoder.encode(funcionarioDTO.getSenha()));
 
         // Verificar unicidade
         if (funcionarioRepository.existsByCpfCNPJ(funcionarioDTO.getCpfCNPJ())) {
@@ -77,7 +77,7 @@ public class FuncionarioService {
             throw new IllegalArgumentException("Usuário já cadastrado");
         }
 
-        funcionarioRepository.save(funcionario);
+        return funcionarioRepository.save(funcionario);
     }
 
     public boolean autenticar(String usuario, String senha) {

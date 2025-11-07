@@ -3,6 +3,7 @@ package br.com.oficina.oficina.controller;
 import br.com.oficina.oficina.dto.funcionario.CriarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
+import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,7 @@ public class FuncionarioController {
 
     @PostMapping
     public ResponseEntity<FuncionarioDTO> criarFuncionario(@Valid @RequestBody CriarFuncionarioDTO dto) {
-        var funcionario = funcionarioService.cadastrarFuncionario(
-            funcionarioMapper.toEntity(dto),
-            dto.getSenha()
-        );
+        Funcionario funcionario = funcionarioService.cadastrarFuncionario(dto);
         return ResponseEntity.ok(funcionarioMapper.toDTO(funcionario));
     }
 

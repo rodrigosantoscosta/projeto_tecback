@@ -8,7 +8,7 @@ import java.util.UUID;
 public class FuncionarioDTO {
     private UUID id;
     private String nome;
-    private String cpf;
+    private String cpfCNPJ;
     private String cargo;
     private String telefone;
     private String email;
