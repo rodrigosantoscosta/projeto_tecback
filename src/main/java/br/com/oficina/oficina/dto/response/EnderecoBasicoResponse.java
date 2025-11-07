@@ -1,4 +1,4 @@
-package br.com.oficina.oficina.dto;
+package br.com.oficina.oficina.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

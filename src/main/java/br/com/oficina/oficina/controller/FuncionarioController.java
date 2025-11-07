@@ -1,7 +1,7 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.CriarFuncionarioDTO;
-import br.com.oficina.oficina.dto.FuncionarioDTO;
+import br.com.oficina.oficina.dto.funcionario.CriarFuncionarioDTO;
+import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.service.FuncionarioService;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class FuncionarioController {
 
     @PostMapping
     public ResponseEntity<FuncionarioDTO> criarFuncionario(@Valid @RequestBody CriarFuncionarioDTO dto) {
-        var funcionario = funcionarioService.registrar(
+        var funcionario = funcionarioService.cadastrarFuncionario(
             funcionarioMapper.toEntity(dto),
             dto.getSenha()
         );
@@ -59,5 +59,15 @@ public class FuncionarioController {
         }
 
         return ResponseEntity.ok("Login realizado com sucesso");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarFuncionarioPorId(@PathVariable UUID id) {
+        try {
+            funcionarioService.deletarFuncionarioPorId(id);
+            return ResponseEntity.ok("Funcionario deletado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao deletar funcionario: " + e.getMessage());
+        }
     }
 }

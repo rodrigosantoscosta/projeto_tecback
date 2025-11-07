@@ -45,7 +45,7 @@ public class Cliente {
     private String email;
 
 //    @NotBlank(message = "Senha é obrigatória")
-//    @Size(min = 6, message = "Senha deve ter no mínimo 8 caracteres")
+//    @Size(min = 8, message = "Senha deve ter no mínimo 8 caracteres")
 //    @Column(name = "senha_hash", nullable = false, length = 60)
 //    private String senhaHash;
 

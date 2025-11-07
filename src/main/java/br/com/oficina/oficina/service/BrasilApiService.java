@@ -1,9 +1,6 @@
 package br.com.oficina.oficina.service;
 
-import br.com.oficina.oficina.dto.FeriadoNacionalResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import br.com.oficina.oficina.dto.response.FeriadoNacionalResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;

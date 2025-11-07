@@ -1,7 +1,7 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.EnderecoBasicoResponse;
-import br.com.oficina.oficina.dto.ViaCepResponse;
+import br.com.oficina.oficina.dto.response.EnderecoBasicoResponse;
+import br.com.oficina.oficina.dto.response.ViaCepResponse;
 import br.com.oficina.oficina.service.ViaCepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

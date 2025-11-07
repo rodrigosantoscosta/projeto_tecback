@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.service;
 
-import br.com.oficina.oficina.dto.ViaCepResponse;
+import br.com.oficina.oficina.dto.response.ViaCepResponse;
 import br.com.oficina.oficina.model.Endereco;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
