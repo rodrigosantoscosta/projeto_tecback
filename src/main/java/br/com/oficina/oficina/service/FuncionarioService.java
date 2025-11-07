@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.service;
 
-import br.com.oficina.oficina.dto.funcionario.CriarFuncionarioDTO;
+import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
@@ -32,7 +32,7 @@ public class FuncionarioService {
 
 
     @Transactional
-    public Funcionario cadastrarFuncionario(CriarFuncionarioDTO funcionarioDTO) {
+    public Funcionario cadastrarFuncionario(CadastrarFuncionarioDTO funcionarioDTO) {
         if (funcionarioDTO == null) {
             throw new IllegalArgumentException("Dados do funcionário são obrigatórios");
         }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CriarClienteDTO {
+public class CadastrarVeiculoDTO {
 
 
     @NotBlank(message = "Nome completo é obrigatório")
@@ -36,7 +36,7 @@ public class CriarClienteDTO {
 
     private String complemento;
 
-    // Método que intercepta o JSON e limpa o CEP antes de atribuir
+    //Método que intercepta o JSON e limpa o CEP antes de atribuir
     @JsonSetter("cep")
     public void setCep(String cep) {
         this.cep = cep != null ? cep.replaceAll("\\D", "") : null;

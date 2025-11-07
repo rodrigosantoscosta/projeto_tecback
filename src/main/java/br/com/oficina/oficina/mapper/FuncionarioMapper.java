@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.mapper;
 
-import br.com.oficina.oficina.dto.funcionario.CriarFuncionarioDTO;
+import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
 import br.com.oficina.oficina.model.Funcionario;
 import org.mapstruct.Mapper;
@@ -14,7 +14,7 @@ public interface FuncionarioMapper {
     @Mapping(target = "dataCadastro", ignore = true)
     @Mapping(target = "atendimentos", ignore = true)
 
-    Funcionario toEntity(CriarFuncionarioDTO dto);
+    Funcionario toEntity(CadastrarFuncionarioDTO dto);
 
     FuncionarioDTO toDTO(Funcionario funcionario);
 }

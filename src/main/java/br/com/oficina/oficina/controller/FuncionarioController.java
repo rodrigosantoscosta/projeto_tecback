@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.funcionario.CriarFuncionarioDTO;
+import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
@@ -26,7 +26,7 @@ public class FuncionarioController {
 
 
     @PostMapping
-    public ResponseEntity<FuncionarioDTO> criarFuncionario(@Valid @RequestBody CriarFuncionarioDTO dto) {
+    public ResponseEntity<FuncionarioDTO> criarFuncionario(@Valid @RequestBody CadastrarFuncionarioDTO dto) {
         Funcionario funcionario = funcionarioService.cadastrarFuncionario(dto);
         return ResponseEntity.ok(funcionarioMapper.toDTO(funcionario));
     }

@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.service;
 
-import br.com.oficina.oficina.dto.cliente.CriarClienteDTO;
+import br.com.oficina.oficina.dto.cliente.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
     private final ViaCepService viaCepService;
 
-    public void cadastrarCliente(CriarClienteDTO clienteDTO) {
+    public void cadastrarCliente(CadastrarVeiculoDTO clienteDTO) {
         try {
             // Remove caracteres não numéricos do CPF/CNPJ
             String cpfCNPJ = clienteDTO.getCpfCNPJ().replaceAll("\\D", "");

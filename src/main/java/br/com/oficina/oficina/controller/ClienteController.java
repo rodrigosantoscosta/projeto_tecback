@@ -1,7 +1,7 @@
 package br.com.oficina.oficina.controller;
 
 import br.com.oficina.oficina.dto.cliente.ClienteDTO;
-import br.com.oficina.oficina.dto.cliente.CriarClienteDTO;
+import br.com.oficina.oficina.dto.cliente.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.service.ClienteService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<String> cadastrarCliente(@Valid @RequestBody CriarClienteDTO dto) {
+    public ResponseEntity<String> cadastrarCliente(@Valid @RequestBody CadastrarVeiculoDTO dto) {
         try {
             clienteService.cadastrarCliente(dto);
             return ResponseEntity.ok("Cliente cadastrado com sucesso");

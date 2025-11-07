@@ -1,15 +1,14 @@
 package br.com.oficina.oficina.controller;
 
+import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Veiculo;
 import br.com.oficina.oficina.service.VeiculoService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,12 +20,11 @@ public class VeiculoController {
     private final VeiculoService veiculoService;
 
     @PostMapping
-    public ResponseEntity<String> cadastrarVeiculoCompleto(@RequestBody Map<String, Object> requestMap) {
+    public ResponseEntity<String> cadastrarVeiculo(@Valid @RequestBody CadastrarVeiculoDTO veiculoDTO) {
         try {
-            veiculoService.cadastrarVeiculoCompleto(requestMap);
+            veiculoService.cadastrarVeiculo(veiculoDTO);
             return ResponseEntity.ok("Veículo cadastrado com sucesso");
         } catch (Exception e) {
-            System.out.println("Erro no Controller: " + e.getMessage());
             return ResponseEntity.badRequest().body("Erro ao cadastrar veículo: " + e.getMessage());
         }
     }

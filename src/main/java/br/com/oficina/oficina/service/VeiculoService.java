@@ -1,5 +1,6 @@
 package br.com.oficina.oficina.service;
 
+import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.model.Veiculo;
 import br.com.oficina.oficina.repository.ClienteRepository;
@@ -7,7 +8,6 @@ import br.com.oficina.oficina.repository.VeiculoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,42 +54,24 @@ public class VeiculoService {
         veiculoRepository.delete(veiculo);
     }
 
-    public void cadastrarVeiculoCompleto(Map<String, Object> requestMap) {
-        // Extrai os dados do veículo
-        String placa = (String) requestMap.get("placa");
-        String marca = (String) requestMap.get("marca");
-        String modelo = (String) requestMap.get("modelo");
-        Integer ano = (Integer) requestMap.get("ano");
-        String cor = (String) requestMap.get("cor");
-        Double quilometragem = requestMap.get("quilometragem") != null 
-            ? ((Number) requestMap.get("quilometragem")).doubleValue() 
-            : null;
-        String clienteIdStr = (String) requestMap.get("clienteId");
+    public void cadastrarVeiculo(CadastrarVeiculoDTO cadastrarVeiculoDTO) {
+        Cliente cliente = clienteRepository.findById(cadastrarVeiculoDTO.getClienteId())
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
 
-        // Normaliza a placa (remove espaços e converte para maiúsculas)
-        if (placa != null) {
-            placa = placa.replaceAll("\\s+", "").toUpperCase();
-        }
+
+        Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(cadastrarVeiculoDTO.getPlaca());
+        veiculo.setMarca(cadastrarVeiculoDTO.getMarca());
+        veiculo.setModelo(cadastrarVeiculoDTO.getModelo());
+        veiculo.setAno(cadastrarVeiculoDTO.getAno());
+        veiculo.setCor(cadastrarVeiculoDTO.getCor());
+        veiculo.setQuilometragem(cadastrarVeiculoDTO.getQuilometragem());
+        veiculo.setCliente(cliente);
 
         // Verifica se a placa já existe
-        if (veiculoRepository.existsByPlaca(placa)) {
+        if (veiculoRepository.existsByPlaca(veiculo.getPlaca())) {
             throw new RuntimeException("Placa já cadastrada no sistema");
         }
-
-        // Busca o cliente
-        UUID clienteId = UUID.fromString(clienteIdStr);
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
-        // Cria e salva o veículo
-        Veiculo veiculo = new Veiculo();
-        veiculo.setPlaca(placa);
-        veiculo.setMarca(marca);
-        veiculo.setModelo(modelo);
-        veiculo.setAno(ano);
-        veiculo.setCor(cor);
-        veiculo.setQuilometragem(quilometragem);
-        veiculo.setCliente(cliente);
 
         veiculoRepository.save(veiculo);
     }
@@ -97,10 +79,10 @@ public class VeiculoService {
     public void associarVeiculoAoCliente(UUID veiculoId, UUID clienteId) {
         Veiculo veiculo = veiculoRepository.findById(veiculoId)
                 .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-        
+
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-        
+
         veiculo.setCliente(cliente);
         veiculoRepository.save(veiculo);
     }
