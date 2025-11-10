@@ -13,7 +13,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, UUID> 
 
     boolean existsByCpfCNPJ(String cpfCNPJ);
 
-    boolean findByCpfCNPJ(String cpfCNPJ);
+    Optional<Funcionario> findByCpfCNPJ(String cpfCNPJ);
 
     Optional<Funcionario> findByUsuario(String usuario);
     

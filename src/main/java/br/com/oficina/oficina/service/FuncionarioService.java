@@ -5,12 +5,13 @@ import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final FuncionarioMapper funcionarioMapper;
 
     public List<Funcionario> listarTodosFuncionarios() {
@@ -92,5 +93,10 @@ public class FuncionarioService {
 
     public void deletarFuncionarioPorId(UUID id) {
         funcionarioRepository.deleteById(id);
+    }
+
+    // Added: buscar por usuario
+    public Optional<Funcionario> buscarPorUsuario(String usuario) {
+        return funcionarioRepository.findByUsuario(usuario);
     }
 }

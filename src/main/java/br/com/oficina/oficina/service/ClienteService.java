@@ -4,6 +4,7 @@ import br.com.oficina.oficina.dto.cliente.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +13,21 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final ViaCepService viaCepService;
 
     public void cadastrarCliente(CadastrarVeiculoDTO clienteDTO) {
+        log.info("Iniciando cadastro de cliente: {}", clienteDTO.getNomeCompleto());
         try {
             // Remove caracteres não numéricos do CPF/CNPJ
             String cpfCNPJ = clienteDTO.getCpfCNPJ().replaceAll("\\D", "");
+            log.debug("CPF/CNPJ normalizado: {}", cpfCNPJ);
 
             validarUnicidade(cpfCNPJ, clienteDTO.getEmail());
+            log.debug("Validação de unicidade concluída");
 
             // Busca endereço via CEP
             var endereco = viaCepService.buscarEConstruirEndereco(
@@ -32,6 +37,7 @@ public class ClienteService {
             );
 
             if (endereco == null) {
+                log.error("Endereço não encontrado para CEP: {}", clienteDTO.getCep());
                 throw new RuntimeException("Erro ao buscar endereço pelo CEP");
             }
 
@@ -44,28 +50,47 @@ public class ClienteService {
             cliente.setEndereco(endereco);
 
             clienteRepository.save(cliente);
+            log.info("Cliente cadastrado com sucesso. ID: {}", cliente.getId());
 
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            log.error("Violação de integridade de dados", e);
             tratarViolacaoIntegridadeDados(e);
         } catch (jakarta.validation.ConstraintViolationException e) {
+            log.error("Violação de restrição de validação", e);
             tratarViolacaoRestricao(e);
         } catch (Exception e) {
+            log.error("Erro ao cadastrar cliente", e);
             tratarExcecaoGenerica(e);
         }
     }
 
     public List<Cliente> listarTodosClientes() {
-        return clienteRepository.findAll();
+        log.info("Listando todos os clientes");
+        List<Cliente> clientes = clienteRepository.findAll();
+        log.debug("Total de clientes encontrados: {}", clientes.size());
+        return clientes;
     }
 
     public Optional<Cliente> buscarClientePorId(UUID id) {
-        return clienteRepository.findById(id);
+        log.debug("Buscando cliente por ID: {}", id);
+        Optional<Cliente> cliente = clienteRepository.findById(id);
+        cliente.ifPresentOrElse(
+                c -> log.debug("Cliente encontrado: {}", c.getId()),
+                () -> log.debug("Cliente não encontrado para ID: {}", id)
+        );
+        return cliente;
     }
 
     public Optional<Cliente> buscarClientePorCpf(String cpf) {
-        // Normaliza o CPF removendo caracteres não numéricos
+        log.debug("Buscando cliente por CPF: {}", cpf);
         String cpfNormalizado = cpf.replaceAll("\\D", "");
-        return clienteRepository.findByCpfCNPJ(cpfNormalizado);
+        log.trace("CPF normalizado: {}", cpfNormalizado);
+        Optional<Cliente> cliente = clienteRepository.findByCpfCNPJ(cpfNormalizado);
+        cliente.ifPresentOrElse(
+                c -> log.debug("Cliente encontrado: {}", c.getCpfCNPJ()),
+                () -> log.debug("Cliente não encontrado para CPF: {}", cpfNormalizado)
+        );
+        return cliente;
     }
 
     public void deletarClientePorId(UUID id) {
