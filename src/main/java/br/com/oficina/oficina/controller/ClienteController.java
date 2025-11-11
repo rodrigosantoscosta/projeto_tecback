@@ -81,7 +81,7 @@ public class ClienteController {
         }
     }
 
-    // Converte Entity -> DTO
+    //  Entity -> DTO
     private ClienteDTO toDTO(Cliente cliente) {
         return new ClienteDTO(
                 cliente.getId(),
