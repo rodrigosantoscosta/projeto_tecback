@@ -1,9 +1,0 @@
-ALTER TABLE IF EXISTS funcionarios
-    ADD COLUMN IF NOT EXISTS usuario VARCHAR(50);
-
-ALTER TABLE IF EXISTS funcionarios
-    ADD COLUMN IF NOT EXISTS senha_hash VARCHAR(60);
-
-CREATE UNIQUE INDEX IF NOT EXISTS ux_funcionarios_usuario
-    ON funcionarios (usuario)
-    WHERE usuario IS NOT NULL;

@@ -6,7 +6,6 @@ import br.com.oficina.oficina.dto.auth.AuthenticationRequest;
 import br.com.oficina.oficina.dto.auth.AuthenticationResponse;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
-import br.com.oficina.oficina.security.JwtUtil;
 import br.com.oficina.oficina.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class FuncionarioController {
     private final FuncionarioService funcionarioService;
     private final FuncionarioMapper funcionarioMapper;
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final br.com.oficina.oficina.security.JwtUtil jwtUtil;
 
 
     @PostMapping
@@ -65,6 +64,29 @@ public class FuncionarioController {
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(401).body("Credenciais inválidas");
         }
+    }
+
+    // retorna o funcionario autenticado
+    @GetMapping("/me")
+    public ResponseEntity<FuncionarioDTO> me() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String username;
+        Object principal = auth.getPrincipal();
+        if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+            username = ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername();
+        } else if (principal instanceof String) {
+            username = (String) principal;
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+
+        return funcionarioService.buscarPorUsuario(username)
+            .map(f -> ResponseEntity.ok(funcionarioMapper.toDTO(f)))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
