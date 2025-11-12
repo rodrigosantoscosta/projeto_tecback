@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CadastrarVeiculoDTO {
+public class CadastrarClienteDTO {
 
 
     @NotBlank(message = "Nome completo é obrigatório")

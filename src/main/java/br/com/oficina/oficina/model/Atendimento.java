@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "atendimentos")
@@ -18,7 +17,7 @@ public class Atendimento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private Long id;
 
     @Column(columnDefinition = "TEXT")
     private String descricaoServico;
