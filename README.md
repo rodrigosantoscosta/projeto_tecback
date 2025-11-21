@@ -4,7 +4,32 @@
 
 
 ## 1) Stack e objetivo
-- **Stack**: Spring Boot 3.x, Spring Web (APIs REST), Spring Data JPA, Bean Validation, Lombok, PostgreSQL, REST Template (ViaCEP integration).
+### Backend
+- **Framework**: Spring Boot 3.5.6
+- **Linguagem**: Java 21
+- **Dependencias**:
+  - Spring Web (APIs REST)
+  - Spring Data JPA (ORM)
+  - Spring Security (Autenticação e Autorização)
+  - Spring Validation (Bean Validation)
+  - Lombok 1.18.32 (Redução de boilerplate)
+  - MapStruct 1.6.3 (Mapeamento de DTOs)
+  - JJWT 0.11.5 (JWT Token)
+  - SpringDoc OpenAPI 2.5.0 (Swagger/OpenAPI)
+  - Flyway (Versionamento de banco de dados)
+  - PostgreSQL (Banco de dados)
+  - REST Template (Integração com APIs externas)
+
+### Frontend
+- **HTML5**: Estrutura semântica
+- **CSS3**: Styling responsivo com gradientes e animações
+- **JavaScript**: Funcionalidades interativas
+- **Integração ViaCEP**: Busca automática de endereços
+
+### Ferramentas
+- **Build**: Maven 3.6+
+- **Versionamento DB**: Flyway
+- **Documentação API**: Swagger/OpenAPI (SpringDoc)
 - **Objetivo**: API para gestão de oficina mecânica com cadastro de clientes, veículos, atendimentos e integração com ViaCEP para endereços automáticos.
 - **Autenticação**: não obrigatória (pode ser Plus).
 

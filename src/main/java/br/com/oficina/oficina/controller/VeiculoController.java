@@ -29,22 +29,10 @@ public class VeiculoController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Veiculo>> listarTodos() {
-        List<Veiculo> veiculos = veiculoService.listarTodosVeiculos();
-        return ResponseEntity.ok(veiculos);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable UUID id) {
-        Optional<Veiculo> veiculo = veiculoService.buscarVeiculoPorId(id);
-
-        if (veiculo.isPresent()) {
-            return ResponseEntity.ok(veiculo.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Veículo não encontrado");
-        }
+    @GetMapping("/veiculos")
+    public ResponseEntity<Long> contarTotalVeiculos() {
+        Long total = veiculoService.contarTotalVeiculos();
+        return ResponseEntity.ok(total);
     }
 
     @GetMapping("/placa/{placa}")
@@ -65,23 +53,25 @@ public class VeiculoController {
         return ResponseEntity.ok(veiculos);
     }
 
-    @GetMapping("/total-veiculos")
-    public ResponseEntity<Long> contarTotalVeiculos() {
-        Long total = veiculoService.contarTotalVeiculos();
-        return ResponseEntity.ok(total);
+    @GetMapping
+    public ResponseEntity<List<Veiculo>> listarTodos() {
+        List<Veiculo> veiculos = veiculoService.listarTodosVeiculos();
+        return ResponseEntity.ok(veiculos);
     }
 
-//    @PutMapping("/{veiculoId}/associar/{clienteId}")
-//    public ResponseEntity<String> associarVeiculoAoCliente(
-//            @PathVariable UUID veiculoId,
-//            @PathVariable UUID clienteId) {
-//        try {
-//            veiculoService.associarVeiculoAoCliente(veiculoId, clienteId);
-//            return ResponseEntity.ok("Veículo associado ao cliente com sucesso");
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Erro ao associar veículo: " + e.getMessage());
-//        }
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable UUID id) {
+        Optional<Veiculo> veiculo = veiculoService.buscarVeiculoPorId(id);
+
+        if (veiculo.isPresent()) {
+            return ResponseEntity.ok(veiculo.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Veículo não encontrado");
+        }
+    }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarPorId(@PathVariable UUID id) {

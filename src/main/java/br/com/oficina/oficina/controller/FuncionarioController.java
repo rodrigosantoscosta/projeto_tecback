@@ -38,21 +38,6 @@ public class FuncionarioController {
         return ResponseEntity.ok(funcionarioMapper.toDTO(funcionario));
     }
 
-    @GetMapping
-    public ResponseEntity<List<FuncionarioDTO>> listarTodosFuncionarios() {
-        var funcionarios = funcionarioService.listarTodosFuncionarios().stream()
-            .map(funcionarioMapper::toDTO)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(funcionarios);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<FuncionarioDTO> buscarFuncionarioPorId(@PathVariable UUID id) {
-        return funcionarioService.buscarPorId(id)
-            .map(funcionario -> ResponseEntity.ok(funcionarioMapper.toDTO(funcionario)))
-            .orElse(ResponseEntity.notFound().build());
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest req) {
         try {
@@ -86,6 +71,21 @@ public class FuncionarioController {
 
         return funcionarioService.buscarPorUsuario(username)
             .map(f -> ResponseEntity.ok(funcionarioMapper.toDTO(f)))
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FuncionarioDTO>> listarTodosFuncionarios() {
+        var funcionarios = funcionarioService.listarTodosFuncionarios().stream()
+            .map(funcionarioMapper::toDTO)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(funcionarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FuncionarioDTO> buscarFuncionarioPorId(@PathVariable UUID id) {
+        return funcionarioService.buscarPorId(id)
+            .map(funcionario -> ResponseEntity.ok(funcionarioMapper.toDTO(funcionario)))
             .orElse(ResponseEntity.notFound().build());
     }
 
