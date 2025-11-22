@@ -11,11 +11,15 @@ import java.util.UUID;
 
 @Repository
 public interface VeiculoRepository extends JpaRepository<Veiculo, UUID> {
+
     Optional<Veiculo> findByPlaca(String placa);
-    List<Veiculo> findVeiculoByClienteId(UUID clienteId);
+
     boolean existsByPlaca(String placa);
 
-    //Consultas JPQL : Contar total de veiculos veiculos
-    @Query("SELECT COUNT(veiculo) FROM Veiculo veiculo")
+    List<Veiculo> findVeiculoByClienteId(UUID clienteId);
+
+    long countByClienteId(UUID clienteId);
+
+    @Query("SELECT COUNT(v) FROM Veiculo v")
     Long contarTotalVeiculos();
 }
