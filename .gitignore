@@ -41,11 +41,11 @@ application-prod.properties
 /database/
 /data/
 
-## ARQUIVOS DE CONFIGURAÇÃO SENSÍVEIS
+
 # Arquivos de application com senhas
-application*.properties
-application*.yml
-application*.yaml
+#application*.properties
+#application*.yml
+#application*.yaml
 
 # Chaves SSH, API Keys, etc.
 *.key

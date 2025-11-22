@@ -2,6 +2,7 @@ package br.com.oficina.oficina.security;
 
 import br.com.oficina.oficina.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,8 @@ import org.springframework.http.HttpMethod;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+    @Value("${app.security.enabled:true}")
+    private boolean securityEnabled;
 
     private final JwtUtil jwtUtil;
 
