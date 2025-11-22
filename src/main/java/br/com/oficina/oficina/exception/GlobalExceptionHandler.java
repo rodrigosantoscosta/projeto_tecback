@@ -1,93 +1,142 @@
 package br.com.oficina.oficina.exception;
 
-// Importações necessárias para o tratamento de exceções
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * Classe GlobalExceptionHandler - Responsável por tratar exceções de forma global na aplicação.
- *
- * @ControllerAdvice - Anotação que permite tratar exceções em toda a aplicação de forma centralizada.
- * Todas as exceções lançadas pelos controladores serão capturadas aqui.
- */
-@ControllerAdvice
+@Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Trata exceções de validação lançadas quando os dados de entrada são inválidos.
-     *
-     * @param ex      A exceção MethodArgumentNotValidException contendo os erros de validação
-     * @param request O objeto WebRequest contendo informações sobre a requisição
-     * @return ResponseEntity contendo os detalhes do erro e status HTTP 400 (BAD_REQUEST)
-     *
-     * @ExceptionHandler - Especifica que este método trata exceções do tipo MethodArgumentNotValidException
-     */
+    @ExceptionHandler(ClienteNaoEncontradoException.class)
+    public ResponseEntity<ErrorDetails> handleClienteNaoEncontrado(
+            ClienteNaoEncontradoException e,
+            HttpServletRequest request) {
+
+        log.error("Cliente não encontrado: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(VeiculoNaoEncontradoException.class)
+    public ResponseEntity<ErrorDetails> handleVeiculoNaoEncontrado(
+            VeiculoNaoEncontradoException e,
+            HttpServletRequest request) {
+
+        log.error("Veículo não encontrado: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ClienteComVeiculosException.class)
+    public ResponseEntity<ErrorDetails> handleClienteComVeiculos(
+            ClienteComVeiculosException e,
+            HttpServletRequest request) {
+
+        log.warn("Operação não permitida: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(RecursoJaCadastradoException.class)
+    public ResponseEntity<ErrorDetails> handleRecursoJaCadastrado(
+            RecursoJaCadastradoException e,
+            HttpServletRequest request) {
+
+        log.warn("Recurso já cadastrado: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDetails> handleValidationExceptions(
-            MethodArgumentNotValidException ex, WebRequest request) {
+            MethodArgumentNotValidException e,
+            HttpServletRequest request) {
 
-        // Mapa para armazenar os erros de validação (campo -> mensagem de erro)
-        Map<String, String> errors = new HashMap<>();
+        log.error("Erro de validação: {}", e.getMessage());
 
-        // Itera sobre todos os erros de validação encontrados
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            // Obtém o nome do campo que falhou na validação
-            String fieldName = ((FieldError) error).getField();
-            // Obtém a mensagem de erro definida nas anotações de validação
-            String errorMessage = error.getDefaultMessage();
-            // Adiciona o erro ao mapa
-            errors.put(fieldName, errorMessage);
-        });
+        List<String> erros = e.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(error -> {
+                    String fieldName = ((FieldError) error).getField();
+                    String errorMessage = error.getDefaultMessage();
+                    return fieldName + ": " + errorMessage;
+                })
+                .collect(Collectors.toList());
 
-        // Obtém a primeira mensagem de erro para o campo 'message'
-        String primeiraMensagem = !errors.isEmpty() ?
-                errors.values().iterator().next() : "Erro de validação nos dados fornecidos";
-
-        // Cria um objeto ErrorDetails com os dados do erro
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),        // Timestamp do erro
-                primeiraMensagem,          // Primeira mensagem de erro
-                request.getDescription(false), // Descrição da requisição
-                errors                     // Mapa de erros de validação
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                "Erro de validação dos dados",
+                request.getRequestURI(),
+                erros
         );
 
-        // Retorna a resposta com status 400 (BAD_REQUEST) e o corpo contendo os detalhes do erro
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    /**
-     * Trata exceções do tipo IllegalArgumentException lançadas na aplicação.
-     *
-     * @param ex      A exceção IllegalArgumentException que foi lançada
-     * @param request O objeto WebRequest contendo informações sobre a requisição
-     * @return ResponseEntity contendo os detalhes do erro e status HTTP 400 (BAD_REQUEST)
-     *
-     * @ExceptionHandler - Especifica que este método trata exceções do tipo IllegalArgumentException
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorDetails> handleIllegalArgumentException(
-            IllegalArgumentException ex, WebRequest request) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDetails> handleRuntimeException(
+            RuntimeException e,
+            HttpServletRequest request) {
 
-        // Cria um objeto ErrorDetails com os dados do erro
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),        // Timestamp do erro
-                ex.getMessage(),            // Mensagem da exceção
-                request.getDescription(false), // Descrição da requisição
-                null                        // Sem erros adicionais
+        log.error("Erro em tempo de execução: {}", e.getMessage(), e);
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
         );
 
-        // Retorna a resposta com status 400 (BAD_REQUEST) e o corpo contendo os detalhes do erro
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    // You can add more exception handlers here as needed
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorDetails> handleException(
+            Exception e,
+            HttpServletRequest request) {
+
+        log.error("Erro inesperado: {}", e.getMessage(), e);
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                "Erro interno do servidor",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
 }

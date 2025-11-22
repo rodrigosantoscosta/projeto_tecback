@@ -4,6 +4,7 @@ import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class FuncionarioService {
         return funcionarioRepository.findById(id);
     }
 
-
+    @SecurityRequirement(name = "bearerAuth")
     @Transactional
     public Funcionario cadastrarFuncionario(CadastrarFuncionarioDTO funcionarioDTO) {
         if (funcionarioDTO == null) {

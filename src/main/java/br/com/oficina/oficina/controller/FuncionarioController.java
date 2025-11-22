@@ -7,6 +7,7 @@ import br.com.oficina.oficina.dto.auth.AuthenticationResponse;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.service.FuncionarioService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/funcionarios")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
+
 public class FuncionarioController {
 
     private final FuncionarioService funcionarioService;
@@ -31,7 +33,7 @@ public class FuncionarioController {
     private final AuthenticationManager authenticationManager;
     private final br.com.oficina.oficina.security.JwtUtil jwtUtil;
 
-
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<FuncionarioDTO> criarFuncionario(@Valid @RequestBody CadastrarFuncionarioDTO dto) {
         Funcionario funcionario = funcionarioService.cadastrarFuncionario(dto);
