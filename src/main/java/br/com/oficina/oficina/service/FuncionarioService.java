@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
+import br.com.oficina.oficina.exception.FuncionarioNaoEncontrado;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
@@ -14,10 +15,11 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Slf4j
 public class FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
@@ -92,9 +94,22 @@ public class FuncionarioService {
             .orElse(false);
     }
 
+    @Transactional
     public void deletarFuncionarioPorId(UUID id) {
+        log.info("Deletando funcionario: {}", id);
+
+        // Verifica se o funcionario existe
+        Funcionario funcionario = funcionarioRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Funcionario não encontrado para deleção: {}", id);
+                    return new FuncionarioNaoEncontrado(
+                            "Funcionario não encontrado com ID: " + id
+                    );
+                });
         funcionarioRepository.deleteById(id);
+        log.info("Funcionario deletado com sucesso: {}", id);
     }
+
 
     // Added: buscar por usuario
     public Optional<Funcionario> buscarPorUsuario(String usuario) {

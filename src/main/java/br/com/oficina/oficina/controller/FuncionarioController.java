@@ -7,6 +7,7 @@ import br.com.oficina.oficina.dto.auth.AuthenticationResponse;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.service.FuncionarioService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Slf4j
 @RestController
 @RequestMapping("/funcionarios")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
-
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Funcionarios", description = "Endpoints para gerenciamento de funcionarios")
 public class FuncionarioController {
 
     private final FuncionarioService funcionarioService;
@@ -92,12 +97,12 @@ public class FuncionarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarFuncionarioPorId(@PathVariable UUID id) {
-        try {
-            funcionarioService.deletarFuncionarioPorId(id);
-            return ResponseEntity.ok("Funcionario deletado com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao deletar funcionario: " + e.getMessage());
-        }
+    @Operation(summary = "Deletar Funcionario")
+    public ResponseEntity<Void> deletarPorId(@PathVariable UUID id) {
+        log.info("Iniciando deleção do funcionario: {}", id);
+        funcionarioService.deletarFuncionarioPorId(id);
+        log.info("Funcionario deletado com sucesso: {}", id);
+
+        return ResponseEntity.noContent().build();
     }
 }
