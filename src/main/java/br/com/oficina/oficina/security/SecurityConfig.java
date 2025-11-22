@@ -56,40 +56,50 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
             // Configura as autorizações das requisições HTTP
-            .authorizeHttpRequests(auth -> auth
-                // Permite requisições POST para /funcionarios sem autenticação
-                .requestMatchers(HttpMethod.POST, "/funcionarios").permitAll()
-                
-                // Define URLs que podem ser acessadas sem autenticação
-                .requestMatchers(
-                    "/funcionarios/login",  // Endpoint de login
-                    "/v3/api-docs",         // OpenAPI JSON raiz
-                    "/v3/api-docs/**",      // OpenAPI sub-recursos
-                    "/v3/api-docs.yaml",    // OpenAPI YAML
-                    "/v3/**",               // Qualquer outro endpoint sob /v3
-                    "/swagger-ui/**",       // Interface do Swagger UI
-                    "/swagger-ui/index.html", // Página principal do Swagger UI
-                    "/swagger-ui.html",     // Página HTML do Swagger
-                    "/swagger-resources/**", // Compat (se existir)
-                    "/",                    // Rota raiz
-                    "/index.html",          // Página inicial
-                    "/style.css",           // Arquivo CSS principal
-                    "/validation.css"       // Estilos de validação
-                ).permitAll()  // Permite acesso sem autenticação
-                // Redundância usando AntPath para evitar qualquer conflito de matcher MVC
-                .requestMatchers(
-                    new AntPathRequestMatcher("/v3/**"),
-                    new AntPathRequestMatcher("/swagger-ui/**"),
-                    new AntPathRequestMatcher("/swagger-ui.html")
-                ).permitAll()
-                
-                // Todas as outras requisições precisam de autenticação
-                .anyRequest().authenticated()
-            )
+            .authorizeHttpRequests(auth -> {
+                if (securityEnabled) {
+                    // Modo com segurança ativada
+                    auth
+                        // Permite requisições POST para /funcionarios sem autenticação
+                        .requestMatchers(HttpMethod.POST, "/funcionarios").permitAll()
+                        
+                        // Define URLs que podem ser acessadas sem autenticação
+                        .requestMatchers(
+                            "/funcionarios/login",  // Endpoint de login
+                            "/v3/api-docs",         // OpenAPI JSON raiz
+                            "/v3/api-docs/**",      // OpenAPI sub-recursos
+                            "/v3/api-docs.yaml",    // OpenAPI YAML
+                            "/v3/**",               // Qualquer outro endpoint sob /v3
+                            "/swagger-ui/**",       // Interface do Swagger UI
+                            "/swagger-ui/index.html", // Página principal do Swagger UI
+                            "/swagger-ui.html",     // Página HTML do Swagger
+                            "/swagger-resources/**", // Compat (se existir)
+                            "/",                    // Rota raiz
+                            "/index.html",          // Página inicial
+                            "/style.css",           // Arquivo CSS principal
+                            "/validation.css"       // Estilos de validação
+                        ).permitAll()  // Permite acesso sem autenticação
+                        // Redundância usando AntPath para evitar qualquer conflito de matcher MVC
+                        .requestMatchers(
+                            new AntPathRequestMatcher("/v3/**"),
+                            new AntPathRequestMatcher("/swagger-ui/**"),
+                            new AntPathRequestMatcher("/swagger-ui.html")
+                        ).permitAll()
+                        
+                        // Todas as outras requisições precisam de autenticação
+                        .anyRequest().authenticated();
+                } else {
+                    // Modo sem segurança - permite todas as requisições
+                    auth.anyRequest().permitAll();
+                }
+            })
             ;
 
         // Adiciona o filtro JWT antes do filtro de autenticação padrão do Spring Security
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        // (apenas se a segurança estiver ativada)
+        if (securityEnabled) {
+            http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        }
         
         // Constrói e retorna a configuração de segurança
         return http.build();
