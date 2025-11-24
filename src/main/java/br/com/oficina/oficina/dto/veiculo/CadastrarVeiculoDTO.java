@@ -1,4 +1,4 @@
-package br.com.oficina.oficina.dto;
+package br.com.oficina.oficina.dto.veiculo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
