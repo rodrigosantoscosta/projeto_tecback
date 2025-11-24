@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Veiculo;
 import br.com.oficina.oficina.service.VeiculoService;
 import io.swagger.v3.oas.annotations.Operation;

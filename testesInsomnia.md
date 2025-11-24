@@ -238,7 +238,7 @@
 ```json
 {
   "nome": "Maria Santos",
-  "cpf": "12345678909",
+  "cpfCNPJ": "12345678909",
   "cargo": "Atendente",
   "telefone": "21888888888",
   "email": "maria@email.com",
