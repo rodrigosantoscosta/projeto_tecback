@@ -6,14 +6,17 @@ import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.Atendimento;
 import br.com.oficina.oficina.model.Cliente;
+import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.model.StatusAtendimento;
 import br.com.oficina.oficina.model.Veiculo;
 import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.ClienteRepository;
+import br.com.oficina.oficina.repository.FuncionarioRepository;
 import br.com.oficina.oficina.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,34 +53,47 @@ public class AtendimentoService {
                             "Cliente não encontrado com ID: " + atendimentoDto.getClienteId()
                     );
                 });
-
         log.info("Cliente encontrado: {} - {}", cliente.getId(), cliente.getNomeCompleto());
 
+        // Buscar veículo
         Veiculo veiculo = veiculoRepository.findByPlaca(atendimentoDto.getVeiculoPlaca())
                 .orElseThrow(() -> {
-                    log.error("Placa do veiculo não encontrado: {}", atendimentoDto.getVeiculoPlaca());
+                    log.error("Placa do veículo não encontrada: {}", atendimentoDto.getVeiculoPlaca());
                     return new VeiculoNaoEncontradoException(
-                            "Placa do vei não encontrado com ID: " + atendimentoDto.getVeiculoPlaca()
+                            "Veículo não encontrado com a placa: " + atendimentoDto.getVeiculoPlaca()
                     );
                 });
+        log.info("Veículo encontrado: {} - {}", veiculo.getId(), veiculo.getPlaca());
 
-        log.info("Veiculo encontrado: {} - {}", veiculo.getId(), veiculo.getPlaca());
+        // Buscar funcionário
+        Funcionario funcionario = funcionarioRepository.findById(atendimentoDto.getFuncionarioId())
+                .orElseThrow(() -> {
+                    log.error("Funcionário não encontrado: {}", atendimentoDto.getFuncionarioId());
+                    return new RuntimeException("Funcionário não encontrado com ID: " + atendimentoDto.getFuncionarioId());
+                });
+        log.info("Funcionário encontrado: {} - {}", funcionario.getId(), funcionario.getNome());
 
+        // Criar e salvar atendimento
         Atendimento atendimento = new Atendimento();
-        atendimento.setDescricaoServico(descricaoServico);
+        atendimento.setDescricaoServico(atendimentoDto.getDescricaoServico());
         atendimento.setStatus(StatusAtendimento.AGUARDANDO);
-        atendimento.getDataCadastro();
-        atendimento.getDataEntrada();
-        atendimento.getDataConclusao();
         atendimento.setCliente(cliente);
         atendimento.setVeiculo(veiculo);
+        atendimento.setFuncionario(funcionario);
+        
+        // As datas serão preenchidas pelo @PrePersist
         Atendimento atendimentoSalvo = atendimentoRepository.save(atendimento);
-        log.info("Atendimento cadastrado com sucesso - ID : {},ID cliente: {}, Placa do veiculo: {}", atendimentoSalvo.getId(), atendimentoSalvo.getCliente(),atendimentoSalvo.getVeiculo());
+        
+        log.info("Atendimento cadastrado com sucesso - ID: {}, Cliente: {}, Veículo: {}, Funcionário: {}", 
+                atendimentoSalvo.getId(), 
+                atendimentoSalvo.getCliente().getNomeCompleto(),
+                atendimentoSalvo.getVeiculo().getPlaca(),
+                atendimentoSalvo.getFuncionario().getNome());
 
-        return atendimento;
+        return atendimentoSalvo;
     }
 
-    public Atendimento buscarAtendimentoPorId(Long id) {
+    public Atendimento buscarAtendimentoPorId(UUID id) {
         log.info("Buscando atendimento por ID: {}", id);
         return atendimentoRepository.findById(id)
                 .orElseThrow(() -> {
@@ -94,7 +110,7 @@ public class AtendimentoService {
 
     }
     @Transactional
-    public Atendimento atualizarAtendimento(Long id, CadastrarAtendimentoDTO atendimentoDTO){
+    public Atendimento atualizarAtendimento(UUID id, CadastrarAtendimentoDTO atendimentoDTO){
         Atendimento atendimentoExistente = atendimentoRepository.findById(id)
                 .orElseThrow(() ->{
                     log.error("Atendimento não encontrado: {}", id);
@@ -122,7 +138,7 @@ public class AtendimentoService {
 
 
     @Transactional
-    public void deletarAtendimentoPorId(Long id) {
+    public void deletarAtendimentoPorId(UUID id) {
         log.info("Deletando Atendimento: {}", id);
 
        Atendimento atendimento = atendimentoRepository.findById(id)

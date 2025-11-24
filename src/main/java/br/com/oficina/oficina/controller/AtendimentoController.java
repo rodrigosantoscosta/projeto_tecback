@@ -58,7 +58,7 @@ public class AtendimentoController {
 
     @GetMapping("/id/{id}")
     @Operation(summary = "Buscar Atendimento por ID")
-    public ResponseEntity<?> BuscarAtendimentoporId(@PathVariable long id) {
+    public ResponseEntity<?> BuscarAtendimentoporId(@PathVariable UUID id) {
         log.info("Buscando Atendimento por ID: {}", id);
        Atendimento atendimento = atendimentoService.buscarAtendimentoPorId(id);
 
@@ -68,7 +68,7 @@ public class AtendimentoController {
 
     @PutMapping("/atualizar/{id}")
     @Operation(summary = "Atualizar Atendimento por ID")
-    public ResponseEntity<Atendimento> atualizar(@PathVariable Long id,
+    public ResponseEntity<Atendimento> atualizar(@PathVariable UUID id,
                                              @Valid @RequestBody CadastrarAtendimentoDTO atendimentoDTO) {
         log.info("Atualizando atendimento: {}", id);
         Atendimento atendimentoAtualizado = atendimentoService.atualizarAtendimento(id, atendimentoDTO);
@@ -85,7 +85,7 @@ public class AtendimentoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletarAtendimentoporId(@PathVariable long id) {
+    public ResponseEntity<String> deletarAtendimentoporId(@PathVariable UUID id) {
         try {
             atendimentoService.deletarAtendimentoPorId(id);
             return ResponseEntity.ok("Atendimento deletado com sucesso!");

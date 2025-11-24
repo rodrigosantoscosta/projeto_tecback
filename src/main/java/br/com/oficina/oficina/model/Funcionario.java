@@ -15,6 +15,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Table(name = "funcionarios")
@@ -64,7 +65,7 @@ public class Funcionario {
     private LocalDateTime dataCadastro;
 
     @OneToMany(mappedBy = "funcionario")
-    private java.util.List<Atendimento> atendimentos;
+    private List<Atendimento> atendimentos;
 
     @PrePersist
     protected void onCreate() {

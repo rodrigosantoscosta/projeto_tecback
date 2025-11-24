@@ -27,7 +27,7 @@ import java.util.UUID;
 public class Cliente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Schema(description = "ID único do cliente", example = "123e4567-e89b-12d3-a456-426614174000")
     private UUID id;
 
@@ -68,6 +68,7 @@ public class Cliente {
     @JsonManagedReference
     @Schema(description = "Lista de veículos do cliente", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Veiculo> veiculos = new ArrayList<>();
+
 
     @PrePersist
     protected void onCreate() {

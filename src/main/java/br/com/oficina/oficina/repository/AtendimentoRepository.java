@@ -9,8 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> {
-    Optional<Atendimento> findById(Long id);
+public interface AtendimentoRepository extends JpaRepository<Atendimento, UUID> {
+    Optional<Atendimento> findById(UUID id);
     List<Atendimento> findByClienteId(UUID clienteId);
-    List<Atendimento> findByVeiculoPlaca(String placa);
 }
