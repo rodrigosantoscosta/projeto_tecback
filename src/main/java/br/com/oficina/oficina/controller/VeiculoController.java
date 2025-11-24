@@ -93,16 +93,16 @@ public class VeiculoController {
         return ResponseEntity.ok(veiculoAtualizado);
     }
 
-    @PutMapping("/{veiculoId}/associar/{clienteId}")
-    @Operation(summary = "Associar veículo a cliente")
-    public ResponseEntity<Veiculo> associarVeiculoAoCliente(
-            @PathVariable UUID veiculoId,
-            @PathVariable UUID clienteId) {
-        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
-        Veiculo veiculo = veiculoService.associarVeiculoAoCliente(veiculoId, clienteId);
-        log.info("Veículo associado com sucesso");
-        return ResponseEntity.ok(veiculo);
-    }
+//    @PutMapping("/{veiculoId}/associar/{clienteId}")
+//    @Operation(summary = "Associar veículo a cliente")
+//    public ResponseEntity<Veiculo> associarVeiculoAoCliente(
+//            @PathVariable UUID veiculoId,
+//            @PathVariable UUID clienteId) {
+//        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
+//        Veiculo veiculo = veiculoService.associarVeiculoAoCliente(veiculoId, clienteId);
+//        log.info("Veículo associado com sucesso");
+//        return ResponseEntity.ok(veiculo);
+//    }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar veículo por ID")

@@ -23,7 +23,7 @@
 ```json
 {
   "nome": "João Silva",
-  "cpf": "12345678909",
+  "cpfCNPJ": "12345678909", 
   "cargo": "Mecânico",
   "telefone": "11999999999",
   "email": "joao@email.com",
@@ -36,7 +36,7 @@
 ```json
 {
   "nome": "Maria Santos",
-  "cpf": "12345678909",
+  "cpfCNPJ": "12345678909",
   "cargo": "Atendente",
   "telefone": "21888888888",
   "email": "maria@email.com",
@@ -49,7 +49,7 @@
 ```json
 {
   "nome": "Bruno Lima",
-  "cpf": "123",
+  "cpfCNPJ": "123",
   "cargo": "Atendente",
   "telefone": "21977776666",
   "email": "bruno.lima@oficina.com",
@@ -117,7 +117,7 @@ Authorization: Bearer <token_do_login>
 ### Observações sobre Funcionários:
 - O campo `usuario` deve ser único
 - A `senha` deve ter no mínimo 6 caracteres
-- O `cpf` deve ter exatamente 11 dígitos numéricos (sem formatação)
+- O `cpfCNPJ` deve ter exatamente 11 dígitos numéricos (sem formatação) // alterar
 - O `telefone` deve ter 10 ou 11 dígitos numéricos (sem formatação)
 - O `email` deve ser válido
 - O `usuario` deve ter entre 3 e 50 caracteres
