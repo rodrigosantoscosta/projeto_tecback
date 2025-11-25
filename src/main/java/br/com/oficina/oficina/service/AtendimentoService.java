@@ -30,22 +30,22 @@ import java.util.UUID;
 public class AtendimentoService {
 
     public final AtendimentoRepository atendimentoRepository;
+
     public final ClienteRepository clienteRepository;
-    //public final FuncionarioRepository funcionarioRepository;
+
+    public final FuncionarioRepository funcionarioRepository;
+
     public final VeiculoRepository veiculoRepository;
 
     public void cadastrarAtendimentoSemDados(Atendimento atendimento) {
         atendimentoRepository.save(atendimento);
-
     }
+
     @Transactional
-    public Atendimento cadastrarAtendimento(CadastrarAtendimentoDTO atendimentoDto){
+    public Atendimento cadastrarAtendimento(CadastrarAtendimentoDTO atendimentoDto) {
         log.info("Cadastrando atendimento - descrição: {}", atendimentoDto.getDescricaoServico());
-        String descricaoServico = atendimentoDto.getDescricaoServico();
-
-
-
-
+        
+        // Buscar cliente
         Cliente cliente = clienteRepository.findById(atendimentoDto.getClienteId())
                 .orElseThrow(() -> {
                     log.error("Cliente não encontrado: {}", atendimentoDto.getClienteId());

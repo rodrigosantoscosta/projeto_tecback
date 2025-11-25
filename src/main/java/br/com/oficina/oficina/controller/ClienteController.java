@@ -3,6 +3,7 @@ package br.com.oficina.oficina.controller;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.service.ClienteService;
 import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
+import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,11 +38,23 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Cliente cadastrado com sucesso");
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar cliente")
+    public ResponseEntity<String> atualizarCliente(
+            @PathVariable UUID id,
+            @Valid @RequestBody CadastrarClienteDTO dto
+    ) {
+        log.info("Iniciando atualização do cliente com ID: {}", id);
+        clienteService.atualizarCliente(id, dto);
+        log.info("Cliente com ID {} atualizado com sucesso", id);
+        return ResponseEntity.ok("Cliente atualizado com sucesso");
+    }
+
     @GetMapping
     @Operation(summary = "Listar todos os clientes")
-    public ResponseEntity<List<Cliente>> listarTodos() {
+    public ResponseEntity<List<ClienteListaDTO>> listarTodos() {
         log.info("Listando todos os clientes");
-        List<Cliente> clientes = clienteService.listarTodosClientes();
+        List<ClienteListaDTO> clientes = clienteService.listarTodosClientes();
         log.info("Total de clientes encontrados: {}", clientes.size());
         return ResponseEntity.ok(clientes);
     }
@@ -55,23 +67,13 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-    @GetMapping("/cpf/{cpfCNPJ}")
+    @GetMapping("/cpfCNPJ/{cpfCNPJ}")
     @Operation(summary = "Buscar cliente por CPF/CNPJ")
     public ResponseEntity<Cliente> buscarPorCPFouCNPJ(@PathVariable String cpfCNPJ) {
         log.info("Buscando cliente por CPF/CNPJ: {}", cpfCNPJ);
-
-        String cpfCnpjLimpo = cpfCNPJ.replaceAll("\\D", "");
-        log.debug("CPF/CNPJ normalizado: {}", cpfCnpjLimpo);
-
-        Optional<Cliente> cliente = clienteService.buscarClientePorCpfCNPJ(cpfCnpjLimpo);
-
-        if (cliente.isPresent()) {
-            log.info("Cliente encontrado: {}", cliente.get().getNomeCompleto());
-            return ResponseEntity.ok(cliente.get());
-        } else {
-            log.warn("Cliente não encontrado para CPF/CNPJ: {}", cpfCnpjLimpo);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        Cliente cliente = clienteService.buscarClientePorCpfCNPJ(cpfCNPJ);
+        log.info("Cliente encontrado: {} - {}", cliente.getCpfCNPJ(), cliente.getNomeCompleto());
+        return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("/{id}")

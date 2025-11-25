@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.response.ViaCepResponse;
+import br.com.oficina.oficina.exception.CepNaoEncontradoException;
 import br.com.oficina.oficina.model.Endereco;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class ViaCepService {
             ViaCepResponse response = consultarCep(cep);
             
             if (response == null || response.isErro()) {
-                throw new RuntimeException("CEP não encontrado ou inválido");
+                throw new CepNaoEncontradoException(cep);
             }
 
             Endereco endereco = new Endereco();

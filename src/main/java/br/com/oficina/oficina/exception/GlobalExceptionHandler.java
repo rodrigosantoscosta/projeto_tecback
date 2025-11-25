@@ -17,6 +17,22 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(CepNaoEncontradoException.class)
+    public ResponseEntity<ErrorDetails> handleCepNaoEncontrado(
+            CepNaoEncontradoException e,
+            HttpServletRequest request) {
+
+        log.error("CEP não encontrado: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
     @ExceptionHandler(ClienteNaoEncontradoException.class)
     public ResponseEntity<ErrorDetails> handleClienteNaoEncontrado(
             ClienteNaoEncontradoException e,

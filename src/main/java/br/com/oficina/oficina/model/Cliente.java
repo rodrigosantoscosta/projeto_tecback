@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.model;
 
 import br.com.oficina.oficina.validator.annotation.CPFouCNPJ;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,7 +66,7 @@ public class Cliente {
     private LocalDateTime dataCadastro;
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     @Schema(description = "Lista de veículos do cliente", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Veiculo> veiculos = new ArrayList<>();
 

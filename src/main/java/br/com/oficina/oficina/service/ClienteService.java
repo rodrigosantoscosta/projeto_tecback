@@ -1,7 +1,9 @@
 package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
+import br.com.oficina.oficina.exception.CepNaoEncontradoException;
 import br.com.oficina.oficina.exception.ClienteComVeiculosException;
+import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.model.Cliente;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +56,7 @@ public class ClienteService {
 
         if (endereco == null) {
             log.error("Endereço não encontrado para CEP: {}", clienteDTO.getCep());
-            throw new RuntimeException("CEP não encontrado");
+            throw new CepNaoEncontradoException(clienteDTO.getCep());
         }
 
         // Cria e salva o cliente
@@ -70,11 +73,23 @@ public class ClienteService {
         return clienteSalvo;
     }
 
-    public List<Cliente> listarTodosClientes() {
+    public List<ClienteListaDTO> listarTodosClientes() {
         log.info("Listando todos os clientes");
         List<Cliente> clientes = clienteRepository.findAll();
         log.debug("Total de clientes encontrados: {}", clientes.size());
-        return clientes;
+        
+        return clientes.stream()
+                .map(cliente -> new ClienteListaDTO(
+                        cliente.getId(),
+                        cliente.getNomeCompleto(),
+                        cliente.getCpfCNPJ(),
+                        cliente.getTelefone(),
+                        cliente.getEmail(),
+                        cliente.getEndereco(),
+                        cliente.getDataCadastro(),
+                        cliente.getVeiculos() != null ? cliente.getVeiculos().size() : 0
+                ))
+                .collect(Collectors.toList());
     }
 
     public Cliente buscarClientePorId(UUID id) {
@@ -88,11 +103,71 @@ public class ClienteService {
                 });
     }
 
-    public Optional<Cliente> buscarClientePorCpfCNPJ(String cpf) {
-        log.debug("Buscando cliente por CPF: {}", cpf);
-        String cpfNormalizado = cpf.replaceAll("\\D", "");
-        log.trace("CPF normalizado: {}", cpfNormalizado);
-        return clienteRepository.findByCpfCNPJ(cpfNormalizado);
+    @Transactional
+    public Cliente atualizarCliente(UUID id, CadastrarClienteDTO clienteDTO) {
+        log.info("Atualizando cliente com ID: {}", id);
+        
+        Cliente clienteExistente = clienteRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Cliente não encontrado para atualização: {}", id);
+                    return new ClienteNaoEncontradoException(
+                            "Cliente não encontrado com ID: " + id
+                    );
+                });
+
+        // Atualiza os dados básicos do cliente
+        clienteExistente.setNomeCompleto(clienteDTO.getNomeCompleto().trim());
+        clienteExistente.setCpfCNPJ(clienteDTO.getCpfCNPJ().replaceAll("\\D", ""));
+        clienteExistente.setTelefone(clienteDTO.getTelefone().trim());
+        clienteExistente.setEmail(clienteDTO.getEmail().trim().toLowerCase());
+
+        // Verifica se o CEP foi alterado ou se é uma atualização de endereço
+        if (!clienteExistente.getEndereco().getCep().equals(clienteDTO.getCep()) ||
+                !clienteExistente.getEndereco().getNumero().equals(clienteDTO.getNumero()) ||
+                !clienteExistente.getEndereco().getComplemento().equals(clienteDTO.getComplemento())) {
+            
+            log.debug("Atualizando endereço do cliente ID: {}", id);
+            
+            // Busca o novo endereço via CEP
+            var novoEndereco = viaCepService.buscarEConstruirEndereco(
+                    clienteDTO.getCep(),
+                    clienteDTO.getNumero(),
+                    clienteDTO.getComplemento()
+            );
+
+            if (novoEndereco == null) {
+                log.error("Endereço não encontrado para CEP: {}", clienteDTO.getCep());
+                throw new CepNaoEncontradoException(clienteDTO.getCep());
+            }
+
+            // Atualiza o endereço do cliente
+            clienteExistente.getEndereco().setCep(novoEndereco.getCep());
+            clienteExistente.getEndereco().setLogradouro(novoEndereco.getLogradouro());
+            clienteExistente.getEndereco().setNumero(novoEndereco.getNumero());
+            clienteExistente.getEndereco().setComplemento(novoEndereco.getComplemento());
+            clienteExistente.getEndereco().setBairro(novoEndereco.getBairro());
+            clienteExistente.getEndereco().setLocalidade(novoEndereco.getLocalidade());
+            clienteExistente.getEndereco().setUf(novoEndereco.getUf());
+        }
+
+        Cliente clienteAtualizado = clienteRepository.save(clienteExistente);
+        log.info("Cliente atualizado com sucesso - ID: {}", id);
+        
+        return clienteAtualizado;
+    }
+
+    public Cliente buscarClientePorCpfCNPJ(String cpfCNPJ) {
+        log.debug("Buscando cliente por CPF/CNPJ: {}", cpfCNPJ);
+        String cpfCnpjLimpo = cpfCNPJ.replaceAll("\\D", "");
+        log.trace("CPF/CNPJ normalizado: {}", cpfCnpjLimpo);
+        
+        return clienteRepository.findByCpfCNPJ(cpfCnpjLimpo)
+                .orElseThrow(() -> {
+                    log.error("Cliente não encontrado para CPF/CNPJ: {}", cpfCnpjLimpo);
+                    return new ClienteNaoEncontradoException(
+                            "Cliente não encontrado com CPF/CNPJ: " + cpfCnpjLimpo
+                    );
+                });
     }
 
     @Transactional

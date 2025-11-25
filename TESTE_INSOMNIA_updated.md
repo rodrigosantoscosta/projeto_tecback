@@ -193,13 +193,69 @@ Authorization: Bearer <token_do_login>
 *Sem body necessário*
 
 ### 2.4 Buscar Cliente por CPF/CNPJ (GET)
-**Endpoint:** `GET {{ base_url }}/clientes/cpf/<cpf-ou-cnpj>`
+**Endpoint:** `GET {{ base_url }}/clientes/cpfCNPJ/<cpf-ou-cnpj>`
 
-**Exemplo:** `GET {{ base_url }}/clientes/cpf/12345678909`
+**Exemplo:** `GET {{ base_url }}/clientes/cpfCNPJ/12345678909`
 
 *Sem body necessário*
 
-### 2.5 Deletar Cliente (DELETE)
+### 2.5 Listar Clientes (GET)
+**Endpoint:** `GET {{ base_url }}/clientes`
+
+**Resposta de exemplo:**
+```json
+[
+    {
+        "id": "ae46ad37-4f04-46a7-aaf7-91345c4a8e7e",
+        "nomeCompleto": "João Silva Santos Oliveira",
+        "cpfCNPJ": "12345678909",
+        "telefone": "(11) 99999-9999",
+        "email": "joao.silva@email.com",
+        "endereco": {
+            "id": 4,
+            "cep": "01001-000",
+            "logradouro": "Praça da Sé",
+            "numero": "123",
+            "complemento": "Apt 45",
+            "bairro": "Sé",
+            "localidade": "São Paulo",
+            "uf": "SP"
+        },
+        "dataCadastro": "2025-10-23T15:55:37.916894",
+        "quantidadeVeiculos": 1
+    }
+]
+```
+
+
+### 2.6 Atualizar Cliente (PUT)
+**Endpoint:** `PUT {{ base_url }}/clientes/{id}`
+
+**Exemplo de atualização de cliente:**
+```json
+{
+  "nomeCompleto": "João Silva Santos Oliveira Atualizado",
+  "cpfCNPJ": "12345678909",
+  "telefone": "11999998888",
+  "email": "joao.novo@email.com",
+  "cep": "01001000",
+  "numero": "123A",
+  "complemento": "Sala 101"
+}
+```
+
+**Resposta de sucesso:**
+```
+Cliente atualizado com sucesso
+```
+
+**Observações:**
+- Atualiza tanto os dados básicos quanto o endereço do cliente
+- Se o CEP for alterado, o sistema busca automaticamente os novos dados de endereço
+- Mantém o histórico do cadastro original (dataCadastro não é alterada)
+- Não é possível alterar o ID do cliente
+
+### 2.7 Deletar Cliente (DELETE)
 **Endpoint:** `DELETE {{ base_url }}/clientes/<uuid-do-cliente>`
 
 **Exemplo:** `DELETE {{ base_url }}/clientes/123e4567-e89b-12d3-a456-426614174000`
@@ -424,7 +480,7 @@ Authorization: Bearer <token_do_login>
 ```json
 {
   "nome": "João Silva",
-  "cpf": "12345678909",
+  "cpfCNPJ": "12345678909",
   "cargo": "Mecânico",
   "telefone": "11999999999",
   "email": "joao@email.com",
@@ -521,7 +577,7 @@ GET {{ base_url }}/funcionarios/<funcionario_id>
 ---
 
 ### Passo 7: Buscar Cliente por CPF (GET)
-**Endpoint:** `GET {{ base_url }}/clientes/cpf/98765432100`
+**Endpoint:** `GET {{ base_url }}/clientes/cpfCNPJ/98765432100`
 
 *Sem body necessário*
 

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -88,7 +87,7 @@ public class VeiculoController {
     public ResponseEntity<Veiculo> atualizar(@PathVariable UUID id,
                                              @Valid @RequestBody CadastrarVeiculoDTO dto) {
         log.info("Atualizando veículo: {}", id);
-        Veiculo veiculoAtualizado = veiculoService.atualizar(id, dto);
+        Veiculo veiculoAtualizado = veiculoService.atualizarVeiculo(id, dto);
         log.info("Veículo atualizado com sucesso: {}", id);
         return ResponseEntity.ok(veiculoAtualizado);
     }
