@@ -39,17 +39,17 @@ public class Atendimento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonIgnore
+
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veiculo_id", nullable = false)
-    @JsonIgnore
+
     private Veiculo veiculo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funcionario_id", nullable = false)
-    @JsonIgnore
+
     private Funcionario funcionario;
 
     @PrePersist
