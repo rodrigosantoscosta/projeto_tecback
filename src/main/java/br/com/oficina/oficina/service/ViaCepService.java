@@ -34,7 +34,7 @@ public class ViaCepService {
     public Endereco buscarEConstruirEndereco(String cep, String numero, String complemento) {
         try {
             ViaCepResponse response = consultarCep(cep);
-            
+
             if (response == null || response.isErro()) {
                 throw new CepNaoEncontradoException(cep);
             }

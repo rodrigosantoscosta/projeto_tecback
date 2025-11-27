@@ -2,7 +2,7 @@ package br.com.oficina.oficina.model;
 
 public enum StatusAtendimento {
     AGUARDANDO,
-    EM_ANDAMENTO,
+    ANDAMENTO,
     CONCLUIDO,
     CANCELADO
 }
