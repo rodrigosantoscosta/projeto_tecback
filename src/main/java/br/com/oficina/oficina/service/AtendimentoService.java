@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,7 @@ public class AtendimentoService {
     public AtendimentoDTO cadastrarAtendimento(CadastrarAtendimentoDTO atendimentoDto){
         log.info("Cadastrando atendimento - descrição: {}", atendimentoDto.getDescricaoServico());
 
+        //Buscando Cliente
         Cliente cliente = clienteRepository.findById(atendimentoDto.getClienteId())
                 .orElseThrow(() -> {
                     log.error("Cliente não encontrado: {}", atendimentoDto.getClienteId());
@@ -66,12 +68,16 @@ public class AtendimentoService {
                     log.error("Funcionário não encontrado: {}", atendimentoDto.getFuncionarioId());
                     return new RuntimeException("Funcionário não encontrado com ID: " + atendimentoDto.getFuncionarioId());
                 });
-        log.info("Funcionário encontrado: {} - {}", funcionario.getId(), funcionario.getNome());
+        log.info("Funcionário  foi encontrado: {} - {}", funcionario.getId(), funcionario.getNome());
+
+
+
+
         
         // Criar e salvar atendimento
         Atendimento atendimento = new Atendimento();
         atendimento.setDescricaoServico(atendimentoDto.getDescricaoServico());
-        atendimento.getStatus();
+        atendimento.setStatus(atendimentoDto.getStatusAtendimento());
         atendimento.setCliente(cliente);
         atendimento.setVeiculo(veiculo);
         atendimento.setFuncionario(funcionario);
@@ -83,16 +89,26 @@ public class AtendimentoService {
         UUID clienteAtendimentoId = atendimentoSalvo.getCliente().getId();
         UUID funcionarioAtendimentoId = atendimentoSalvo.getFuncionario().getId();
         String veiculoAtendimentoPlaca = atendimentoSalvo.getVeiculo().getPlaca();
+        StatusAtendimento statusCheck = atendimentoSalvo.getStatus();
+
+
+
+        // Verificando se os Status esta como CONCLUIDO OU CANCELADO, caso esteja será adcionado o valor de Data de Conclusão
+        if(statusCheck == StatusAtendimento.CONCLUIDO || statusCheck == StatusAtendimento.CANCELADO){
+            atendimentoSalvo.setDataConclusao(LocalDateTime.now());
+
+            log.info("Data de conclusão do atendimento foi atualizada para: {}", atendimentoDto.getDataConclusao());
+        }
 
 
         //Montando o DTO de resposta do atendimento
         AtendimentoDTO atendimentoDTO = new AtendimentoDTO(atendimentoSalvo);
         atendimentoDTO.setId(atendimentoSalvo.getId());
         atendimentoDTO.setDescricaoServico(atendimento.getDescricaoServico());
-        atendimentoDTO.setStatus(atendimento.getStatus());
+        atendimentoDTO.setStatus(statusCheck);
         atendimentoDTO.setDataCadastro(atendimento.getDataCadastro());
         atendimentoDTO.setDataEntrada(atendimento.getDataEntrada());
-        atendimentoDTO.setDataConclusao(atendimento.getDataConclusao());
+        atendimentoDTO.setDataConclusao(atendimentoSalvo.getDataConclusao());
         atendimentoDTO.setCliente(clienteAtendimentoId);
         atendimentoDTO.setFuncionario(funcionarioAtendimentoId);
         atendimentoDTO.setVeiculo(veiculoAtendimentoPlaca);
@@ -148,7 +164,7 @@ public class AtendimentoService {
 
        StatusAtendimento statusAtualizado = atendimentoDto.getStatusAtendimento();
 
-
+       // Verificando se os Status esta como CONCLUIDO OU CANCELADO, caso esteja será adcionado o valor de Data de Conclusão
        if(statusAtualizado == StatusAtendimento.CONCLUIDO || statusAtualizado == StatusAtendimento.CANCELADO){
             atendimentoDto.setDataConclusao(LocalDateTime.now());
 
@@ -240,5 +256,26 @@ public class AtendimentoService {
                 .map(AtendimentoDTO::new)
                 .collect(Collectors.toList());
 
+    }
+    public List<AtendimentoDTO> listarAtendimentosConcluidos(){
+        log.info("Listandos os atendimentos que possuem o status como CONCLUIDOS");
+
+        List<Atendimento> atendimentosConcluidos = atendimentoRepository.findByStatusConcluido();
+
+        return atendimentosConcluidos
+                .stream()
+                .map(AtendimentoDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<AtendimentoDTO> ordenarAtendimentosporDataEntrada(){
+        log.info("Ordenando os atendimentos pela data de entrada em ordem decrescente");
+
+        List<Atendimento> atendimentosDataEntrada = atendimentoRepository.findAllOrderByDataEntradaDesc();
+
+        return atendimentosDataEntrada
+                .stream()
+                .map(AtendimentoDTO::new)
+                .collect(Collectors.toList());
     }
 }
