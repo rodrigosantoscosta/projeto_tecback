@@ -71,4 +71,5 @@ public class Funcionario {
     protected void onCreate() {
         dataCadastro = LocalDateTime.now();
     }
+
 }

@@ -17,4 +17,6 @@ public interface FuncionarioMapper {
     Funcionario toEntity(CadastrarFuncionarioDTO dto);
 
     FuncionarioDTO toDTO(Funcionario funcionario);
+
+
 }

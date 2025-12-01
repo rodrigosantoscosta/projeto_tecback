@@ -758,13 +758,6 @@ GET {{ base_url }}/funcionarios/<atendimento_id>
 
 ---
 
-### Passo 10: Buscar Funcionario por Usuario (GET)
-**Endpoint:** `GET {{ base_url }}/funcionarios/usuario/joaosilva`
-
-*Sem body necessário*
-
----
-
 ### Passo 10: Buscar Atendimento por ClienteId (GET)
 **Endpoint:** `GET {{ base_url }}/atendimentos/cliente id/519cb250-4a72-4ddf-8c25-30d7e058bdef`
 
