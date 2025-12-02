@@ -15,11 +15,6 @@
 
 ## 1) FUNCIONÁRIOS
 ### Base URL: ```{{ base_url }}/funcionarios```
-### Usuario admin
-{
-"usuario": "admin",
-"senha": "adminadmin"
-}
 
 ### 1.1 Registrar Funcionário (POST)
 **Endpoint:** `POST {{ base_url }}/funcionarios`
