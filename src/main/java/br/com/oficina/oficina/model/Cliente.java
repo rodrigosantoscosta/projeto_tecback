@@ -70,6 +70,7 @@ public class Cliente {
     @Schema(description = "Lista de veículos do cliente", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Veiculo> veiculos = new ArrayList<>();
 
+
     @PrePersist
     protected void onCreate() {
         dataCadastro = LocalDateTime.now();
