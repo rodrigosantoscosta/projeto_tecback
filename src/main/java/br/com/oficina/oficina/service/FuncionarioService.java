@@ -1,11 +1,7 @@
 package br.com.oficina.oficina.service;
 
-import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
-import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
-import br.com.oficina.oficina.exception.AtendimentoNaoEncontrado;
 import br.com.oficina.oficina.exception.FuncionarioNaoEncontrado;
-import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
@@ -31,43 +27,40 @@ public class FuncionarioService {
     private final FuncionarioMapper funcionarioMapper;
 
     public List<Funcionario> listarTodosFuncionarios() {
-        log.info("Listando todos os funcionários");
-        List<Funcionario> funcionarios = funcionarioRepository.findAll();
-        log.debug("total de funcionários encontrados: {}", funcionarios.size());
-
         return funcionarioRepository.findAll();
     }
 
-    public FuncionarioDTO buscarPorId(UUID id) {
-        log.debug("Buscando cliente por ID: {}", id);
+    public Funcionario buscarPorId(UUID id) {
         return funcionarioRepository.findById(id)
-                .map(FuncionarioDTO::new)
-                .orElseThrow(() -> new AtendimentoNaoEncontrado("Atendimento não encontrado"));
+                .orElseThrow(() -> new FuncionarioNaoEncontrado(
+                        "Funcionário não encontrado com ID: " + id
+                ));
     }
 
     @SecurityRequirement(name = "bearerAuth")
     @Transactional
     public Funcionario cadastrarFuncionario(CadastrarFuncionarioDTO funcionarioDTO) {
-        log.info("Iniciando cadastro de funcionário: {}", funcionarioDTO.getNome());
         if (funcionarioDTO == null) {
-            log.error("Dados do funcionário não encontrado: {}", funcionarioDTO);
             throw new IllegalArgumentException("Dados do funcionário são obrigatórios");
         }
 
-        //Valida unicidade
-        if (funcionarioRepository.existsByCpfCNPJ(funcionarioDTO.getCpfCNPJ())) {
-            log.error("CPF/CNPJ já cadastrado: {}", funcionarioDTO.getCpfCNPJ());
-            throw new RecursoJaCadastradoException("CPF/CNPJ já cadastrado no sistema");
+        // Validar se o CPF/CNPJ está presente (validação principal)
+        if (!StringUtils.hasText(funcionarioDTO.getCpfCNPJ())) {
+            throw new IllegalArgumentException("CPF/CNPJ é obrigatório");
         }
 
-        if (funcionarioRepository.existsByUsuario(funcionarioDTO.getUsuario())) {
-            log.error("Usuario já cadastrado: {}", funcionarioDTO.getUsuario());
-            throw new RecursoJaCadastradoException("Usuário já cadastrado no sistema");
+        // Normalização de dados
+        funcionarioDTO.setNome(funcionarioDTO.getNome().trim());
+        funcionarioDTO.setCargo(funcionarioDTO.getCargo().trim());
+
+        if (funcionarioDTO.getEmail() != null) {
+            String emailNormalizado = funcionarioDTO.getEmail().trim().toLowerCase();
+            funcionarioDTO.setEmail(emailNormalizado.isEmpty() ? null : emailNormalizado);
         }
 
-        if (funcionarioRepository.existsByEmail(funcionarioDTO.getEmail())) {
-            log.error("Email já cadastrado: {}", funcionarioDTO.getEmail());
-            throw new RecursoJaCadastradoException("Email já cadastrado no sistema");
+        if (funcionarioDTO.getTelefone() != null) {
+            String telefoneNormalizado = funcionarioDTO.getTelefone().replaceAll("\\D", "");
+            funcionarioDTO.setTelefone(telefoneNormalizado.isEmpty() ? null : telefoneNormalizado);
         }
 
         // Normalizar CPF/CNPJ (remover caracteres não numéricos)
@@ -83,64 +76,46 @@ public class FuncionarioService {
         // Configurar campos adicionais que não são mapeados automaticamente
         funcionario.setSenhaHash(passwordEncoder.encode(funcionarioDTO.getSenha()));
 
+        // Verificar unicidade
+        if (funcionarioRepository.existsByCpfCNPJ(funcionarioDTO.getCpfCNPJ())) {
+            throw new IllegalArgumentException("CPF já cadastrado");
+        }
+        if (funcionarioRepository.existsByUsuario(funcionarioDTO.getUsuario())) {
+            throw new IllegalArgumentException("Usuário já cadastrado");
+        }
+
         return funcionarioRepository.save(funcionario);
     }
-
-
 
     public boolean autenticar(String usuario, String senha) {
         if (!StringUtils.hasText(usuario) || !StringUtils.hasText(senha)) {
             return false;
         }
-
+        
         return funcionarioRepository.findByUsuario(usuario)
-                .map(funcionario -> passwordEncoder.matches(senha, funcionario.getSenhaHash()))
-                .orElse(false);
+            .map(funcionario -> passwordEncoder.matches(senha, funcionario.getSenhaHash()))
+            .orElse(false);
     }
 
     @Transactional
     public void deletarFuncionarioPorId(UUID id) {
-        log.info("Deletando funcionário: {}", id);
+        log.info("Deletando funcionario: {}", id);
 
         // Verifica se o funcionario existe
         Funcionario funcionario = funcionarioRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.error("Funcionário não encontrado para deleção: {}", id);
+                    log.error("Funcionario não encontrado para deleção: {}", id);
                     return new FuncionarioNaoEncontrado(
-                            "Funcionário não encontrado com ID: " + id
+                            "Funcionario não encontrado com ID: " + id
                     );
                 });
         funcionarioRepository.deleteById(id);
-        log.info("Funcionário deletado com sucesso: {}", id);
+        log.info("Funcionario deletado com sucesso: {}", id);
     }
 
 
     // Added: buscar por usuario
     public Optional<Funcionario> buscarPorUsuario(String usuario) {
         return funcionarioRepository.findByUsuario(usuario);
-    }
-
-    @Transactional
-    public Funcionario atualizarFuncionario(UUID id, CadastrarFuncionarioDTO funcionarioDTO) {
-        log.info("Atualiza funcionário com ID: {}", id);
-
-        Funcionario funcionarioExistente = funcionarioRepository.findById(id)
-                .orElseThrow(() ->{
-                    log.error("Funcionário não encontrado para atualização: {}", id);
-                    return new FuncionarioNaoEncontrado(
-                            "Funcionário não encontrado com ID: "+id
-                    );
-                });
-
-
-        //Atualiza os dados básicos do funcionário
-        funcionarioExistente.setNome(funcionarioDTO.getNome().trim());
-        funcionarioExistente.setCpfCNPJ(funcionarioDTO.getCpfCNPJ().replaceAll("\\D", ""));
-        funcionarioExistente.setEmail(funcionarioDTO.getEmail().trim().toLowerCase());
-
-        Funcionario funcionarioAtualizado = funcionarioRepository.save(funcionarioExistente);
-        log.info("funcionario atualizado com sucesso - ID: {}", id);
-
-        return funcionarioAtualizado;
     }
 }
