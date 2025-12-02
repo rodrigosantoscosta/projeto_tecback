@@ -15,6 +15,11 @@
 
 ## 1) FUNCIONÁRIOS
 ### Base URL: ```{{ base_url }}/funcionarios```
+### Usuario admin
+{
+"usuario": "admin",
+"senha": "adminadmin"
+}
 
 ### 1.1 Registrar Funcionário (POST)
 **Endpoint:** `POST {{ base_url }}/funcionarios`
@@ -402,14 +407,14 @@ Cliente atualizado com sucesso
 ```
 
 
-### 3.9 Deletar Veículo por ID (DELETE)
+### 3.8 Deletar Veículo por ID (DELETE)
 **Endpoint:** `DELETE {{ base_url }}/veiculos/<uuid-do-veiculo>`
 
 **Exemplo:** `DELETE {{ base_url }}/veiculos/123e4567-e89b-12d3-a456-426614174000`
 
 *Sem body necessário*
 
-### 3.10 Deletar Veículo por Placa (DELETE)
+### 3.9 Deletar Veículo por Placa (DELETE)
 **Endpoint:** `DELETE {{ base_url }}/veiculos/placa/<placa>`
 
 **Exemplo:** `DELETE {{ base_url }}/veiculos/placa/ABC1D23`
@@ -427,9 +432,155 @@ Cliente atualizado com sucesso
 
 ---
 
-## 4) INTEGRAÇÃO COM APIs EXTERNAS
+ ## 4) ATENDIMENTOS
+### Base URL: ```{{ base_url }}/atendimentos```
 
-### 4.1 ViaCEP - Buscar Endereço por CEP (GET)
+### 4.1 Cadastrar Atendimento (POST)
+**Endpoint:** `POST {{ base_url }}/atendimentos`
+
+#### Cadastro com sucesso - Atendimento completo:
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+#### Cadastro com Id do cliente inválido (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "123e4567-e89b-12d3-a456-426614174000",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+#### Cadastro com Id do cliente inexistente (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "123e4567-e89b-12d3-a456-426614174000",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+#### Cadastro com Placa do Veículo inválido (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "1111111111111",
+  "funcionarioId": "453e4532-e84b-125-a456-4000"
+}
+```
+
+#### Cadastro com Placa do Veículo inexistente (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "FBA5D27",
+  "funcionarioId": "453e4532-e84b-125-a456-4000"
+}
+```
+
+#### Cadastro com Id do Funcionário inválido (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "FBA5D27",
+  "funcionarioId": "111111111111111111111111"
+}
+```
+
+#### Cadastro com Id do Funcionário inexistente (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "FBA5D27",
+  "funcionarioId": "453e4532-e84b-125-a456-4000"
+}
+```
+
+### 4.2 Listar Todos os Atendimentos (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/listar-todos`
+
+*Sem body necessário*
+
+### 4.3 Buscar Atendimento por ID (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/id/<uuid-do-atendimento>`
+
+**Exemplo:** `GET {{ base_url }}/atendimentos/id/26e72375-156c-401a-9f55-58879513f0a0`
+
+*Sem body necessário*
+
+### 4.4 Buscar Atendimento por ID do Cliente (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/cliente ID/<uuid-do-cliente>`
+
+**Exemplo:** `GET {{ base_url }}/atendimentos/cliente ID/519cb250-4a72-4ddf-8c25-30d7e058bdef`
+
+*Sem body necessário*
+
+### 4.5 Listar Atendimentos com status "CONCLUIDO" (GET)
+**Endpoint:** `GET {{ base_url }}atendimentos/listar-concluidos`
+
+
+*Sem body necessário*
+
+### 4.6 Listar Atendimentos por Data de Entrada em ordem decrescente  (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/listar-ordem-decrescente`
+
+*Sem body necessário*
+
+### 4.7 Atualizar Atendimento (PUT)
+**Endpoint:** `PUT {{ base_url }}/atendimentos/atualizar/<uuid-do-atendimento>`
+
+**Exemplo:** `PUT {{ base_url }}/atendimentos/atualizar/5be82b05-7c2e-47f2-8af8-0b6a123dd771`
+
+```json
+{
+  "descricaoServico": "Troca de mangueira e pedal da embrenhagem",
+  "statusAtendimento": "ANDAMENTO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+### 4.8 Deletar Atendimento por ID (DELETE)
+**Endpoint:** `DELETE {{ base_url }}/atendimento/delete/<uuid-do-atendimento>`
+
+**Exemplo:** `DELETE {{ base_url }}/atendimentos/delete/2c1e7b71-d611-4185-a607-8f53daa3cadf`
+
+*Sem body necessário*
+
+### Observações sobre Atendimentos:
+- **Status do Atendimento:** Aceita apenas as palavras Aguardando, Andamento, Concluido e Cancelado
+- **Datas Cadastro e Entradas:** Eles são gerados no momento da realização do cadastro 
+- **Data de Conclusão:** Quando os status de atendimento estiver como concluido ou cancelado, será registrado há hora em que foi inserido
+- **ClienteId:** Obrigatório e deve ser um UUID válido de um cliente existente
+- **VeiculoPlaca:** Obrigatório e deve ser uma Placa válida de um Veículo existente
+- **FuncionarioId:** Obrigatório e deve ser um UUID válido de um Funcionário existente
+- Campos obrigatórios: descriçãoServiço, clienteId, veiculoPlaca, funcionarioId
+
+---
+
+## 5) INTEGRAÇÃO COM APIs EXTERNAS
+
+### 5.1 ViaCEP - Buscar Endereço por CEP (GET)
 **Endpoint:** `GET {{ base_url }}/api/viacep/endereco/<cep>`
 
 **Exemplo:** `GET {{ base_url }}/api/viacep/endereco/01001000`
@@ -447,7 +598,7 @@ Cliente atualizado com sucesso
 #### CEP inválido (deve retornar 404):
 `GET {{ base_url }}/api/viacep/endereco/00000000`
 
-### 4.2 Brasil API - Listar Feriados Nacionais (GET)
+### 5.2 Brasil API - Listar Feriados Nacionais (GET)
 **Endpoint:** `GET {{ base_url }}/api/feriados/<ano>`
 
 **Exemplo:** `GET {{ base_url }}/api/feriados/2024`
@@ -471,7 +622,7 @@ Cliente atualizado com sucesso
 
 ---
 
-## 5) FLUXO DE TESTE RECOMENDADO
+## 6) FLUXO DE TESTE RECOMENDADO
 
 ### Passo 1: Criar um Funcionário (POST)
 **Endpoint:** `POST {{ base_url }}/funcionarios`
@@ -552,52 +703,88 @@ Authorization: Bearer <token>
 
 ---
 
-### Passo 5: Listar Todos os Recursos (GET)
+### Passo 5: Criar um Atendimento (POST)
+**Endpoint:** `POST {{ base_url }}/atendimentos`
+
+**Body:**
+```json
+{
+  "descricaoServico": "Troca do espelho do retrovisor",
+  "statusAtendimento": "AGUARDANDO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+**Salve:** `atendimento_id` da resposta
+
+---
+
+
+
+### Passo 6: Listar Todos os Recursos (GET)
 **Endpoints:**
 ```
 GET {{ base_url }}/clientes
 GET {{ base_url }}/veiculos
 GET {{ base_url }}/funcionarios
+GET {{ base_url }}/atendimentos
 ```
 
 *Sem body necessário*
 
 ---
 
-### Passo 6: Buscar Recursos por ID (GET)
+### Passo 7: Buscar Recursos por ID (GET)
 **Endpoints:**
 ```
 GET {{ base_url }}/clientes/<cliente_id>
 GET {{ base_url }}/veiculos/<veiculo_id>
 GET {{ base_url }}/funcionarios/<funcionario_id>
+GET {{ base_url }}/funcionarios/<atendimento_id>
 ```
 
 *Sem body necessário*
 
 ---
 
-### Passo 7: Buscar Cliente por CPF (GET)
+### Passo 8: Buscar Cliente por CPF (GET)
 **Endpoint:** `GET {{ base_url }}/clientes/cpfCNPJ/98765432100`
 
 *Sem body necessário*
 
 ---
 
-### Passo 8: Buscar Veículo por Placa (GET)
+### Passo 9: Buscar Veículo por Placa (GET)
 **Endpoint:** `GET {{ base_url }}/veiculos/placa/ABC1D23`
 
 *Sem body necessário*
 
 ---
 
-### Passo 9: Listar Veículos por Cliente (GET)
+### Passo 10: Buscar Atendimento por ClienteId (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/cliente id/519cb250-4a72-4ddf-8c25-30d7e058bdef`
+
+*Sem body necessário*
+
+---
+
+### Passo 11: Listar Veículos por Cliente (GET)
 **Endpoint:** `GET {{ base_url }}/veiculos/cliente/<cliente_id>`
 
 *Sem body necessário*
 
 ---
 
-### Passo 10: Atualizar Veículo (PUT)
+### Passo 12: Listar Atendimento por Status CONCLUIDO (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/listar-concluidos>`
+
+*Sem body necessário*
+
+---
+
+### Passo 13: Atualizar Veículo (PUT)
 **Endpoint:** `PUT {{ base_url }}/veiculos/<veiculo_id>`
 
 **Body:**
@@ -615,40 +802,41 @@ GET {{ base_url }}/funcionarios/<funcionario_id>
 
 ---
 
-### Passo 11: Associar Veículo a Cliente (PUT)
+### Passo 14: Associar Veículo a Cliente (PUT)
 **Endpoint:** `PUT {{ base_url }}/veiculos/<veiculo_id>/associar/<novo_cliente_id>`
 
 *Sem body necessário*
 
 ---
 
-### Passo 12: Buscar Endereço por CEP (GET)
+### Passo 15: Buscar Endereço por CEP (GET)
 **Endpoint:** `GET {{ base_url }}/api/viacep/endereco/22010010`
 
 *Sem body necessário*
 
 ---
 
-### Passo 13: Listar Feriados (GET)
+### Passo 16: Listar Feriados (GET)
 **Endpoint:** `GET {{ base_url }}/api/feriados/2024`
 
 *Sem body necessário*
 
 ---
 
-### Passo 14: Deletar Recursos (DELETE)
+### Passo 17: Deletar Recursos (DELETE)
 **Endpoints:**
 ```
 DELETE {{ base_url }}/veiculos/<veiculo_id>
 DELETE {{ base_url }}/clientes/<cliente_id>
 DELETE {{ base_url }}/funcionarios/<funcionario_id>
+DELETE {{ base_url }}/atendimentos/<atendimento_id>
 ```
 
 *Sem body necessário*
 
 ---
 
-## 6) DICAS IMPORTANTES
+## 7) DICAS IMPORTANTES
 
 ### Usando Variáveis no Insomnia
 1. **Criar variável de ambiente:**
@@ -691,7 +879,7 @@ Se `app.security.enabled=false`:
 
 ---
 
-## 7) SWAGGER UI
+## 8) SWAGGER UI
 
 Acesse a documentação interativa em:
 ```

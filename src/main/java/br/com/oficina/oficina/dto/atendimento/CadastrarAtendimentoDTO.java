@@ -3,6 +3,8 @@ package br.com.oficina.oficina.dto.atendimento;
 import br.com.oficina.oficina.model.StatusAtendimento;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ public class CadastrarAtendimentoDTO {
     @Schema(description = "Descreva os serviços realizados no atendimento", example = "Troca de óleo e filtro", required = true)
     private String descricaoServico;
 
-    @NotNull(message = "A descrição do serviço é obrigatória")
+
     @Schema(description = "Descreva a situação dos serviços realizados no atendimento", example = "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO", required = true)
     private StatusAtendimento statusAtendimento;
 

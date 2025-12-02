@@ -26,7 +26,7 @@ public class AtendimentoController {
         this.atendimentoService = atendimentoService;
     }
 
-    @PostMapping("/Cadastrar")
+    @PostMapping("/cadastrar")
     @Operation(summary = "Cadastrar novo atendimento",
             description = "Cadastrando um novo atendimento associado a  cliente, veículo e funcionário existentes")
     public ResponseEntity<AtendimentoDTO> cadastrarAtendimento(@Valid @RequestBody CadastrarAtendimentoDTO atendimentoDTO) {
@@ -37,7 +37,7 @@ public class AtendimentoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(atendimentoSalvo);
 
     }
-    @GetMapping("/ListarTodos")
+    @GetMapping("/listar-todos")
     @Operation(summary = "Listar todos os Atendimentos",
     description = "Retorna uma lista de todos os atendimentos cadastrados no sistema")
     public ResponseEntity<List<AtendimentoDTO>> listarTodos() {
@@ -45,6 +45,24 @@ public class AtendimentoController {
         List<AtendimentoDTO> atendimentos = atendimentoService.listarTodosAtendimentos();
         log.error("Total de Atendimentos encontrados: {}", atendimentos.size());
         return ResponseEntity.ok(atendimentos);
+    }
+    @GetMapping("/listar-concluidos")
+    @Operation(summary = "Listar Atendimentos Concluídos",
+    description = "Retorna uma lista de todos os atendimentos com status CONCLUIDO")
+    public ResponseEntity<List<AtendimentoDTO>> listarAtendimentosConcluidos() {
+        log.info("Listando Atendimentos Concluídos");
+        List<AtendimentoDTO> atendimentoConluidos = atendimentoService.listarAtendimentosConcluidos();
+        log.info("Total de Atendimentos Concluídos encontrados: {}", atendimentoConluidos.size());
+        return ResponseEntity.ok(atendimentoConluidos);
+    }
+    @GetMapping("/listar-ordem-decrescente")
+    @Operation(summary = "Listar Atendimentos Ordenados por Data de Entrada Decrescente",
+    description = "Retorna uma lista de todos os atendimentos ordenados por data de entrada em ordem decrescente")
+    public ResponseEntity<List<AtendimentoDTO>> ordenarAtendimentosporDataEntrada(){
+        log.info("Listando Atendimentos Ordenados por Data de Entrada Decrescente");
+        List<AtendimentoDTO> atendimentosOrdenados = atendimentoService.ordenarAtendimentosporDataEntrada();
+        log.info("Total de Atendimentos encontrados: {}", atendimentosOrdenados.size());
+        return ResponseEntity.ok(atendimentosOrdenados);
     }
 
     @GetMapping("/id/{id}")
@@ -69,7 +87,7 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoAtualizado);
     }
 
-    @GetMapping("/Cliente ID/{clienteId}")
+    @GetMapping("/cliente ID/{clienteId}")
     @Operation(summary = "Listar Atendimentos por Cliente ID",
     description = "Busca atendimentos associados a um cliente específico pelo ID do cliente")
     public ResponseEntity<List<AtendimentoDTO>> listarAtendimentoporClienteCpfCNPJ(@PathVariable UUID clienteId) {

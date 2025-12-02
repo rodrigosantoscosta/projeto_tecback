@@ -299,3 +299,151 @@
 - O `email` deve ser válido
 - O `usuario` deve ter entre 3 e 50 caracteres
 - Campos obrigatórios: nome, cpf, cargo, telefone, email, usuario, senha
+
+---
+
+## 4) ATENDIMENTOS
+###  url: ```localhost:8080/atendimentos```
+
+### CadastrarAtendimentoCompleto
+### Exemplos:
+
+#### Cadastro com sucesso
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+#### Cadastro com Id do cliente inválido (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "123e4567-e89b-12d3-a456-426614174000",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+#### Cadastro com Id do cliente inexistente (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "123e4567-e89b-12d3-a456-426614174000",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+#### Cadastro com Placa do Veículo inválido (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "1111111111111",
+  "funcionarioId": "453e4532-e84b-125-a456-4000"
+}
+```
+
+#### Cadastro com Placa do Veículo inexistente (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "FBA5D27",
+  "funcionarioId": "453e4532-e84b-125-a456-4000"
+}
+```
+
+#### Cadastro com Id do Funcionário inválido (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "FBA5D27",
+  "funcionarioId": "111111111111111111111111"
+}
+```
+
+#### Cadastro com Id do Funcionário inexistente (deve falhar):
+```json
+{
+  "descricaoServico": "Troca de óleo e filtro",
+  "statusAtendimento": "AGUARDANDO, ANDAMENTO, CONCLUIDO, CANCELADO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "FBA5D27",
+  "funcionarioId": "453e4532-e84b-125-a456-4000"
+}
+```
+
+### Listar Todos os Atendimentos (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/listar-todos`
+
+*Sem body necessário*
+
+###  Buscar Atendimento por ID (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/id/<uuid-do-atendimento>`
+
+**Exemplo:** `GET {{ base_url }}/atendimentos/id/26e72375-156c-401a-9f55-58879513f0a0`
+
+*Sem body necessário*
+
+### Buscar Atendimento por ID do Cliente (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/cliente ID/<uuid-do-cliente>`
+
+**Exemplo:** `GET {{ base_url }}/atendimentos/cliente ID/519cb250-4a72-4ddf-8c25-30d7e058bdef`
+
+*Sem body necessário*
+
+### Listar Atendimentos com status "CONCLUIDO" (GET)
+**Endpoint:** `GET {{ base_url }}atendimentos/listar-concluidos`
+
+
+*Sem body necessário*
+
+### Listar Atendimentos por Data de Entrada em ordem decrescente  (GET)
+**Endpoint:** `GET {{ base_url }}/atendimentos/listar-ordem-decrescente`
+
+*Sem body necessário*
+
+### Atualizar Atendimento (PUT)
+**Endpoint:** `PUT {{ base_url }}/atendimentos/atualizar/<uuid-do-atendimento>`
+
+**Exemplo:** `PUT {{ base_url }}/atendimentos/atualizar/5be82b05-7c2e-47f2-8af8-0b6a123dd771`
+
+```json
+{
+  "descricaoServico": "Troca de mangueira e pedal da embrenhagem",
+  "statusAtendimento": "ANDAMENTO",
+  "clienteId": "519cb250-4a72-4ddf-8c25-30d7e058bdef",
+  "veiculoPlaca": "DEF4567",
+  "funcionarioId": "abd95873-9445-43b3-a4ed-4a73c00c4dcc"
+}
+```
+
+###  Deletar Atendimento por ID (DELETE)
+**Endpoint:** `DELETE {{ base_url }}/atendimento/delete/<uuid-do-atendimento>`
+
+**Exemplo:** `DELETE {{ base_url }}/atendimentos/delete/2c1e7b71-d611-4185-a607-8f53daa3cadf`
+
+*Sem body necessário*
+
+### Observações sobre Atendimento:
+- **Status do Atendimento:** Aceita apenas as palavras Aguardando, Andamento, Concluido e Cancelado
+- **Datas Cadastro e Entradas:** Eles são gerados no momento da realização do cadastro
+- **Data de Conclusão:** Quando os status de atendimento estiver como concluido ou cancelado, será registrado há hora em que foi inserido
+- **ClienteId:** Obrigatório e deve ser um UUID válido de um cliente existente
+- **VeiculoPlaca:** Obrigatório e deve ser uma Placa válida de um Veículo existente
+- **FuncionarioId:** Obrigatório e deve ser um UUID válido de um Funcionário existente
+- Campos obrigatórios: descriçãoServiço, clienteId, veiculoPlaca, funcionarioId
+
+---

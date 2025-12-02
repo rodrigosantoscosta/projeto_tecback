@@ -40,13 +40,18 @@ public class FuncionarioController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
+    @Operation(summary = "Cadastrar funcionário")
     public ResponseEntity<FuncionarioDTO> criarFuncionario(@Valid @RequestBody CadastrarFuncionarioDTO dto) {
+        log.info("Iniciando o cadastro de funcionário");
         Funcionario funcionario = funcionarioService.cadastrarFuncionario(dto);
+        log.info("Funcionário cadastrado com sucesso");
         return ResponseEntity.ok(funcionarioMapper.toDTO(funcionario));
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login de funcionário")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest req) {
+        log.info("Login do funcionário");
         try {
             var authToken = new UsernamePasswordAuthenticationToken(req.getUsuario(), req.getSenha());
             var auth = authenticationManager.authenticate(authToken);
@@ -60,7 +65,9 @@ public class FuncionarioController {
 
     // retorna o funcionario autenticado
     @GetMapping("/me")
+    @Operation(summary = "Funcionário logado")
     public ResponseEntity<FuncionarioDTO> me() {
+        log.info("Funcionário logado");
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null) {
             return ResponseEntity.status(401).build();
@@ -77,23 +84,27 @@ public class FuncionarioController {
         }
 
         return funcionarioService.buscarPorUsuario(username)
-            .map(f -> ResponseEntity.ok(funcionarioMapper.toDTO(f)))
-            .orElse(ResponseEntity.notFound().build());
+                .map(f -> ResponseEntity.ok(funcionarioMapper.toDTO(f)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
+    @Operation(summary = "Listando todos os funcionários")
     public ResponseEntity<List<FuncionarioDTO>> listarTodosFuncionarios() {
-        var funcionarios = funcionarioService.listarTodosFuncionarios().stream()
-            .map(funcionarioMapper::toDTO)
-            .collect(Collectors.toList());
+        log.info("Listando todos os funcionários");
+        List<FuncionarioDTO> funcionarios = funcionarioService.listarTodosFuncionarios().stream()
+                .map(FuncionarioDTO::new)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(funcionarios);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FuncionarioDTO> buscarFuncionarioPorId(@PathVariable UUID id) {
-        return funcionarioService.buscarPorId(id)
-            .map(funcionario -> ResponseEntity.ok(funcionarioMapper.toDTO(funcionario)))
-            .orElse(ResponseEntity.notFound().build());
+    @Operation(summary = "Buscando funcionário")
+    public ResponseEntity<?> buscarFuncionarioPorId(@PathVariable UUID id) {
+        log.info("Iniciando busca do funcionario: {}", id);
+        FuncionarioDTO funcionarioDTO = funcionarioService.buscarPorId(id);
+        log.info("Funcionario encontrado com sucesso: {}", id);
+        return ResponseEntity.ok(funcionarioDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -104,5 +115,16 @@ public class FuncionarioController {
         log.info("Funcionario deletado com sucesso: {}", id);
 
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar funcionário")
+    public ResponseEntity<String> atualizarFuncionario(
+            @PathVariable UUID id,
+            @Valid @RequestBody CadastrarFuncionarioDTO dto
+    ){
+        log.info("Iniciando atualização de funcionário com ID: {}", id);
+        funcionarioService.atualizarFuncionario(id, dto);
+        log.info("funcionário com ID {} atualizado com sucesso", id);
+        return ResponseEntity.ok("Funcionário atualizado com sucesso");
     }
 }

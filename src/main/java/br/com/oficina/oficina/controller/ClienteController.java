@@ -35,6 +35,7 @@ public class ClienteController {
         log.info("Iniciando cadastro de cliente");
         clienteService.cadastrarCliente(dto);
         log.info("Cliente cadastrado com sucesso");
+
         return ResponseEntity.status(HttpStatus.CREATED).body("Cliente cadastrado com sucesso");
     }
 
