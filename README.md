@@ -33,6 +33,89 @@
 - **Objetivo**: API para gestão de oficina mecânica com cadastro de clientes, veículos, atendimentos e integração com ViaCEP para endereços automáticos.
 - **Autenticação**: não obrigatória (pode ser Plus).
 
+### Estrutura de arquivos
+.
+└── OficinaApplication.java
+├── config/
+│   ├── RestTemplateConfig.java
+│   ├── SwaggerConfig.java
+│   └── WebConfig.java
+├── controller/
+│   ├── AtendimentoController.java
+│   ├── BrasilApiController.java
+│   ├── ClienteController.java
+│   ├── FuncionarioController.java
+│   ├── VeiculoController.java
+│   └── ViaCepController.java
+├── dto/
+│   ├── atendimento/
+│   │   ├── AtendimentoDTO.java
+│   │   └── CadastrarAtendimentoDTO.java
+│   ├── auth/
+│   │   ├── AuthenticationRequest.java
+│   │   └── AuthenticationResponse.java
+│   ├── cliente/
+│   │   ├── CadastrarClienteDTO.java
+│   │   ├── ClienteDTO.java
+│   │   └── ClienteListaDTO.java
+│   ├── endereco/
+│   │   └── EnderecoDTO.java
+│   ├── funcionario/
+│   │   ├── CadastrarFuncionarioDTO.java
+│   │   └── FuncionarioDTO.java
+│   ├── response/
+│   │   ├── BrasilApiCepResponse.java
+│   │   ├── EnderecoBasicoResponse.java
+│   │   ├── FeriadoNacionalResponse.java
+│   │   └── ViaCepResponse.java
+│   └── veiculo/
+│       ├── CadastrarVeiculoDTO.java
+│       └── VeiculoDTO.java
+├── exception/
+│   ├── AtendimentoNaoEncontrado.java
+│   ├── CepNaoEncontradoException.java
+│   ├── ClienteComVeiculosException.java
+│   ├── ClienteNaoEncontradoException.java
+│   ├── ErrorDetails.java
+│   ├── FuncionarioNaoEncontrado.java
+│   ├── GlobalExceptionHandler.java
+│   ├── RecursoJaCadastradoException.java
+│   ├── ResourceNotFoundException.java
+│   └── VeiculoNaoEncontradoException.java
+├── mapper/
+│   └── FuncionarioMapper.java
+├── model/
+│   ├── Atendimento.java
+│   ├── Cliente.java
+│   ├── Endereco.java
+│   ├── Funcionario.java
+│   ├── StatusAtendimento.java
+│   ├── TipoCliente.java
+│   └── Veiculo.java
+├── repository/
+│   ├── AtendimentoRepository.java
+│   ├── ClienteRepository.java
+│   ├── EnderecoRepository.java
+│   ├── FuncionarioRepository.java
+│   └── VeiculoRepository.java
+├── security/
+│   ├── JwtAuthenticationFilter.java
+│   ├── JwtUtil.java
+│   ├── SecurityConfig.java
+│   └── UsuarioPrincipal.java
+├── service/
+│   ├── AtendimentoService.java
+│   ├── BrasilApiService.java
+│   ├── ClienteService.java
+│   ├── CustomUserDetailsService.java
+│   ├── FuncionarioService.java
+│   ├── VeiculoService.java
+│   └── ViaCepService.java
+└── validator/
+├── CPFouCNPJValidator.java
+└── annotation/
+└── CPFouCNPJ.java
+
 ## 2) Modelo relacional (tabelas) mapeado com ORM
 
 ### 2.1 `clientes`
