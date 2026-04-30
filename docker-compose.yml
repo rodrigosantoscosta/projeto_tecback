@@ -1,6 +1,8 @@
 services:
   oficina-app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: oficina-service
     ports:
       - "8080:8080"
