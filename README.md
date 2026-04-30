@@ -234,3 +234,4 @@
 - Java 21+
 - PostgreSQL
 - Maven 3.6+
+
