@@ -3,4 +3,5 @@
 - [x] Fazer um docker-compose
 - [ ] Colocar seed data com Flyway Migrations 
 - [ ] Alterar banco pra PostgreSQL junto ao Docker
-- [ ] Criar arquivos de colections pro Postman/Insomnia 
+- [ ] Criar arquivos de colections pro Postman/Insomnia
+- [ ] Refatorar DTOs para usar Records(Java)
