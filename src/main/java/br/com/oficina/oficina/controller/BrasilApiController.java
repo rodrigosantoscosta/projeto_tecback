@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.FeriadoNacionalResponse;
+import br.com.oficina.oficina.dto.response.FeriadoNacionalResponse;
 import br.com.oficina.oficina.service.BrasilApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

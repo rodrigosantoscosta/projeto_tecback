@@ -1,5 +1,7 @@
 package br.com.oficina.oficina.config;
 
+import br.com.oficina.oficina.mapper.FuncionarioMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -11,4 +13,11 @@ public class RestTemplateConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
+
+    @Bean
+    public FuncionarioMapper funcionarioMapper() {
+        return Mappers.getMapper(FuncionarioMapper.class);
+    }
+
 }

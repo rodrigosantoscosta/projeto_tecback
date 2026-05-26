@@ -1,4 +1,4 @@
-package br.com.oficina.oficina.dto;
+package br.com.oficina.oficina.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -32,5 +32,4 @@ public class ViaCepResponse {
 
     @JsonProperty("erro")
     private boolean erro;
-
 }

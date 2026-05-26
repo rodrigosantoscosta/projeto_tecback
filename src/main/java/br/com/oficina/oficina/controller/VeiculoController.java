@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Veiculo;
 import br.com.oficina.oficina.service.VeiculoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -88,21 +87,21 @@ public class VeiculoController {
     public ResponseEntity<Veiculo> atualizar(@PathVariable UUID id,
                                              @Valid @RequestBody CadastrarVeiculoDTO dto) {
         log.info("Atualizando veículo: {}", id);
-        Veiculo veiculoAtualizado = veiculoService.atualizar(id, dto);
+        Veiculo veiculoAtualizado = veiculoService.atualizarVeiculo(id, dto);
         log.info("Veículo atualizado com sucesso: {}", id);
         return ResponseEntity.ok(veiculoAtualizado);
     }
 
-    @PutMapping("/{veiculoId}/associar/{clienteId}")
-    @Operation(summary = "Associar veículo a cliente")
-    public ResponseEntity<Veiculo> associarVeiculoAoCliente(
-            @PathVariable UUID veiculoId,
-            @PathVariable UUID clienteId) {
-        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
-        Veiculo veiculo = veiculoService.associarVeiculoAoCliente(veiculoId, clienteId);
-        log.info("Veículo associado com sucesso");
-        return ResponseEntity.ok(veiculo);
-    }
+//    @PutMapping("/{veiculoId}/associar/{clienteId}")
+//    @Operation(summary = "Associar veículo a cliente")
+//    public ResponseEntity<Veiculo> associarVeiculoAoCliente(
+//            @PathVariable UUID veiculoId,
+//            @PathVariable UUID clienteId) {
+//        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
+//        Veiculo veiculo = veiculoService.associarVeiculoAoCliente(veiculoId, clienteId);
+//        log.info("Veículo associado com sucesso");
+//        return ResponseEntity.ok(veiculo);
+//    }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar veículo por ID")

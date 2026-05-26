@@ -1,19 +1,19 @@
 package br.com.oficina.oficina.controller;
 
-import br.com.oficina.oficina.dto.EnderecoBasicoResponse;
-import br.com.oficina.oficina.dto.ViaCepResponse;
+import br.com.oficina.oficina.dto.response.EnderecoBasicoResponse;
+import br.com.oficina.oficina.dto.response.ViaCepResponse;
 import br.com.oficina.oficina.service.ViaCepService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/viacep")
 @CrossOrigin(origins = "*")
-@RequiredArgsConstructor
 public class ViaCepController {
 
-    private final ViaCepService viaCepService;
+    @Autowired
+    private ViaCepService viaCepService;
 
     @GetMapping("/endereco/{cep}")
     public ResponseEntity<EnderecoBasicoResponse> buscarEndereco(@PathVariable String cep) {

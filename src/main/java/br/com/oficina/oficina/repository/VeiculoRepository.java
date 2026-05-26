@@ -1,3 +1,4 @@
+
 package br.com.oficina.oficina.repository;
 
 import br.com.oficina.oficina.model.Veiculo;
@@ -20,6 +21,7 @@ public interface VeiculoRepository extends JpaRepository<Veiculo, UUID> {
 
     long countByClienteId(UUID clienteId);
 
+    //Consulta JPQL
     @Query("SELECT COUNT(v) FROM Veiculo v")
     Long contarTotalVeiculos();
 }

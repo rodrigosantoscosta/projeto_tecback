@@ -72,10 +72,6 @@ public class Veiculo {
     @Schema(description = "Cliente proprietário do veículo", required = true)
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "veiculo", fetch = FetchType.LAZY)
-    @JsonIgnore
-    @Schema(hidden = true)
-    private List<Atendimento> atendimentos = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

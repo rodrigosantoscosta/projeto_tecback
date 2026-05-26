@@ -1,13 +1,12 @@
 package br.com.oficina.oficina.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "atendimentos")
@@ -17,8 +16,8 @@ import java.time.LocalDateTime;
 public class Atendimento {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(columnDefinition = "TEXT")
     private String descricaoServico;
@@ -38,17 +37,17 @@ public class Atendimento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "endereco"})
+
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veiculo_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "cliente", "atendimentos"})
+
     private Veiculo veiculo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funcionario_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
     private Funcionario funcionario;
 
     @PrePersist

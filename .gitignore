@@ -41,8 +41,8 @@ application-prod.properties
 /database/
 /data/
 
-### ARQUIVOS DE CONFIGURAÇÃO SENSÍVEIS
-## Arquivos de application com senhas
+
+# Arquivos de application com senhas
 #application*.properties
 #application*.yml
 #application*.yaml

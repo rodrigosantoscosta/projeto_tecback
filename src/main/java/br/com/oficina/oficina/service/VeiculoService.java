@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.service;
 
-import br.com.oficina.oficina.dto.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -104,7 +103,7 @@ public class VeiculoService {
     }
 
     @Transactional
-    public Veiculo atualizar(UUID id, CadastrarVeiculoDTO dto) {
+    public Veiculo atualizarVeiculo(UUID id, CadastrarVeiculoDTO dto) {
         log.info("Atualizando veículo: {}", id);
 
         // Verifica se o veículo existe
@@ -150,32 +149,32 @@ public class VeiculoService {
         return veiculoAtualizado;
     }
 
-    @Transactional
-    public Veiculo associarVeiculoAoCliente(UUID veiculoId, UUID clienteId) {
-        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
-
-        Veiculo veiculo = veiculoRepository.findById(veiculoId)
-                .orElseThrow(() -> {
-                    log.error("Veículo não encontrado: {}", veiculoId);
-                    return new VeiculoNaoEncontradoException(
-                            "Veículo não encontrado com ID: " + veiculoId
-                    );
-                });
-
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> {
-                    log.error("Cliente não encontrado: {}", clienteId);
-                    return new ClienteNaoEncontradoException(
-                            "Cliente não encontrado com ID: " + clienteId
-                    );
-                });
-
-        veiculo.setCliente(cliente);
-        Veiculo veiculoAtualizado = veiculoRepository.save(veiculo);
-
-        log.info("Veículo {} associado ao cliente {} com sucesso", veiculoId, clienteId);
-        return veiculoAtualizado;
-    }
+//    @Transactional
+//    public Veiculo associarVeiculoAoCliente(UUID veiculoId, UUID clienteId) {
+//        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
+//
+//        Veiculo veiculo = veiculoRepository.findById(veiculoId)
+//                .orElseThrow(() -> {
+//                    log.error("Veículo não encontrado: {}", veiculoId);
+//                    return new VeiculoNaoEncontradoException(
+//                            "Veículo não encontrado com ID: " + veiculoId
+//                    );
+//                });
+//
+//        Cliente cliente = clienteRepository.findById(clienteId)
+//                .orElseThrow(() -> {
+//                    log.error("Cliente não encontrado: {}", clienteId);
+//                    return new ClienteNaoEncontradoException(
+//                            "Cliente não encontrado com ID: " + clienteId
+//                    );
+//                });
+//
+//        veiculo.setCliente(cliente);
+//        Veiculo veiculoAtualizado = veiculoRepository.save(veiculo);
+//
+//        log.info("Veículo {} associado ao cliente {} com sucesso", veiculoId, clienteId);
+//        return veiculoAtualizado;
+//    }
 
     @Transactional
     public void deletarVeiculoPorId(UUID id) {
