@@ -13,12 +13,12 @@ VALUES
     ('a1000000-0000-0000-0000-000000000003', 'Pedro Oliveira', '11144477735', '(83) 99999-1111', 'pedro.oliveira@email.com', NOW(), 3);
 
 -- funcionarios
--- senha: senha123 | hash BCrypt 10 rounds valido
+-- senha: senha123 | hash BCrypt 10 rounds
 INSERT INTO funcionarios (id, nome, cpf_cnpj, usuario, senha_hash, cargo, telefone, email, dataCadastro)
 VALUES
-    ('b2000000-0000-0000-0000-000000000001', 'Rodrigo Admin',   '47593836071', 'rodrigo.admin',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Gerente',   '(83) 98000-0001', 'rodrigo@oficina.com', NOW()),
-    ('b2000000-0000-0000-0000-000000000002', 'Joao Mecanico',   '14567903069', 'joao.mecanico',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Mecanico',  '(83) 98000-0002', 'joao@oficina.com',    NOW()),
-    ('b2000000-0000-0000-0000-000000000003', 'Maria Atendente', '07562078069', 'maria.atendente', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Atendente', '(83) 98000-0003', 'maria@oficina.com',   NOW());
+    ('b2000000-0000-0000-0000-000000000001', 'Admin Admin',     '47593836071', 'admin',           '$2a$10$7cTMxhkkIyh8nczbGuaPSuxGjEmWnigEqEyT2.JZdk2ZBBlu.JUhC', 'Gerente',   '(83) 98000-0001', 'admin@oficina.com',   NOW()),
+    ('b2000000-0000-0000-0000-000000000002', 'Joao Mecanico',   '14567903069', 'joao.mecanico',   '$2a$10$7cTMxhkkIyh8nczbGuaPSuxGjEmWnigEqEyT2.JZdk2ZBBlu.JUhC', 'Mecanico',  '(83) 98000-0002', 'joao@oficina.com',    NOW()),
+    ('b2000000-0000-0000-0000-000000000003', 'Maria Atendente', '07562078069', 'maria.atendente', '$2a$10$7cTMxhkkIyh8nczbGuaPSuxGjEmWnigEqEyT2.JZdk2ZBBlu.JUhC', 'Atendente', '(83) 98000-0003', 'maria@oficina.com',   NOW());
 
 -- veiculos
 INSERT INTO veiculos (id, placa, modelo, marca, ano, cor, quilometragem, dataCadastro, cliente_id)
