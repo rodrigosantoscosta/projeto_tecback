@@ -62,6 +62,7 @@ public class Funcionario {
     @Size(max = 254, message = "E-mail deve ter no máximo 254 caracteres")
     private String email;
 
+    @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
 
     @OneToMany(mappedBy = "funcionario")

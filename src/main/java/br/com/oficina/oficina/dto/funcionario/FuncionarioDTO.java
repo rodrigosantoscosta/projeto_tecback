@@ -2,10 +2,12 @@ package br.com.oficina.oficina.dto.funcionario;
 
 import br.com.oficina.oficina.model.Funcionario;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class FuncionarioDTO {
     private UUID id;
     private String nome;
@@ -16,7 +18,7 @@ public class FuncionarioDTO {
     private String usuario;
     private LocalDateTime dataCadastro;
 
-
+    // Construtor de conveniência — usado em listarTodosFuncionarios() via new FuncionarioDTO(f)
     public FuncionarioDTO(Funcionario funcionario) {
         this.id = funcionario.getId();
         this.nome = funcionario.getNome();
@@ -27,7 +29,5 @@ public class FuncionarioDTO {
         this.usuario = funcionario.getUsuario();
         this.dataCadastro = funcionario.getDataCadastro();
     }
-
-
 }
 

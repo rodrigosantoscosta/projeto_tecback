@@ -1,0 +1,408 @@
+{
+  "info": {
+    "_postman_id": "oficina-mecanica-collection",
+    "name": "Oficina Mecânica API",
+    "description": "Collection completa da API REST. Fluxo recomendado: Cadastrar Funcionário → Login → Cadastrar Cliente → Cadastrar Veículo → Cadastrar Atendimento.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",       "value": "http://localhost:8080", "type": "string", "description": "URL base da API" },
+    { "key": "token",         "value": "", "type": "string", "description": "JWT Bearer token — preenchido automaticamente pelo script de login" },
+    { "key": "funcionarioId", "value": "", "type": "string", "description": "UUID do funcionário — preenchido automaticamente após cadastro" },
+    { "key": "clienteId",     "value": "", "type": "string", "description": "UUID do cliente — preenchido automaticamente após cadastro" },
+    { "key": "veiculoId",     "value": "", "type": "string", "description": "UUID do veículo — preenchido automaticamente após cadastro" },
+    { "key": "veiculoPlaca",  "value": "ABC1D23", "type": "string", "description": "Placa do veículo de teste (padrão Mercosul)" },
+    { "key": "atendimentoId", "value": "", "type": "string", "description": "UUID do atendimento — preenchido automaticamente após cadastro" },
+    { "key": "usuarioLogin",  "value": "admin01", "type": "string", "description": "Usuário para autenticação" },
+    { "key": "senhaLogin",    "value": "senha1234", "type": "string", "description": "Senha para autenticação (mín. 8 caracteres)" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "1. Cadastrar Funcionário (público)",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "  const json = pm.response.json();",
+                "  if (json.id) {",
+                "    pm.collectionVariables.set('funcionarioId', json.id);",
+                "    pm.test('funcionarioId salvo: ' + json.id, () => pm.expect(json.id).to.be.a('string'));",
+                "  }",
+                "}"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Admin Teste\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Gerente\",\n  \"telefone\": \"(11) 98765-0001\",\n  \"email\": \"admin@oficina.com\",\n  \"usuario\": \"{{usuarioLogin}}\",\n  \"senha\": \"{{senhaLogin}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/funcionarios", "host": ["{{baseUrl}}"], "path": ["funcionarios"] }
+          }
+        },
+        {
+          "name": "2. Login → salva token",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "  const body = pm.response.json();",
+                "  const t = body.token || body.accessToken || body.jwt || (typeof body === 'string' ? body : null);",
+                "  if (t) {",
+                "    pm.collectionVariables.set('token', t);",
+                "    pm.test('Token JWT salvo com sucesso', () => pm.expect(t).to.be.a('string').and.not.empty);",
+                "  } else {",
+                "    pm.test('ATENCAO: token nao encontrado na resposta', () => false);",
+                "  }",
+                "}"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"{{usuarioLogin}}\",\n  \"senha\": \"{{senhaLogin}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/funcionarios/login", "host": ["{{baseUrl}}"], "path": ["funcionarios","login"] }
+          }
+        },
+        {
+          "name": "GET /funcionarios/me",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/funcionarios/me", "host": ["{{baseUrl}}"], "path": ["funcionarios","me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Funcionários",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/funcionarios", "host": ["{{baseUrl}}"], "path": ["funcionarios"] }
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/funcionarios/{{funcionarioId}}", "host": ["{{baseUrl}}"], "path": ["funcionarios","{{funcionarioId}}"] }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Admin Atualizado\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Diretor\",\n  \"telefone\": \"(11) 98765-0002\",\n  \"email\": \"admin2@oficina.com\",\n  \"usuario\": \"{{usuarioLogin}}\",\n  \"senha\": \"{{senhaLogin}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/funcionarios/{{funcionarioId}}", "host": ["{{baseUrl}}"], "path": ["funcionarios","{{funcionarioId}}"] }
+          }
+        },
+        {
+          "name": "Deletar",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/funcionarios/{{funcionarioId}}", "host": ["{{baseUrl}}"], "path": ["funcionarios","{{funcionarioId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧑 Clientes",
+      "item": [
+        {
+          "name": "Cadastrar cliente",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "  const text = pm.response.text();",
+                "  const m = text.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);",
+                "  if (m) {",
+                "    pm.collectionVariables.set('clienteId', m[0]);",
+                "    pm.test('clienteId salvo: ' + m[0], () => pm.expect(m[0]).to.be.a('string'));",
+                "  }",
+                "}"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCompleto\": \"Joao da Silva\",\n  \"email\": \"joao@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 91234-5678\",\n  \"cep\": \"01001000\",\n  \"numero\": \"10\",\n  \"complemento\": \"Apto 2\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/clientes", "host": ["{{baseUrl}}"], "path": ["clientes"] }
+          }
+        },
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/clientes", "host": ["{{baseUrl}}"], "path": ["clientes"] }
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/clientes/{{clienteId}}", "host": ["{{baseUrl}}"], "path": ["clientes","{{clienteId}}"] }
+          }
+        },
+        {
+          "name": "Buscar por CPF/CNPJ",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/clientes/cpfCNPJ/98765432100", "host": ["{{baseUrl}}"], "path": ["clientes","cpfCNPJ","98765432100"] }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCompleto\": \"Joao da Silva Atualizado\",\n  \"email\": \"joao.novo@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 99999-0000\",\n  \"cep\": \"01001000\",\n  \"numero\": \"15\",\n  \"complemento\": \"\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/clientes/{{clienteId}}", "host": ["{{baseUrl}}"], "path": ["clientes","{{clienteId}}"] }
+          }
+        },
+        {
+          "name": "Deletar",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/clientes/{{clienteId}}", "host": ["{{baseUrl}}"], "path": ["clientes","{{clienteId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚗 Veículos",
+      "item": [
+        {
+          "name": "Cadastrar veículo",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "  const json = pm.response.json();",
+                "  if (json.id) {",
+                "    pm.collectionVariables.set('veiculoId', json.id);",
+                "    pm.test('veiculoId salvo: ' + json.id, () => pm.expect(json.id).to.be.a('string'));",
+                "  }",
+                "  if (json.placa) pm.collectionVariables.set('veiculoPlaca', json.placa);",
+                "}"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"{{veiculoPlaca}}\",\n  \"modelo\": \"Civic\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"cor\": \"Prata\",\n  \"quilometragem\": 15000,\n  \"clienteId\": \"{{clienteId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/veiculos", "host": ["{{baseUrl}}"], "path": ["veiculos"] }
+          }
+        },
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/veiculos", "host": ["{{baseUrl}}"], "path": ["veiculos"] }
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/veiculos/{{veiculoId}}", "host": ["{{baseUrl}}"], "path": ["veiculos","{{veiculoId}}"] }
+          }
+        },
+        {
+          "name": "Buscar por Placa",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/veiculos/placa/{{veiculoPlaca}}", "host": ["{{baseUrl}}"], "path": ["veiculos","placa","{{veiculoPlaca}}"] }
+          }
+        },
+        {
+          "name": "Listar por Cliente",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/veiculos/cliente/{{clienteId}}", "host": ["{{baseUrl}}"], "path": ["veiculos","cliente","{{clienteId}}"] }
+          }
+        },
+        {
+          "name": "Contar total",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/veiculos/total-veiculos", "host": ["{{baseUrl}}"], "path": ["veiculos","total-veiculos"] }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"{{veiculoPlaca}}\",\n  \"modelo\": \"Civic EX\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"cor\": \"Preto\",\n  \"quilometragem\": 16000,\n  \"clienteId\": \"{{clienteId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/veiculos/{{veiculoId}}", "host": ["{{baseUrl}}"], "path": ["veiculos","{{veiculoId}}"] }
+          }
+        },
+        {
+          "name": "Deletar por ID",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/veiculos/{{veiculoId}}", "host": ["{{baseUrl}}"], "path": ["veiculos","{{veiculoId}}"] }
+          }
+        },
+        {
+          "name": "Deletar por Placa",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/veiculos/placa/{{veiculoPlaca}}", "host": ["{{baseUrl}}"], "path": ["veiculos","placa","{{veiculoPlaca}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Atendimentos",
+      "item": [
+        {
+          "name": "Cadastrar atendimento",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "  const json = pm.response.json();",
+                "  if (json.id) {",
+                "    pm.collectionVariables.set('atendimentoId', json.id);",
+                "    pm.test('atendimentoId salvo: ' + json.id, () => pm.expect(json.id).to.be.a('string'));",
+                "  }",
+                "}"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricaoServico\": \"Troca de oleo e filtro\",\n  \"statusAtendimento\": \"AGUARDANDO\",\n  \"clienteId\": \"{{clienteId}}\",\n  \"veiculoPlaca\": \"{{veiculoPlaca}}\",\n  \"funcionarioId\": \"{{funcionarioId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/atendimentos/cadastrar", "host": ["{{baseUrl}}"], "path": ["atendimentos","cadastrar"] }
+          }
+        },
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/atendimentos/listar-todos", "host": ["{{baseUrl}}"], "path": ["atendimentos","listar-todos"] }
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/atendimentos/id/{{atendimentoId}}", "host": ["{{baseUrl}}"], "path": ["atendimentos","id","{{atendimentoId}}"] }
+          }
+        },
+        {
+          "name": "Listar por Cliente",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/atendimentos/cliente ID/{{clienteId}}", "host": ["{{baseUrl}}"], "path": ["atendimentos","cliente ID","{{clienteId}}"] }
+          }
+        },
+        {
+          "name": "Listar — ordem decrescente",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/atendimentos/listar-ordem-decrescente", "host": ["{{baseUrl}}"], "path": ["atendimentos","listar-ordem-decrescente"] }
+          }
+        },
+        {
+          "name": "Listar concluídos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/atendimentos/listar-concluidos", "host": ["{{baseUrl}}"], "path": ["atendimentos","listar-concluidos"] }
+          }
+        },
+        {
+          "name": "Atualizar atendimento",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricaoServico\": \"Troca de oleo, filtro e revisao geral\",\n  \"statusAtendimento\": \"ANDAMENTO\",\n  \"clienteId\": \"{{clienteId}}\",\n  \"veiculoPlaca\": \"{{veiculoPlaca}}\",\n  \"funcionarioId\": \"{{funcionarioId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/atendimentos/atualizar/{{atendimentoId}}", "host": ["{{baseUrl}}"], "path": ["atendimentos","atualizar","{{atendimentoId}}"] }
+          }
+        },
+        {
+          "name": "Deletar",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/atendimentos/delete/{{atendimentoId}}", "host": ["{{baseUrl}}"], "path": ["atendimentos","delete","{{atendimentoId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🌐 Integrações Externas",
+      "item": [
+        {
+          "name": "ViaCEP — buscar endereço",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/viacep/endereco/01001000", "host": ["{{baseUrl}}"], "path": ["api","viacep","endereco","01001000"] }
+          }
+        },
+        {
+          "name": "Brasil API — feriados 2025",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/feriados/2025", "host": ["{{baseUrl}}"], "path": ["api","feriados","2025"] }
+          }
+        }
+      ]
+    }
+  ]
+}

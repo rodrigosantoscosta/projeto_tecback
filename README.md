@@ -299,11 +299,70 @@ Aguarde a mensagem `Started OficinaApplication` nos logs.
 ```bash
 docker-compose down
 ```
+---
+## 8) Testando a API com Postman
 
-### Executar localmente sem Docker
 
-```bash
-./mvnw spring-boot:run
+### Importar a collection
+
+1. Abra o Postman e clique em **Import**.
+2. Selecione o arquivo `oficina_postman_collection.json` na raiz do projeto.
+3. A collection **"Oficina Mecânica API"** aparecerá com 6 pastas organizadas.
+
+### Variáveis globais disponíveis
+
+| Variável | Valor padrão | Descrição |
+|---|---|---|
+| `baseUrl` | `http://localhost:8080` | URL base da API |
+| `token` | *(vazio)* | JWT preenchido automaticamente no login |
+| `funcionarioId` | *(vazio)* | UUID preenchido após cadastrar funcionário |
+| `clienteId` | *(vazio)* | UUID preenchido após cadastrar cliente |
+| `veiculoId` | *(vazio)* | UUID preenchido após cadastrar veículo |
+| `veiculoPlaca` | `ABC1D23` | Placa usada nos testes de veículo |
+| `atendimentoId` | *(vazio)* | UUID preenchido após cadastrar atendimento |
+| `usuarioLogin` | `admin` | Usuário de autenticação |
+| `senhaLogin` | `senha123` | Senha de autenticação |
+
+> Os scripts de **Tests** de cada request preenchem os UUIDs automaticamente — não é necessário copiar IDs manualmente.
+
+### Fluxo de teste recomendado
+
+Execute as requests **nesta ordem** para um ciclo completo sem erros de dependência:
+
+```
+ Auth
+  └─ 1. Cadastrar Funcionário (público)   → salva {{funcionarioId}}
+  └─ 2. Login → salva token               → salva {{token}}
+  └─ GET /funcionarios/me                 → valida sessão ativa
+
+ Clientes
+  └─ Cadastrar cliente                    → salva {{clienteId}}
+  └─ Listar todos
+  └─ Buscar por ID / CPF-CNPJ
+
+ Veículos
+  └─ Cadastrar veículo                    → salva {{veiculoId}} e {{veiculoPlaca}}
+  └─ Listar todos / Buscar por Placa
+  └─ Listar por Cliente
+
+ Atendimentos
+  └─ Cadastrar atendimento                → salva {{atendimentoId}}
+  └─ Listar todos / Buscar por ID
+  └─ Atualizar (status: ANDAMENTO)
+  └─ Listar concluídos
+
+ Integrações Externas
+  └─ ViaCEP — buscar endereço             → não requer token
+  └─ Brasil API — feriados 2025           → não requer token
 ```
 
-O perfil `docker` (H2) já está ativo por padrão no `application.properties`.
+### Autenticação
+
+A collection usa **Bearer Token** configurado a nível de collection. Após executar o request **"2. Login → salva token"**, todas as requests protegidas funcionam automaticamente — o header `Authorization: Bearer {{token}}` é injetado pelo Postman.
+
+Endpoints **públicos** (sem token necessário):
+- `POST /funcionarios` — cadastro
+- `POST /funcionarios/login` — login
+- `GET /api/viacep/endereco/{cep}`
+- `GET /api/feriados/{ano}`
+- Todos os endpoints de `/veiculos` (leitura e escrita)

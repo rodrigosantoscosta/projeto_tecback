@@ -445,5 +445,4 @@
 - **VeiculoPlaca:** Obrigatório e deve ser uma Placa válida de um Veículo existente
 - **FuncionarioId:** Obrigatório e deve ser um UUID válido de um Funcionário existente
 - Campos obrigatórios: descriçãoServiço, clienteId, veiculoPlaca, funcionarioId
-
 ---

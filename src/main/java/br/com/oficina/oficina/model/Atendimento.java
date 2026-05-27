@@ -19,7 +19,7 @@ public class Atendimento {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descricao_servico", columnDefinition = "TEXT")
     private String descricaoServico;
 
     @Column(name = "data_entrada")
