@@ -1,8 +1,11 @@
 # OFICINA - Sistema de Gestão para Oficina Mecânica
 
-## Especificação do Projeto (BackEnd)
+## Grupo
+* Alexander Augusto de Figueiredo Baxendale
+* Pedro Neto Amâncio de Lima
+* Rodrigo Santos Costa
 
-## 1) Stack e objetivo
+##  Stack e objetivo
 
 ### Backend
 
