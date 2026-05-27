@@ -50,7 +50,10 @@ public class SecurityConfig {
             // Desabilita a proteção CSRF (Cross-Site Request Forgery)
             // Necessário para APIs RESTful que usam autenticação stateless como JWT
             .csrf(csrf -> csrf.disable())
-            
+
+            // Permite que o H2 Console seja carregado em iframe (necessário para o browser)
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+
             // Configura o gerenciamento de sessão como STATELESS
             // Isso significa que não usaremos sessões HTTP, já que usamos JWT
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -65,6 +68,7 @@ public class SecurityConfig {
                         
                         // Define URLs que podem ser acessadas sem autenticação
                         .requestMatchers(
+                            "/h2-console/**",       // H2 Console (dev/docker)
                             "/funcionarios/login",  // Endpoint de login
                             "/v3/api-docs",         // OpenAPI JSON raiz
                             "/v3/api-docs/**",      // OpenAPI sub-recursos
