@@ -300,8 +300,6 @@ Aguarde a mensagem `Started OficinaApplication` nos logs.
 docker-compose down
 ```
 
-> ⚠️ O banco H2 é **in-memory**: todos os dados são perdidos ao parar o container. Para persistência, utilize o perfil `railway` com PostgreSQL.
-
 ### Executar localmente sem Docker
 
 ```bash
