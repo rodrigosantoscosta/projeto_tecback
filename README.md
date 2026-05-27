@@ -253,26 +253,59 @@ src/main/java/com/oficina/
 
 ### Pré-requisitos
 
-- Java 21+
-- PostgreSQL rodando localmente (ou via Docker)
-- Maven 3.6+
+- [Docker](https://www.docker.com/) e Docker Compose instalados
+- Git
 
-### Via Docker Compose
+### Passo a passo — Docker com H2 (recomendado)
+
+**1. Clone o repositório**
 
 ```bash
-docker-compose up -d
+git clone https://github.com/rodrigosantoscosta/projeto_tecback.git
+cd projeto_tecback
 ```
 
-### Via Maven
+**2. Configure as variáveis de ambiente**
+
+```bash
+cp .env.example .env
+```
+
+> O perfil `docker` já vem definido no `.env.example`. Não é necessário configurar banco de dados externo — a aplicação usa H2 in-memory.
+
+**3. Suba o container**
+
+```bash
+docker-compose up --build
+```
+
+Aguarde a mensagem `Started OficinaApplication` nos logs.
+
+**4. Acesse os serviços**
+
+| Serviço | URL |
+|---|---|
+| API | `http://localhost:8080` |
+| Swagger / OpenAPI | `http://localhost:8080/swagger-ui/index.html` |
+| H2 Console | `http://localhost:8080/h2-console` |
+
+**Credenciais do H2 Console:**
+- JDBC URL: `jdbc:h2:mem:oficinadb`
+- User: `sa`
+- Password: *(deixar em branco)*
+
+**5. Parar o container**
+
+```bash
+docker-compose down
+```
+
+> ⚠️ O banco H2 é **in-memory**: todos os dados são perdidos ao parar o container. Para persistência, utilize o perfil `railway` com PostgreSQL.
+
+### Executar localmente sem Docker
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-### Variáveis de ambiente
-
-Copie o arquivo `.env.example` para `.env` e ajuste as configurações de banco de dados antes de executar.
-
-### Documentação da API
-
-Após subir a aplicação, acesse o Swagger em: `http://localhost:8080/swagger-ui/index.html`
+O perfil `docker` (H2) já está ativo por padrão no `application.properties`.
