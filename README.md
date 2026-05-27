@@ -6,7 +6,7 @@
 
 ### Backend
 
-- **Framework**: Spring Boot 3.5.6
+- **Framework**: Spring Boot 3.3.4
 - **Linguagem**: Java 21
 - **Dependencias**:
   - Spring Web (APIs REST)
@@ -34,7 +34,7 @@
 - **Versionamento DB**: Flyway
 - **Documentação API**: Swagger/OpenAPI (SpringDoc)
 - **Objetivo**: API para gestão de oficina mecânica com cadastro de clientes, veículos, atendimentos e integração com ViaCEP para endereços automáticos.
-- **Autenticação**: não obrigatória (pode ser Plus).
+- **Autenticação**: JWT (obrigatória para endpoints protegidos).
 
 ### Estrutura de arquivos
 
@@ -249,8 +249,30 @@ src/main/java/com/oficina/
 - **Brasil API**: Consulta de feriados nacionais
 - **REST Template**: Configurado para consumo de APIs externas
 
+## 7) Como executar
+
 ### Pré-requisitos
 
 - Java 21+
-- PostgreSQL
+- PostgreSQL rodando localmente (ou via Docker)
 - Maven 3.6+
+
+### Via Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+### Via Maven
+
+```bash
+./mvnw spring-boot:run
+```
+
+### Variáveis de ambiente
+
+Copie o arquivo `.env.example` para `.env` e ajuste as configurações de banco de dados antes de executar.
+
+### Documentação da API
+
+Após subir a aplicação, acesse o Swagger em: `http://localhost:8080/swagger-ui/index.html`
