@@ -29,8 +29,8 @@ public class AtendimentoDTO {
         this.dataConclusao = atendimento.getDataConclusao();
         this.status = atendimento.getStatus();
         this.dataCadastro = atendimento.getDataCadastro();
-        this.cliente = atendimento.getCliente().getId();
-        this.veiculo = atendimento.getVeiculo().getPlaca();
-        this.funcionario = atendimento.getFuncionario().getId();
+        this.cliente    = atendimento.getCliente()    != null ? atendimento.getCliente().getId()       : null;
+        this.veiculo    = atendimento.getVeiculo()    != null ? atendimento.getVeiculo().getPlaca()    : null;
+        this.funcionario = atendimento.getFuncionario() != null ? atendimento.getFuncionario().getId() : null;
     }
 }
