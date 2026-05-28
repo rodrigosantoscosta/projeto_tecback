@@ -362,10 +362,3 @@ Execute as requests **nesta ordem** para um ciclo completo sem erros de dependê
 ### Autenticação
 
 A collection usa **Bearer Token** configurado a nível de collection. Após executar o request **"2. Login → salva token"**, todas as requests protegidas funcionam automaticamente — o header `Authorization: Bearer {{token}}` é injetado pelo Postman.
-
-Endpoints **públicos** (sem token necessário):
-- `POST /funcionarios` — cadastro
-- `POST /funcionarios/login` — login
-- `GET /api/viacep/endereco/{cep}`
-- `GET /api/feriados/{ano}`
-- Todos os endpoints de `/veiculos` (leitura e escrita)
