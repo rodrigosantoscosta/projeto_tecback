@@ -4,6 +4,7 @@ import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
 import br.com.oficina.oficina.dto.atendimento.CadastrarAtendimentoDTO;
 import br.com.oficina.oficina.exception.AtendimentoNaoEncontrado;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
+import br.com.oficina.oficina.exception.TransicaoStatusInvalidaException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.Atendimento;
 import br.com.oficina.oficina.model.Cliente;
@@ -163,6 +164,17 @@ public class AtendimentoService {
                 });
 
        StatusAtendimento statusAtualizado = atendimentoDto.getStatusAtendimento();
+
+       // Valida a transição de status
+       if (statusAtualizado != null) {
+           StatusAtendimento statusAtual = atendimentoExistente.getStatus();
+           if (!statusAtual.podeTransicionarPara(statusAtualizado)) {
+               log.warn("Transição inválida: {} → {}", statusAtual, statusAtualizado);
+               throw new TransicaoStatusInvalidaException(
+                       String.format("Não é permitido alterar o status de '%s' para '%s'.", statusAtual, statusAtualizado)
+               );
+           }
+       }
 
        // Verificando se os Status esta como CONCLUIDO OU CANCELADO, caso esteja será adcionado o valor de Data de Conclusão
        if(statusAtualizado == StatusAtendimento.CONCLUIDO || statusAtualizado == StatusAtendimento.CANCELADO){

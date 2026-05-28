@@ -4,6 +4,7 @@ import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
 import br.com.oficina.oficina.dto.atendimento.CadastrarAtendimentoDTO;
 import br.com.oficina.oficina.exception.AtendimentoNaoEncontrado;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
+import br.com.oficina.oficina.exception.TransicaoStatusInvalidaException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.*;
 import br.com.oficina.oficina.repository.*;
@@ -420,6 +421,126 @@ class AtendimentoServiceTest {
 
             assertThat(resultado.getStatus()).isEqualTo(StatusAtendimento.ANDAMENTO);
             assertThat(resultado.getDataConclusao()).isNull();
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // [REGRA] Controle de fluxo de status
+    // ═════════════════════════════════════════════════════════════════════════
+
+    @Nested
+    @DisplayName("[REGRA] Controle de fluxo de status")
+    class ControleFluxoStatus {
+
+        private CadastrarAtendimentoDTO dtoComStatus(StatusAtendimento statusNovo) {
+            return dto(statusNovo);
+        }
+
+        private void mockDependencias() {
+            when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            when(veiculoRepository.findByPlaca("ABC1D23")).thenReturn(Optional.of(veiculo));
+            when(funcionarioRepository.findById(funcionario.getId())).thenReturn(Optional.of(funcionario));
+            when(atendimentoRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        }
+
+        // ── transições permitidas ─────────────────────────────────────────
+
+        @Test
+        @DisplayName("AGUARDANDO → ANDAMENTO deve ser permitido")
+        void aguardandoParaAndamento() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.AGUARDANDO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+            mockDependencias();
+
+            assertThatNoException()
+                    .isThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(StatusAtendimento.ANDAMENTO)));
+        }
+
+        @Test
+        @DisplayName("AGUARDANDO → CANCELADO deve ser permitido")
+        void aguardandoParaCancelado() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.AGUARDANDO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+            mockDependencias();
+
+            assertThatNoException()
+                    .isThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(StatusAtendimento.CANCELADO)));
+        }
+
+        @Test
+        @DisplayName("ANDAMENTO → CONCLUIDO deve ser permitido")
+        void andamentoParaConcluido() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.ANDAMENTO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+            mockDependencias();
+
+            assertThatNoException()
+                    .isThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(StatusAtendimento.CONCLUIDO)));
+        }
+
+        @Test
+        @DisplayName("ANDAMENTO → CANCELADO deve ser permitido")
+        void andamentoParaCancelado() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.ANDAMENTO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+            mockDependencias();
+
+            assertThatNoException()
+                    .isThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(StatusAtendimento.CANCELADO)));
+        }
+
+        // ── transições proibidas ──────────────────────────────────────────
+
+        @Test
+        @DisplayName("AGUARDANDO → CONCLUIDO deve lançar TransicaoStatusInvalidaException")
+        void aguardandoParaConcluidoDeveLancarExcecao() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.AGUARDANDO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+
+            assertThatThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(StatusAtendimento.CONCLUIDO)))
+                    .isInstanceOf(TransicaoStatusInvalidaException.class)
+                    .hasMessageContaining("AGUARDANDO")
+                    .hasMessageContaining("CONCLUIDO");
+            verify(atendimentoRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("ANDAMENTO → AGUARDANDO deve lançar TransicaoStatusInvalidaException")
+        void andamentoParaAguardandoDeveLancarExcecao() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.ANDAMENTO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+
+            assertThatThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(StatusAtendimento.AGUARDANDO)))
+                    .isInstanceOf(TransicaoStatusInvalidaException.class)
+                    .hasMessageContaining("ANDAMENTO")
+                    .hasMessageContaining("AGUARDANDO");
+            verify(atendimentoRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("CONCLUIDO → qualquer status deve lançar TransicaoStatusInvalidaException (terminal)")
+        void concluidoEhStatusTerminal() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.CONCLUIDO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+
+            for (StatusAtendimento destino : StatusAtendimento.values()) {
+                if (destino == StatusAtendimento.CONCLUIDO) continue;
+                assertThatThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(destino)))
+                        .isInstanceOf(TransicaoStatusInvalidaException.class);
+            }
+        }
+
+        @Test
+        @DisplayName("CANCELADO → qualquer status deve lançar TransicaoStatusInvalidaException (terminal)")
+        void canceladoEhStatusTerminal() {
+            Atendimento existente = atendimentoSalvo(StatusAtendimento.CANCELADO);
+            when(atendimentoRepository.findById(existente.getId())).thenReturn(Optional.of(existente));
+
+            for (StatusAtendimento destino : StatusAtendimento.values()) {
+                if (destino == StatusAtendimento.CANCELADO) continue;
+                assertThatThrownBy(() -> service.atualizarAtendimento(existente.getId(), dtoComStatus(destino)))
+                        .isInstanceOf(TransicaoStatusInvalidaException.class);
+            }
         }
     }
 

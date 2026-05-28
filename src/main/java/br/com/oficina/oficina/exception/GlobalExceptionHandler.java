@@ -124,6 +124,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(TransicaoStatusInvalidaException.class)
+    public ResponseEntity<ErrorDetails> handleTransicaoStatusInvalida(
+            TransicaoStatusInvalidaException e,
+            HttpServletRequest request) {
+
+        log.warn("Transição de status inválida: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorDetails> handleRuntimeException(
             RuntimeException e,
