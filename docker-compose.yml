@@ -11,3 +11,12 @@ services:
     volumes:
       - ./logs:/app/logs/
     restart: unless-stopped
+
+  oficina-tests:
+    build:
+      context: .
+      target: build
+    container_name: oficina-tests
+    command: mvn test
+    profiles:
+      - test
