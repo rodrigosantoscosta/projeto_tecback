@@ -2,8 +2,10 @@ package br.com.oficina.oficina;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class OficinaApplication {
 
 	public static void main(String[] args) {
