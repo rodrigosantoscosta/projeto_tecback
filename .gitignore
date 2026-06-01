@@ -78,6 +78,12 @@ application-prod.properties
 logs/
 !example.log
 
+### FRONTEND (crm-oficina)
+crm-oficina/node_modules/
+crm-oficina/dist/
+crm-oficina/.env.local
+crm-oficina/.env.production
+
 ### DOCUMENTAÇÃO TEMPORÁRIA
 #/docs/generated/
 #/api-docs/
