@@ -140,6 +140,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
     }
 
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    public ResponseEntity<ErrorDetails> handleCredenciaisInvalidas(
+            CredenciaisInvalidasException e,
+            HttpServletRequest request) {
+
+        log.warn("Falha de autenticação: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorDetails> handleRuntimeException(
             RuntimeException e,

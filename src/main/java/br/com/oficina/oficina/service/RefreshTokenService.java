@@ -50,6 +50,7 @@ public class RefreshTokenService {
      * @throws ResourceNotFoundException se o token não existir
      * @throws IllegalStateException     se o token estiver revogado ou expirado
      */
+    @Transactional(readOnly = true)
     public RefreshToken validar(String tokenStr) {
         RefreshToken rt = refreshTokenRepository.findByToken(tokenStr)
                 .orElseThrow(() -> new ResourceNotFoundException("Refresh token não encontrado"));

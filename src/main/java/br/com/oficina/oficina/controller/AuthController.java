@@ -3,6 +3,7 @@ package br.com.oficina.oficina.controller;
 import br.com.oficina.oficina.dto.auth.AuthResponse;
 import br.com.oficina.oficina.dto.auth.LoginRequest;
 import br.com.oficina.oficina.dto.auth.RefreshRequest;
+import br.com.oficina.oficina.exception.CredenciaisInvalidasException;
 import br.com.oficina.oficina.model.RefreshToken;
 import br.com.oficina.oficina.service.RefreshTokenService;
 import br.com.oficina.oficina.security.JwtUtil;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,20 +36,18 @@ public class AuthController {
      */
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Autentica o funcionário e retorna access + refresh token")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
         log.info("Tentativa de login — usuário: {}", req.getUsuario());
         try {
             var authToken = new UsernamePasswordAuthenticationToken(req.getUsuario(), req.getSenha());
             var auth      = authenticationManager.authenticate(authToken);
 
-            // [fix blocking-2] pattern matching — falha rápido com mensagem clara se o tipo for inesperado
             if (!(auth.getPrincipal() instanceof UsuarioPrincipal principal)) {
                 throw new IllegalStateException(
                         "Principal inesperado após autenticação: " + auth.getPrincipal().getClass());
             }
 
-            // [fix blocking-1] Funcionario vem direto do principal — zero roundtrips extras ao banco
-            String accessToken = jwtUtil.generateAccessToken(principal);
+            String accessToken    = jwtUtil.generateAccessToken(principal);
             RefreshToken refreshToken = refreshTokenService.criar(principal.getFuncionario());
 
             log.info("Login bem-sucedido — usuário: {}", req.getUsuario());
@@ -59,8 +57,8 @@ public class AuthController {
                     .build());
 
         } catch (AuthenticationException ex) {
-            log.warn("Falha de login — usuário: {}", req.getUsuario());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+            // [item-2] lança exception de domínio — GlobalExceptionHandler retorna ErrorDetails 401
+            throw new CredenciaisInvalidasException("Credenciais inválidas");
         }
     }
 
@@ -70,12 +68,13 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     @Operation(summary = "Renovar sessão", description = "Troca um refresh token válido por um novo par de tokens")
-    public ResponseEntity<?> refresh(@Valid @RequestBody RefreshRequest req) {
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest req) {
         log.info("Requisição de refresh token");
+        // [item-3] ResourceNotFoundException e IllegalStateException ambos propagam para o GlobalExceptionHandler:
+        //   - ResourceNotFoundException → 404 via @ResponseStatus (token inexistente)
+        //   - CredenciaisInvalidasException → 401 (token revogado ou expirado, relançado abaixo)
         try {
-            // [fix blocking-3] rotacionar() executa revogar + criar numa única @Transactional
             RefreshToken novoRefresh = refreshTokenService.rotacionar(req.getRefreshToken());
-
             UsuarioPrincipal principal = UsuarioPrincipal.fromFuncionario(novoRefresh.getFuncionario());
             String novoAccess = jwtUtil.generateAccessToken(principal);
 
@@ -86,9 +85,10 @@ public class AuthController {
                     .build());
 
         } catch (IllegalStateException ex) {
-            log.warn("Refresh token inválido: {}", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            // token revogado ou expirado → 401 com ErrorDetails, mesmo contrato do login
+            throw new CredenciaisInvalidasException(ex.getMessage());
         }
+        // ResourceNotFoundException não é capturada aqui — sobe para o GlobalExceptionHandler → 404
     }
 
     /**
