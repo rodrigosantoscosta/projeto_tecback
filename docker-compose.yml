@@ -43,8 +43,8 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-    command: mvn test
+      SPRING_PROFILES_ACTIVE: test
+    command: ["mvn", "test", "-Dspring.profiles.active=test"]
     profiles:
       - test
 
