@@ -7,7 +7,7 @@
 -- =============================================================
 
 CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id            UUID         DEFAULT RANDOM_UUID() PRIMARY KEY,
+    id            UUID         DEFAULT gen_random_uuid() PRIMARY KEY,
     token         VARCHAR(36)  NOT NULL UNIQUE,          -- UUID gerado pelo backend
     funcionario_id UUID        NOT NULL,
     expira_em     TIMESTAMP    NOT NULL,
