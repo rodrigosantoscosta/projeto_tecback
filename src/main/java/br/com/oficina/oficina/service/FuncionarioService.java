@@ -3,7 +3,6 @@ package br.com.oficina.oficina.service;
 import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
-import br.com.oficina.oficina.exception.AtendimentoNaoEncontrado;
 import br.com.oficina.oficina.exception.FuncionarioNaoEncontrado;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
@@ -42,7 +41,7 @@ public class FuncionarioService {
         log.debug("Buscando cliente por ID: {}", id);
         return funcionarioRepository.findById(id)
                 .map(FuncionarioDTO::new)
-                .orElseThrow(() -> new AtendimentoNaoEncontrado("Atendimento não encontrado"));
+                .orElseThrow(() -> new FuncionarioNaoEncontrado("Funcionário não encontrado com ID: " + id));
     }
 
     @SecurityRequirement(name = "bearerAuth")
@@ -121,26 +120,36 @@ public class FuncionarioService {
     }
 
     @Transactional
-    public Funcionario atualizarFuncionario(UUID id, CadastrarFuncionarioDTO funcionarioDTO) {
-        log.info("Atualiza funcionário com ID: {}", id);
+    public Funcionario atualizarFuncionario(UUID id, CadastrarFuncionarioDTO dto) {
+        log.info("Atualizando funcionário com ID: {}", id);
 
-        Funcionario funcionarioExistente = funcionarioRepository.findById(id)
-                .orElseThrow(() ->{
+        Funcionario f = funcionarioRepository.findById(id)
+                .orElseThrow(() -> {
                     log.error("Funcionário não encontrado para atualização: {}", id);
-                    return new FuncionarioNaoEncontrado(
-                            "Funcionário não encontrado com ID: "+id
-                    );
+                    return new FuncionarioNaoEncontrado("Funcionário não encontrado com ID: " + id);
                 });
 
+        f.setNome(dto.getNome().trim());
+        f.setCpfCNPJ(dto.getCpfCNPJ().replaceAll("\\D", ""));
+        f.setCargo(dto.getCargo().trim());
 
-        //Atualiza os dados básicos do funcionário
-        funcionarioExistente.setNome(funcionarioDTO.getNome().trim());
-        funcionarioExistente.setCpfCNPJ(funcionarioDTO.getCpfCNPJ().replaceAll("\\D", ""));
-        funcionarioExistente.setEmail(funcionarioDTO.getEmail().trim().toLowerCase());
+        if (dto.getTelefone() != null) {
+            f.setTelefone(dto.getTelefone().trim());
+        }
+        if (dto.getEmail() != null) {
+            f.setEmail(dto.getEmail().trim().toLowerCase());
+        }
 
-        Funcionario funcionarioAtualizado = funcionarioRepository.save(funcionarioExistente);
-        log.info("funcionario atualizado com sucesso - ID: {}", id);
+        // Atualiza senha apenas se fornecida (campo opcional na edição)
+        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            f.setSenhaHash(passwordEncoder.encode(dto.getSenha()));
+        }
 
-        return funcionarioAtualizado;
+        // usuario não é editável após criação — alteração exigiria invalidação de tokens
+        // Se precisar trocar usuario, deve ser implementado como operação separada
+
+        Funcionario atualizado = funcionarioRepository.save(f);
+        log.info("Funcionário atualizado com sucesso — ID: {}", id);
+        return atualizado;
     }
 }

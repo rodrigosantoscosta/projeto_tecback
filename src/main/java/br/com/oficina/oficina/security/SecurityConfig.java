@@ -65,31 +65,32 @@ public class SecurityConfig {
                     auth
                         // Permite requisições POST para /funcionarios sem autenticação
                         .requestMatchers(HttpMethod.POST, "/funcionarios").permitAll()
-                        
+
                         // Define URLs que podem ser acessadas sem autenticação
                         .requestMatchers(
-                            "/h2-console/**",       // H2 Console (dev/docker)
-                            "/funcionarios/login",  // Endpoint de login
-                            "/v3/api-docs",         // OpenAPI JSON raiz
-                            "/v3/api-docs/**",      // OpenAPI sub-recursos
-                            "/v3/api-docs.yaml",    // OpenAPI YAML
-                            "/v3/**",               // Qualquer outro endpoint sob /v3
-                            "/swagger-ui/**",       // Interface do Swagger UI
-                            "/swagger-ui/index.html", // Página principal do Swagger UI
-                            "/swagger-ui.html",     // Página HTML do Swagger
-                            "/swagger-resources/**", // Compat (se existir)
-                            "/",                    // Rota raiz
-                            "/index.html",          // Página inicial
-                            "/style.css",           // Arquivo CSS principal
-                            "/validation.css"       // Estilos de validação
-                        ).permitAll()  // Permite acesso sem autenticação
-                        // Redundância usando AntPath para evitar qualquer conflito de matcher MVC
+                            "/auth/login",          // Login
+                            "/auth/refresh",        // Renovação de token
+                            "/auth/logout",         // Logout (revoga refresh token sem access token)
+                            "/volume/status",
+                            "/v3/api-docs",
+                            "/v3/api-docs/**",
+                            "/v3/api-docs.yaml",
+                            "/v3/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui/index.html",
+                            "/swagger-ui.html",
+                            "/swagger-resources/**",
+                            "/",
+                            "/index.html",
+                            "/style.css",
+                            "/validation.css"
+                        ).permitAll()
                         .requestMatchers(
                             new AntPathRequestMatcher("/v3/**"),
                             new AntPathRequestMatcher("/swagger-ui/**"),
                             new AntPathRequestMatcher("/swagger-ui.html")
                         ).permitAll()
-                        
+
                         // Todas as outras requisições precisam de autenticação
                         .anyRequest().authenticated();
                 } else {
