@@ -2,8 +2,6 @@ package br.com.oficina.oficina.controller;
 
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
-import br.com.oficina.oficina.dto.auth.AuthenticationRequest;
-import br.com.oficina.oficina.dto.auth.AuthenticationResponse;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
 import br.com.oficina.oficina.service.FuncionarioService;
@@ -12,10 +10,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
@@ -27,7 +29,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Slf4j
 @RestController
 @RequestMapping("/funcionarios")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Funcionarios", description = "Endpoints para gerenciamento de funcionarios")
@@ -35,8 +36,6 @@ public class FuncionarioController {
 
     private final FuncionarioService funcionarioService;
     private final FuncionarioMapper funcionarioMapper;
-    private final AuthenticationManager authenticationManager;
-    private final br.com.oficina.oficina.security.JwtUtil jwtUtil;
 
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
@@ -46,21 +45,6 @@ public class FuncionarioController {
         Funcionario funcionario = funcionarioService.cadastrarFuncionario(dto);
         log.info("Funcionário cadastrado com sucesso");
         return ResponseEntity.ok(funcionarioMapper.toDTO(funcionario));
-    }
-
-    @PostMapping("/login")
-    @Operation(summary = "Login de funcionário")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequest req) {
-        log.info("Login do funcionário");
-        try {
-            var authToken = new UsernamePasswordAuthenticationToken(req.getUsuario(), req.getSenha());
-            var auth = authenticationManager.authenticate(authToken);
-            var userDetails = (org.springframework.security.core.userdetails.UserDetails) auth.getPrincipal();
-            var token = jwtUtil.generateToken(userDetails);
-            return ResponseEntity.ok(new AuthenticationResponse("Bearer", token));
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(401).body("Credenciais inválidas");
-        }
     }
 
     // retorna o funcionario autenticado
