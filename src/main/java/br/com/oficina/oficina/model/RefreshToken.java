@@ -3,15 +3,17 @@ package br.com.oficina.oficina.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "refresh_tokens")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,5 +51,16 @@ public class RefreshToken {
 
     public boolean isValido() {
         return !revogado && !isExpirado();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof RefreshToken rt)) return false;
+        return id != null && id.equals(rt.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

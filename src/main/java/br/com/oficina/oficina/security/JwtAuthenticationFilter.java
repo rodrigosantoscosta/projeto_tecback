@@ -1,10 +1,14 @@
 package br.com.oficina.oficina.security;
 
 import br.com.oficina.oficina.service.CustomUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +33,8 @@ import java.io.IOException;
  * - @Override: Sobrescreve o método doFilterInternal da classe pai OncePerRequestFilter
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
@@ -81,9 +87,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 // Extrai o username do token JWT
                 username = jwtUtil.extractUsername(token);
+            } catch (ExpiredJwtException e) {
+                log.debug("Access token expirado — renovação necessária");
+            } catch (JwtException e) {
+                log.debug("Token JWT inválido: {}", e.getMessage());
             } catch (Exception e) {
-                // Token inválido ou expirado -> segue sem autenticação
-                // Permite que a requisição continue sem autenticação
+                log.warn("Erro inesperado ao processar token JWT", e);
             }
         }
 
