@@ -140,6 +140,38 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
     }
 
+    @ExceptionHandler(AtendimentoNaoEncontrado.class)
+    public ResponseEntity<ErrorDetails> handleAtendimentoNaoEncontrado(
+            AtendimentoNaoEncontrado e,
+            HttpServletRequest request) {
+
+        log.error("Atendimento não encontrado: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(FuncionarioNaoEncontrado.class)
+    public ResponseEntity<ErrorDetails> handleFuncionarioNaoEncontrado(
+            FuncionarioNaoEncontrado e,
+            HttpServletRequest request) {
+
+        log.error("Funcionário não encontrado: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ResponseEntity<ErrorDetails> handleCredenciaisInvalidas(
             CredenciaisInvalidasException e,

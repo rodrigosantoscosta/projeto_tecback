@@ -319,18 +319,21 @@ Ou localmente (requer JDK 21):
 ### Testes E2E (banco isolado `oficina_e2e_db`)
 
 ```bash
-# Build + execução com limpeza automática
-docker compose build oficina-e2e-tests; docker compose --profile test up --abort-on-container-exit --exit-code-from oficina-e2e-tests
+# Build + execução
+docker compose build oficina-e2e-tests; docker compose up postgres-e2e oficina-e2e-tests --abort-on-container-exit --exit-code-from oficina-e2e-tests
 
 # Só executar (se já buildou)
-docker compose --profile test up --abort-on-container-exit --exit-code-from oficina-e2e-tests
+docker compose up postgres-e2e oficina-e2e-tests
 ```
 
 O serviço `postgres-e2e` é criado e destruído automaticamente junto com os testes — não interfere no banco principal `oficina_db`.
 
-22 testes E2E cobrindo:
+69 testes E2E cobrindo:
 - `AuthE2ETest` (8 testes: login, refresh, logout)
 - `ClienteE2ETest` (14 testes: CRUD completo de clientes)
+- `VeiculoE2ETest` (16 testes: CRUD + deleção por placa)
+- `AtendimentoE2ETest` (13 testes: CRUD + transições de status)
+- `FuncionarioE2ETest` (9 testes: CRUD completo de funcionários)
 
 ### Cobertura de testes unitários
 

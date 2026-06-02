@@ -76,7 +76,10 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: e2e
-    command: ["mvn", "test", "-Dtest=AuthE2ETest,ClienteE2ETest"]
+    volumes:
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
+    command: ["mvn", "test", "-Dspring.profiles.active=e2e"]
     profiles:
       - test
 

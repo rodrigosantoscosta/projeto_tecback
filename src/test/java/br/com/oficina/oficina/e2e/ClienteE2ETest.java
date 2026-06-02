@@ -90,7 +90,7 @@ class ClienteE2ETest {
     void deveCriarCliente() {
         CadastrarClienteDTO dto = new CadastrarClienteDTO();
         dto.setNomeCompleto("Maria Souza");
-        dto.setCpfCNPJ("52998224725");
+        dto.setCpfCNPJ("01602958580");
         dto.setTelefone("11987654321");
         dto.setEmail("maria.criar@email.com");
         dto.setCep("01001000");
@@ -360,5 +360,15 @@ class ClienteE2ETest {
                 "/clientes/" + UUID.randomUUID(), HttpMethod.DELETE, authHeader(), String.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("DELETE /clientes/{id} — deve retornar 403 sem token")
+    void deveRetornar403SemTokenAoDeletar() {
+        ResponseEntity<String> resp = rest.exchange(
+                "/clientes/" + UUID.randomUUID(), HttpMethod.DELETE,
+                null, String.class);
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }
