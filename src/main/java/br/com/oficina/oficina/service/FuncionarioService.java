@@ -49,11 +49,11 @@ public class FuncionarioService {
     @SecurityRequirement(name = "bearerAuth")
     @Transactional
     public Funcionario cadastrarFuncionario(CadastrarFuncionarioDTO funcionarioDTO) {
-        log.info("Iniciando cadastro de funcionário: {}", funcionarioDTO.getNome());
         if (funcionarioDTO == null) {
-            log.error("Dados do funcionário não encontrado: {}", funcionarioDTO);
+            log.error("Dados do funcionário não encontrado: null");
             throw new IllegalArgumentException("Dados do funcionário são obrigatórios");
         }
+        log.info("Iniciando cadastro de funcionário: {}", funcionarioDTO.getNome());
 
         //Valida unicidade
         if (funcionarioRepository.existsByCpfCNPJ(funcionarioDTO.getCpfCNPJ())) {
