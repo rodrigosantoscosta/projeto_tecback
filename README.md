@@ -316,15 +316,17 @@ Ou localmente (requer JDK 21):
 ./mvnw test
 ```
 
-### Testes E2E (contra PostgreSQL real)
+### Testes E2E (banco isolado `oficina_e2e_db`)
 
 ```bash
-# Build + execução
-docker compose build oficina-e2e-tests; docker compose run --rm oficina-e2e-tests
+# Build + execução com limpeza automática
+docker compose build oficina-e2e-tests; docker compose --profile test up --abort-on-container-exit --exit-code-from oficina-e2e-tests
 
 # Só executar (se já buildou)
-docker compose run --rm oficina-e2e-tests
+docker compose --profile test up --abort-on-container-exit --exit-code-from oficina-e2e-tests
 ```
+
+O serviço `postgres-e2e` é criado e destruído automaticamente junto com os testes — não interfere no banco principal `oficina_db`.
 
 22 testes E2E cobrindo:
 - `AuthE2ETest` (8 testes: login, refresh, logout)
