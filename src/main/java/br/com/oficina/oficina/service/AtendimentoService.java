@@ -15,7 +15,7 @@ import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
 import br.com.oficina.oficina.repository.VeiculoRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -126,6 +126,7 @@ public class AtendimentoService {
         return atendimentoDTO;
     }
 
+    @Transactional(readOnly = true)
     public AtendimentoDTO buscarAtendimentoPorId(UUID id) {
         log.info("Buscando atendimento por ID: {}", id);
         return atendimentoRepository.findById(id)
@@ -134,6 +135,7 @@ public class AtendimentoService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<AtendimentoDTO> listarAtendimentosPorClienteID(UUID clienteId) {
         log.info("Listando atendimentos por Cliente ID: {}", clienteId);
 
@@ -259,6 +261,7 @@ public class AtendimentoService {
         log.info("Veículo deletado com sucesso: {}", id);
     }
 
+    @Transactional(readOnly = true)
     public List<AtendimentoDTO> listarTodosAtendimentos() {
         log.info("Listando todos os atendimentos");
 
@@ -269,6 +272,7 @@ public class AtendimentoService {
                 .collect(Collectors.toList());
 
     }
+    @Transactional(readOnly = true)
     public List<AtendimentoDTO> listarAtendimentosConcluidos(){
         log.info("Listandos os atendimentos que possuem o status como CONCLUIDOS");
 
@@ -280,6 +284,7 @@ public class AtendimentoService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<AtendimentoDTO> ordenarAtendimentosporDataEntrada(){
         log.info("Ordenando os atendimentos pela data de entrada em ordem decrescente");
 

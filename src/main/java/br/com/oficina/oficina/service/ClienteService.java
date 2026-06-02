@@ -73,6 +73,7 @@ public class ClienteService {
         return clienteSalvo;
     }
 
+    @Transactional(readOnly = true)
     public List<ClienteListaDTO> listarTodosClientes() {
         log.info("Listando todos os clientes");
         List<Cliente> clientes = clienteRepository.findAll();
@@ -92,6 +93,7 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Cliente buscarClientePorId(UUID id) {
         log.debug("Buscando cliente por ID: {}", id);
         return clienteRepository.findById(id)
@@ -156,6 +158,7 @@ public class ClienteService {
         return clienteAtualizado;
     }
 
+    @Transactional(readOnly = true)
     public Cliente buscarClientePorCpfCNPJ(String cpfCNPJ) {
         log.debug("Buscando cliente por CPF/CNPJ: {}", cpfCNPJ);
         String cpfCnpjLimpo = cpfCNPJ.replaceAll("\\D", "");

@@ -69,11 +69,13 @@ public class VeiculoService {
         return veiculoSalvo;
     }
 
+    @Transactional(readOnly = true)
     public List<Veiculo> listarTodosVeiculos() {
         log.info("Listando todos os veículos");
         return veiculoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Veiculo buscarVeiculoPorId(UUID id) {
         log.info("Buscando veículo por ID: {}", id);
         return veiculoRepository.findById(id)
@@ -85,6 +87,7 @@ public class VeiculoService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public Veiculo buscarVeiculoPorPlaca(String placa) {
         log.info("Buscando veículo por placa: {}", placa);
         String placaNormalizada = placa.replaceAll("\\s+", "").toUpperCase();
@@ -97,6 +100,7 @@ public class VeiculoService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public List<Veiculo> listarVeiculosPorCliente(UUID clienteId) {
         log.info("Listando veículos do cliente: {}", clienteId);
         return veiculoRepository.findVeiculoByClienteId(clienteId);
@@ -210,6 +214,7 @@ public class VeiculoService {
         log.info("Veículo deletado com sucesso - Placa: {}", placaNormalizada);
     }
 
+    @Transactional(readOnly = true)
     public Long contarTotalVeiculos() {
         log.info("Contando total de veículos");
         Long total = veiculoRepository.contarTotalVeiculos();

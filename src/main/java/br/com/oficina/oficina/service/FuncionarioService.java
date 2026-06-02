@@ -29,6 +29,7 @@ public class FuncionarioService {
     private final PasswordEncoder passwordEncoder;
     private final FuncionarioMapper funcionarioMapper;
 
+    @Transactional(readOnly = true)
     public List<Funcionario> listarTodosFuncionarios() {
         log.info("Listando todos os funcionários");
         List<Funcionario> funcionarios = funcionarioRepository.findAll();
@@ -37,6 +38,7 @@ public class FuncionarioService {
         return funcionarioRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public FuncionarioDTO buscarPorId(UUID id) {
         log.debug("Buscando cliente por ID: {}", id);
         return funcionarioRepository.findById(id)
@@ -115,6 +117,7 @@ public class FuncionarioService {
 
 
     // Added: buscar por usuario
+    @Transactional(readOnly = true)
     public Optional<Funcionario> buscarPorUsuario(String usuario) {
         return funcionarioRepository.findByUsuario(usuario);
     }
