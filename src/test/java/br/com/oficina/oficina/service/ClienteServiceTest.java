@@ -2,6 +2,7 @@ package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
 import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
+import br.com.oficina.oficina.exception.CepNaoEncontradoException;
 import br.com.oficina.oficina.exception.ClienteComVeiculosException;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
@@ -55,6 +56,7 @@ class ClienteServiceTest {
         enderecoMock.setBairro("Sé");
         enderecoMock.setLocalidade("São Paulo");
         enderecoMock.setUf("SP");
+        enderecoMock.setComplemento("Apto 2");
 
         dtoValido = new CadastrarClienteDTO();
         dtoValido.setNomeCompleto("João da Silva");
@@ -132,7 +134,8 @@ class ClienteServiceTest {
             when(viaCepService.buscarEConstruirEndereco(any(), any(), any())).thenReturn(null);
 
             assertThatThrownBy(() -> service.cadastrarCliente(dtoValido))
-                    .isInstanceOf(RuntimeException.class);
+                    .isInstanceOf(CepNaoEncontradoException.class)
+                    .hasMessageContaining("CEP não encontrado");
             verify(clienteRepository, never()).save(any());
         }
 
@@ -239,6 +242,91 @@ class ClienteServiceTest {
             List<ClienteListaDTO> resultado = service.listarTodosClientes();
 
             assertThat(resultado).isEmpty();
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // atualizarCliente
+    // ═════════════════════════════════════════════════════════════════════════
+
+    @Nested
+    @DisplayName("atualizarCliente")
+    class AtualizarCliente {
+
+        @Test
+        @DisplayName("deve atualizar cliente com sucesso quando dados e endereco sao validos")
+        void deveAtualizarComSucesso() {
+            when(clienteRepository.findById(clienteSalvo.getId())).thenReturn(Optional.of(clienteSalvo));
+
+            CadastrarClienteDTO upd = new CadastrarClienteDTO();
+            upd.setNomeCompleto("Joao Atualizado");
+            upd.setCpfCNPJ("52998224725");
+            upd.setTelefone("11988887777");
+            upd.setEmail("joao.atualizado@email.com");
+            upd.setCep("01001000");
+            upd.setNumero("10");
+            upd.setComplemento("Apto 2");
+
+            when(clienteRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+            Cliente resultado = service.atualizarCliente(clienteSalvo.getId(), upd);
+
+            assertThat(resultado.getNomeCompleto()).isEqualTo("Joao Atualizado");
+            assertThat(resultado.getTelefone()).isEqualTo("11988887777");
+            // mesmo CEP/numero/complemento → sem chamada ao ViaCEP
+            verify(viaCepService, never()).buscarEConstruirEndereco(any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("deve buscar novo endereco via ViaCEP quando CEP é alterado")
+        void deveBuscarNovoEnderecoQuandoCepAlterado() {
+            Endereco enderecoOriginal = new Endereco();
+            enderecoOriginal.setId(1L);
+            enderecoOriginal.setCep("01001000");
+            enderecoOriginal.setLogradouro("Praça da Sé");
+            enderecoOriginal.setNumero("10");
+            enderecoOriginal.setBairro("Sé");
+            enderecoOriginal.setLocalidade("São Paulo");
+            enderecoOriginal.setUf("SP");
+            clienteSalvo.setEndereco(enderecoOriginal);
+
+            when(clienteRepository.findById(clienteSalvo.getId())).thenReturn(Optional.of(clienteSalvo));
+
+            Endereco novoEndereco = new Endereco();
+            novoEndereco.setCep("20040002");
+            novoEndereco.setLogradouro("Av. Rio Branco");
+            novoEndereco.setNumero("100");
+            novoEndereco.setBairro("Centro");
+            novoEndereco.setLocalidade("Rio de Janeiro");
+            novoEndereco.setUf("RJ");
+
+            CadastrarClienteDTO upd = new CadastrarClienteDTO();
+            upd.setNomeCompleto("Joao Atualizado");
+            upd.setCpfCNPJ("52998224725");
+            upd.setTelefone("11988887777");
+            upd.setEmail("joao.atualizado@email.com");
+            upd.setCep("20040002");
+            upd.setNumero("100");
+            upd.setComplemento("Sala 1");
+
+            when(viaCepService.buscarEConstruirEndereco("20040002", "100", "Sala 1"))
+                    .thenReturn(novoEndereco);
+            when(clienteRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+            Cliente resultado = service.atualizarCliente(clienteSalvo.getId(), upd);
+
+            assertThat(resultado.getEndereco().getCep()).isEqualTo("20040002");
+            verify(viaCepService).buscarEConstruirEndereco("20040002", "100", "Sala 1");
+        }
+
+        @Test
+        @DisplayName("deve lancar ClienteNaoEncontradoException ao atualizar ID inexistente")
+        void deveLancarExcecaoClienteNaoEncontrado() {
+            when(clienteRepository.findById(any())).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> service.atualizarCliente(UUID.randomUUID(), dtoValido))
+                    .isInstanceOf(ClienteNaoEncontradoException.class);
+            verify(clienteRepository, never()).save(any());
         }
     }
 
