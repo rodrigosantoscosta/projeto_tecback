@@ -160,7 +160,7 @@ public class AtendimentoService {
         Atendimento atendimentoExistente = atendimentoRepository.findById(id)
                 .orElseThrow(() ->{
                     log.error("Atendimento não encontrado: {}", id);
-                    return new RuntimeException(
+                    return new AtendimentoNaoEncontrado(
                             "Atendimento não encontrado com ID: " + id
                     );
                 });
@@ -221,7 +221,6 @@ public class AtendimentoService {
 
 
         atendimentoExistente.setDescricaoServico(atendimentoDto.getDescricaoServico());
-        atendimentoExistente.setStatus(statusAtualizado);
         atendimentoExistente.setDataConclusao(previsaoConclusao);
         atendimentoExistente.setCliente(cliente);
         atendimentoExistente.setVeiculo(veiculo);
