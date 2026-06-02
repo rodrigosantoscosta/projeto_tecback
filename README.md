@@ -345,6 +345,91 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 | `ClienteServiceTest` | CRUD cliente |
 | `VeiculoServiceTest` | CRUD veículo |
 | `AtendimentoServiceTest` | CRUD atendimento |
+| `FuncionarioServiceTest` | CRUD funcionário |
+
+## Regras de negócio e casos de borda
+
+### Cliente
+
+| ID | Regra | Violação | Status HTTP |
+|---|---|---|---|
+| CLI-01 | **CPF/CNPJ único** — não podem existir dois clientes com o mesmo documento | `RecursoJaCadastradoException`: "CPF/CNPJ já cadastrado no sistema" | 409 |
+| CLI-02 | **Email único** — não podem existir dois clientes com o mesmo email | `RecursoJaCadastradoException`: "Email já cadastrado no sistema" | 409 |
+| CLI-03 | **CEP deve ser resolvível via ViaCEP** no cadastro e na atualização (se CEP/numero/complemento mudarem) | `CepNaoEncontradoException`: "CEP não encontrado: {cep}" | 400 |
+| CLI-04 | **CEP deve conter exatamente 8 dígitos** (formatado ou não) | `MethodArgumentNotValidException` | 400 |
+| CLI-05 | **Cliente deve existir** nas operações de busca, atualização e deleção por ID ou CPF/CNPJ | `ClienteNaoEncontradoException`: "Cliente não encontrado com ID: {id}" | 404 |
+| CLI-06 | **Cliente com veículos não pode ser deletado** — é necessário remover ou transferir os veículos primeiro | `ClienteComVeiculosException`: "Não é possível deletar o cliente. Existem {N} veículo(s) associado(s)." | 409 |
+| CLI-07 | **Endereço só é refeito via ViaCEP na atualização se CEP, número ou complemento forem alterados** — se os 3 forem iguais, o endereço existente é mantido | N/A | N/A |
+| CLI-08 | **Nome, telefone e email são normalizados** (trim; email minúsculo) | N/A | N/A |
+
+### Veículo
+
+| ID | Regra | Violação | Status HTTP |
+|---|---|---|---|
+| VEI-01 | **Placa única** — não podem existir dois veículos com a mesma placa | `RecursoJaCadastradoException`: "Placa já cadastrada no sistema" | 409 |
+| VEI-02 | **Placa não pode conflitar com outro veículo na atualização** — se a placa foi alterada, verifica unicidade | `RecursoJaCadastradoException`: "Placa já cadastrada para outro veículo" | 409 |
+| VEI-03 | **Cliente associado deve existir** no cadastro e atualização | `ClienteNaoEncontradoException`: "Cliente não encontrado com ID: {id}" | 404 |
+| VEI-04 | **Veículo deve existir** nas operações de busca, atualização e deleção por ID ou placa | `VeiculoNaoEncontradoException`: "Veículo não encontrado com ID: {id}" | 404 |
+| VEI-05 | **Placa deve seguir formato Mercosul (AAA0A00) ou brasileiro antigo (AAA0000)** — letras maiúsculas | `MethodArgumentNotValidException` | 400 |
+| VEI-06 | **Ano entre 1900 e 2100** | `MethodArgumentNotValidException` | 400 |
+| VEI-07 | **Quilometragem não pode ser negativa** (campo opcional) | `MethodArgumentNotValidException` | 400 |
+| VEI-08 | **Placa é normalizada** (maiúscula, sem espaços) antes de qualquer operação | N/A | N/A |
+| VEI-09 | **Deleção de veículo não verifica atendimentos vinculados** — se houver `atendimentos` com FK real no banco, pode causar `DataIntegrityViolationException` (500) | Caso de borda / risco | N/A |
+
+### Atendimento
+
+| ID | Regra | Violação | Status HTTP |
+|---|---|---|---|
+| ATD-01 | **Transição de status é validada** — o estado atual deve permitir a transição solicitada | `TransicaoStatusInvalidaException`: "Não é permitido alterar o status de '{atual}' para '{novo}'." | 422 |
+| ATD-02 | **Transições permitidas:** `AGUARDANDO → ANDAMENTO`, `AGUARDANDO → CANCELADO`, `ANDAMENTO → CONCLUIDO`, `ANDAMENTO → CANCELADO`. `CONCLUIDO` e `CANCELADO` são terminais | N/A | N/A |
+| ATD-03 | **Cliente associado deve existir** no cadastro, atualização e listagem por cliente | `ClienteNaoEncontradoException` | 404 |
+| ATD-04 | **Veículo associado deve existir** (buscado por placa) | `VeiculoNaoEncontradoException`: "Veículo não encontrado com a placa: {placa}" | 404 |
+| ATD-05 | **Funcionário associado deve existir** | `RuntimeException` (inconsistência: deveria ser `FuncionarioNaoEncontrado` → 404) | 400 |
+| ATD-06 | **Atendimento deve existir** nas operações de busca, atualização e deleção por ID | `AtendimentoNaoEncontrado`: "Atendimento não encontrado com ID: {id}" | 404 |
+| ATD-07 | **Status padrão é `AGUARDANDO`** se não informado no cadastro | N/A | N/A |
+| ATD-08 | **Data de entrada padrão é `LocalDateTime.now()`** se não informada | N/A | N/A |
+| ATD-09 | **`dataConclusao` é setada automaticamente** quando o status transiciona para `CONCLUIDO` ou `CANCELADO` | N/A | N/A |
+| ATD-10 | **Status inicial não é validado** — o DTO pode enviar `CONCLUIDO` já no cadastro e não será rejeitado | Caso de borda | N/A |
+
+### Funcionário
+
+| ID | Regra | Violação | Status HTTP |
+|---|---|---|---|
+| FUN-01 | **CPF/CNPJ único** no cadastro | `RecursoJaCadastradoException`: "CPF/CNPJ já cadastrado no sistema" | 409 |
+| FUN-02 | **Usuário único** no cadastro | `RecursoJaCadastradoException`: "Usuário já cadastrado no sistema" | 409 |
+| FUN-03 | **Email único** no cadastro (campo opcional, mas se fornecido deve ser único) | `RecursoJaCadastradoException`: "Email já cadastrado no sistema" | 409 |
+| FUN-04 | **DTO de cadastro não pode ser nulo** | `IllegalArgumentException`: "Dados do funcionário são obrigatórios" | 400 |
+| FUN-05 | **Usuário deve conter apenas letras minúsculas, números, pontos, hífens ou sublinhados** | `MethodArgumentNotValidException` | 400 |
+| FUN-06 | **Senha mínimo 8 caracteres** | `MethodArgumentNotValidException` | 400 |
+| FUN-07 | **Senha é codificada com BCrypt** antes de persistir | N/A | N/A |
+| FUN-08 | **Usuário não pode ser alterado** na atualização (evitaria invalidação de tokens) | N/A | N/A |
+| FUN-09 | **Senha é opcional na atualização** — se não fornecida, a senha existente é mantida | N/A | N/A |
+| FUN-10 | **Funcionário deve existir** nas operações de busca, atualização e deleção por ID | `FuncionarioNaoEncontrado`: "Funcionário não encontrado com ID: {id}" | 404 |
+| FUN-11 | **Deleção não verifica atendimentos vinculados** — mesmo risco de FK que VEI-09 | Caso de borda | N/A |
+
+### Autenticação / Segurança
+
+| ID | Regra | Violação | Status HTTP |
+|---|---|---|---|
+| AUTH-01 | **Endpoints públicos:** `POST /funcionarios`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`, Swagger, OPTIONS | N/A | N/A |
+| AUTH-02 | **Demais endpoints exigem `Authorization: Bearer <token>`** | Resposta padrão do Spring Security (403 Forbidden) | 403 |
+| AUTH-03 | **AccessToken expira em 15 minutos** | Filtro silencia e requisição segue sem autenticação → 403 | 403 |
+| AUTH-04 | **RefreshToken expira em 7 dias** e é armazenado no banco | N/A | N/A |
+| AUTH-05 | **Login inválido** (usuário/senha incorretos) | `CredenciaisInvalidasException`: "Credenciais inválidas" | 401 |
+| AUTH-06 | **RefreshToken revogado ou expirado** | `CredenciaisInvalidasException` | 401 |
+| AUTH-07 | **Refresh token rotation** — ao usar um refresh token, ele é revogado e um novo é emitido; tokens anteriores do mesmo usuário também são revogados | N/A | N/A |
+| AUTH-08 | **Limpeza automática** de tokens revogados/expirados toda noite às 3 AM (`@Scheduled`) | N/A | N/A |
+| AUTH-09 | **CORS restrito** a `localhost:5173`, `localhost:4173`, `localhost:3000` | N/A | N/A |
+| AUTH-10 | **JWT expirado/inválido é silenciado** — não retorna erro customizado, apenas deixa a requisição sem autenticação | Caso de borda | 403 |
+
+### Endereço / CEP
+
+| ID | Regra | Violação | Status HTTP |
+|---|---|---|---|
+| CEP-01 | **CEP é resolvido via ViaCEP** nas operações de cadastro e atualização de cliente | `CepNaoEncontradoException`: "CEP não encontrado: {cep}" | 400 |
+| CEP-02 | **CEP deve conter 8 dígitos** após limpeza de não-numéricos | `IllegalArgumentException` ou `MethodArgumentNotValidException` | 400 |
+| CEP-03 | **Consulta direta de CEP** (`GET /api/viacep/endereco/{cep}`) é pública (sem autenticação) | 404 se CEP não encontrado | 404 |
+| CEP-04 | **ViaCEP retorna `{"erro": true}`** para CEPs inexistentes — tratado como `CepNaoEncontradoException` | Caso de borda | 400 |
 
 ## Testando a API com Postman
 
