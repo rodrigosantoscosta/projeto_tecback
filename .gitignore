@@ -5,6 +5,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .serena/
+openspec/
+.opencode/
 .env
 
 ### STS ###
@@ -81,8 +83,17 @@ logs/
 ### FRONTEND (crm-oficina)
 crm-oficina/node_modules/
 crm-oficina/dist/
+crm-oficina/dist-ssr/
+crm-oficina/.env
 crm-oficina/.env.local
-crm-oficina/.env.production
+crm-oficina/.env.*.local
+crm-oficina/*.log
+crm-oficina/.tmp/
+
+### TEST OUTPUT
+test_output.txt
+TESTES_INSOMNIA.md
+TESTE_INSOMNIA_updated.md
 
 ### DOCUMENTAÇÃO TEMPORÁRIA
 #/docs/generated/
