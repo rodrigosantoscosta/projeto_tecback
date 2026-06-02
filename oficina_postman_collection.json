@@ -1,14 +1,14 @@
 {
-  "yaakVersion": "2026.3.1",
+  "yaakVersion": "2026.4.0",
   "yaakSchema": 4,
-  "timestamp": "2026-06-01T22:00:00.000000000",
+  "timestamp": "2026-06-02T17:24:41.937202800",
   "resources": {
     "workspaces": [
       {
         "model": "workspace",
         "id": "wk_PdvZpF9mds",
         "createdAt": "2026-05-27T21:24:11.100215600",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
+        "updatedAt": "2026-06-01T22:00:00",
         "authentication": {
           "token": "${[token]}"
         },
@@ -20,107 +20,46 @@
         "settingValidateCertificates": true,
         "settingFollowRedirects": true,
         "settingRequestTimeout": 0,
-        "settingDnsOverrides": []
+        "settingDnsOverrides": [],
+        "settingSendCookies": true,
+        "settingStoreCookies": true
       }
     ],
-    "environments": [
-      {
-        "model": "environment",
-        "id": "ev_oficina_docker",
-        "createdAt": "2026-06-01T22:00:00.000000000",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
-        "workspaceId": "wk_PdvZpF9mds",
-        "name": "Docker Local",
-        "variables": [
-          { "name": "baseUrl",        "value": "http://localhost:8080", "enabled": true },
-          { "name": "usuarioLogin",   "value": "admin",                 "enabled": true },
-          { "name": "senhaLogin",     "value": "senha123",              "enabled": true },
-          { "name": "token",          "value": "",                      "enabled": true },
-          { "name": "refreshToken",   "value": "",                      "enabled": true },
-          { "name": "funcionarioId",  "value": "b2000000-0000-0000-0000-000000000001", "enabled": true },
-          { "name": "clienteId",      "value": "a1000000-0000-0000-0000-000000000001", "enabled": true },
-          { "name": "veiculoId",      "value": "c3000000-0000-0000-0000-000000000001", "enabled": true },
-          { "name": "veiculoPlaca",   "value": "ABC1D23",               "enabled": true },
-          { "name": "atendimentoId",  "value": "d4000000-0000-0000-0000-000000000001", "enabled": true }
-        ]
-      },
-      {
-        "model": "environment",
-        "id": "ev_oficina_railway",
-        "createdAt": "2026-06-01T22:00:00.000000000",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
-        "workspaceId": "wk_PdvZpF9mds",
-        "name": "Railway (Prod)",
-        "variables": [
-          { "name": "baseUrl",        "value": "https://projetotecback-production.up.railway.app", "enabled": true },
-          { "name": "usuarioLogin",   "value": "admin",                 "enabled": true },
-          { "name": "senhaLogin",     "value": "senha123",              "enabled": true },
-          { "name": "token",          "value": "",                      "enabled": true },
-          { "name": "refreshToken",   "value": "",                      "enabled": true },
-          { "name": "funcionarioId",  "value": "",                      "enabled": true },
-          { "name": "clienteId",      "value": "",                      "enabled": true },
-          { "name": "veiculoId",      "value": "",                      "enabled": true },
-          { "name": "veiculoPlaca",   "value": "",                      "enabled": true },
-          { "name": "atendimentoId",  "value": "",                      "enabled": true }
-        ]
-      }
-    ],
+    "environments": [],
     "folders": [
       {
         "model": "folder",
-        "id": "fl_tBTZVTX9ss",
-        "createdAt": "2026-05-27T21:24:11.107175200",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
+        "id": "fl_dAuMcko4yf",
+        "createdAt": "2026-05-27T21:24:11.108180700",
+        "updatedAt": "2026-05-27T21:24:11.108180800",
         "workspaceId": "wk_PdvZpF9mds",
         "folderId": null,
         "authentication": {},
         "authenticationType": null,
         "description": "",
         "headers": [],
-        "name": "🔐 Auth",
-        "sortPriority": 0.0
-      },
-      {
-        "model": "folder",
-        "id": "fl_KMcW5Gz9sv",
-        "createdAt": "2026-05-27T21:24:11.107831600",
-        "updatedAt": "2026-05-27T21:24:11.107831800",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": null,
-        "authentication": {},
-        "authenticationType": null,
-        "description": "",
-        "headers": [],
-        "name": "👤 Funcionários",
-        "sortPriority": 4.0
-      },
-      {
-        "model": "folder",
-        "id": "fl_4ZLw5di3fJ",
-        "createdAt": "2026-05-27T21:24:11.107920700",
-        "updatedAt": "2026-05-27T21:24:11.107920800",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": null,
-        "authentication": {},
-        "authenticationType": null,
-        "description": "",
-        "headers": [],
-        "name": "🧑 Clientes",
-        "sortPriority": 9.0
-      },
-      {
-        "model": "folder",
-        "id": "fl_Cga4jpfGLx",
-        "createdAt": "2026-05-27T21:24:11.108026200",
-        "updatedAt": "2026-05-27T21:24:11.108026300",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": null,
-        "authentication": {},
-        "authenticationType": null,
-        "description": "",
-        "headers": [],
-        "name": "🚗 Veículos",
-        "sortPriority": 16.0
+        "name": "🌐 Integrações Externas",
+        "sortPriority": 35.0,
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
       },
       {
         "model": "folder",
@@ -134,75 +73,171 @@
         "description": "",
         "headers": [],
         "name": "🔧 Atendimentos",
-        "sortPriority": 26.0
+        "sortPriority": 26.0,
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
       },
       {
         "model": "folder",
-        "id": "fl_dAuMcko4yf",
-        "createdAt": "2026-05-27T21:24:11.108180700",
-        "updatedAt": "2026-05-27T21:24:11.108180800",
+        "id": "fl_Cga4jpfGLx",
+        "createdAt": "2026-05-27T21:24:11.108026200",
+        "updatedAt": "2026-05-27T21:24:11.108026300",
         "workspaceId": "wk_PdvZpF9mds",
         "folderId": null,
         "authentication": {},
         "authenticationType": null,
         "description": "",
         "headers": [],
-        "name": "🌐 Integrações Externas",
-        "sortPriority": 35.0
+        "name": "🚗 Veículos",
+        "sortPriority": 16.0,
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "folder",
+        "id": "fl_4ZLw5di3fJ",
+        "createdAt": "2026-05-27T21:24:11.107920700",
+        "updatedAt": "2026-05-27T21:24:11.107920800",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": null,
+        "authentication": {},
+        "authenticationType": null,
+        "description": "",
+        "headers": [],
+        "name": "🧑 Clientes",
+        "sortPriority": 9.0,
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "folder",
+        "id": "fl_KMcW5Gz9sv",
+        "createdAt": "2026-05-27T21:24:11.107831600",
+        "updatedAt": "2026-05-27T21:24:11.107831800",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": null,
+        "authentication": {},
+        "authenticationType": null,
+        "description": "",
+        "headers": [],
+        "name": "👤 Funcionários",
+        "sortPriority": 4.0,
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "folder",
+        "id": "fl_tBTZVTX9ss",
+        "createdAt": "2026-05-27T21:24:11.107175200",
+        "updatedAt": "2026-06-01T22:00:00",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": null,
+        "authentication": {},
+        "authenticationType": null,
+        "description": "",
+        "headers": [],
+        "name": "🔐 Auth",
+        "sortPriority": 0.0,
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
       }
     ],
     "httpRequests": [
       {
         "model": "http_request",
-        "id": "rq_3ocXYeStvX",
-        "createdAt": "2026-05-27T21:24:11.101443300",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_tBTZVTX9ss",
-        "authentication": {},
-        "authenticationType": "none",
-        "body": {
-          "text": "{\n  \"nome\": \"Admin Teste\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Gerente\",\n  \"telefone\": \"(11) 98765-0001\",\n  \"email\": \"admin@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
-        },
-        "bodyType": "other",
-        "description": "Único endpoint público de criação. Não requer token.",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "POST",
-        "name": "1. Cadastrar Funcionário (público)",
-        "sortPriority": 0.5,
-        "url": "${[baseUrl]}/funcionarios",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_pWAKmJif3P",
-        "createdAt": "2026-05-27T21:24:11.101714100",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_tBTZVTX9ss",
-        "authentication": {},
-        "authenticationType": "none",
-        "body": {
-          "text": "{\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
-        },
-        "bodyType": "other",
-        "description": "Retorna accessToken (15 min) e refreshToken (7 dias). Copie o accessToken para a variável 'token' e o refreshToken para 'refreshToken'.",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "POST",
-        "name": "2. Login → salva token",
-        "sortPriority": 1.0,
-        "url": "${[baseUrl]}/auth/login",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
         "id": "rq_auth_refresh",
-        "createdAt": "2026-06-01T22:00:00.000000000",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
+        "createdAt": "2026-06-01T22:00:00",
+        "updatedAt": "2026-06-01T22:00:00",
         "workspaceId": "wk_PdvZpF9mds",
         "folderId": "fl_tBTZVTX9ss",
         "authentication": {},
@@ -213,19 +248,44 @@
         "bodyType": "other",
         "description": "Usa o refreshToken para obter um novo par de tokens. Copie o novo accessToken para 'token' e o novo refreshToken para 'refreshToken'.",
         "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
         ],
         "method": "POST",
         "name": "3. Refresh Token",
         "sortPriority": 2.0,
         "url": "${[baseUrl]}/auth/refresh",
-        "urlParameters": []
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
       },
       {
         "model": "http_request",
         "id": "rq_auth_logout",
-        "createdAt": "2026-06-01T22:00:00.000000000",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
+        "createdAt": "2026-06-01T22:00:00",
+        "updatedAt": "2026-06-01T22:00:00",
         "workspaceId": "wk_PdvZpF9mds",
         "folderId": "fl_tBTZVTX9ss",
         "authentication": {},
@@ -236,592 +296,38 @@
         "bodyType": "other",
         "description": "Revoga o refreshToken no servidor. Retorna 204 No Content. Não requer accessToken.",
         "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
         ],
         "method": "POST",
         "name": "4. Logout (revoga refresh token)",
         "sortPriority": 3.0,
         "url": "${[baseUrl]}/auth/logout",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_xQNnpWGP7t",
-        "createdAt": "2026-05-27T21:24:11.101883400",
-        "updatedAt": "2026-06-01T22:00:00.000000000",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_tBTZVTX9ss",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "Retorna os dados do funcionário autenticado pelo token Bearer. Usa o bearer token do workspace.",
-        "headers": [],
-        "method": "GET",
-        "name": "5. GET /funcionarios/me",
-        "sortPriority": 4.0,
-        "url": "${[baseUrl]}/funcionarios/me",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_hVBwFr7H8g",
-        "createdAt": "2026-05-27T21:24:11.102499500",
-        "updatedAt": "2026-05-27T21:24:11.102499600",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_KMcW5Gz9sv",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar todos",
-        "sortPriority": 5.0,
-        "url": "${[baseUrl]}/funcionarios",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_FjPay93aNW",
-        "createdAt": "2026-05-27T21:24:11.102640300",
-        "updatedAt": "2026-05-27T21:24:11.102640500",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_KMcW5Gz9sv",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Buscar por ID",
-        "sortPriority": 6.0,
-        "url": "${[baseUrl]}/funcionarios/${[funcionarioId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_hae8mHvsk5",
-        "createdAt": "2026-05-27T21:24:11.102758300",
-        "updatedAt": "2026-05-27T21:24:11.102758400",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_KMcW5Gz9sv",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"nome\": \"Admin Atualizado\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Diretor\",\n  \"telefone\": \"(11) 98765-0002\",\n  \"email\": \"admin2@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
         },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "PUT",
-        "name": "Atualizar",
-        "sortPriority": 7.0,
-        "url": "${[baseUrl]}/funcionarios/${[funcionarioId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_N52Nczhx5k",
-        "createdAt": "2026-05-27T21:24:11.102879700",
-        "updatedAt": "2026-05-27T21:24:11.102879800",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_KMcW5Gz9sv",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "DELETE",
-        "name": "Deletar",
-        "sortPriority": 8.0,
-        "url": "${[baseUrl]}/funcionarios/${[funcionarioId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_DZs3BBsEWi",
-        "createdAt": "2026-05-27T21:24:11.102994100",
-        "updatedAt": "2026-05-27T21:24:11.102994200",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_4ZLw5di3fJ",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"nomeCompleto\": \"Joao da Silva\",\n  \"email\": \"joao@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 91234-5678\",\n  \"cep\": \"01001000\",\n  \"numero\": \"10\",\n  \"complemento\": \"Apto 2\"\n}"
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
         },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "POST",
-        "name": "Cadastrar cliente",
-        "sortPriority": 10.0,
-        "url": "${[baseUrl]}/clientes",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_ysTPFi2koU",
-        "createdAt": "2026-05-27T21:24:11.103134300",
-        "updatedAt": "2026-05-27T21:24:11.103134400",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_4ZLw5di3fJ",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar todos",
-        "sortPriority": 11.0,
-        "url": "${[baseUrl]}/clientes",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_A3dAjpcLAv",
-        "createdAt": "2026-05-27T21:24:11.103247400",
-        "updatedAt": "2026-05-27T21:24:11.103247500",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_4ZLw5di3fJ",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Buscar por ID",
-        "sortPriority": 12.0,
-        "url": "${[baseUrl]}/clientes/${[clienteId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_VzD5CYr9J2",
-        "createdAt": "2026-05-27T21:24:11.103354300",
-        "updatedAt": "2026-05-27T21:48:29.013881600",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_4ZLw5di3fJ",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Buscar por CPF/CNPJ",
-        "sortPriority": 13.0,
-        "url": "${[baseUrl]}/clientes/cpfCNPJ/66168841090",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_neN2Un3ns5",
-        "createdAt": "2026-05-27T21:24:11.103577",
-        "updatedAt": "2026-05-27T21:24:11.103577200",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_4ZLw5di3fJ",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"nomeCompleto\": \"Joao da Silva Atualizado\",\n  \"email\": \"joao.novo@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 99999-0000\",\n  \"cep\": \"01001000\",\n  \"numero\": \"15\",\n  \"complemento\": \"\"\n}"
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
         },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "PUT",
-        "name": "Atualizar",
-        "sortPriority": 14.0,
-        "url": "${[baseUrl]}/clientes/${[clienteId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_Crz5akNExw",
-        "createdAt": "2026-05-27T21:24:11.103700700",
-        "updatedAt": "2026-05-27T21:24:11.103700800",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_4ZLw5di3fJ",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "DELETE",
-        "name": "Deletar",
-        "sortPriority": 15.0,
-        "url": "${[baseUrl]}/clientes/${[clienteId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_EwVpF8JWi2",
-        "createdAt": "2026-05-27T21:24:11.103811200",
-        "updatedAt": "2026-05-27T21:24:11.103811300",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"placa\": \"${[veiculoPlaca]}\",\n  \"modelo\": \"Civic\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"cor\": \"Prata\",\n  \"quilometragem\": 15000,\n  \"clienteId\": \"${[clienteId]}\"\n}"
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
         },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "POST",
-        "name": "Cadastrar veículo",
-        "sortPriority": 17.0,
-        "url": "${[baseUrl]}/veiculos",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_XoLSbB8VWD",
-        "createdAt": "2026-05-27T21:24:11.103922800",
-        "updatedAt": "2026-05-27T21:24:11.103922900",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar todos",
-        "sortPriority": 18.0,
-        "url": "${[baseUrl]}/veiculos",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_mK3PsuiCoP",
-        "createdAt": "2026-05-27T21:24:11.104028100",
-        "updatedAt": "2026-05-27T21:24:11.104028200",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Buscar por ID",
-        "sortPriority": 19.0,
-        "url": "${[baseUrl]}/veiculos/${[veiculoId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_8MsDHchDR8",
-        "createdAt": "2026-05-27T21:24:11.104143500",
-        "updatedAt": "2026-05-27T21:24:11.104143600",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Buscar por Placa",
-        "sortPriority": 20.0,
-        "url": "${[baseUrl]}/veiculos/placa/${[veiculoPlaca]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_B4y4djehBM",
-        "createdAt": "2026-05-27T21:24:11.104251",
-        "updatedAt": "2026-05-27T21:24:11.104251100",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar por Cliente",
-        "sortPriority": 21.0,
-        "url": "${[baseUrl]}/veiculos/cliente/${[clienteId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_fdzdrLGYMK",
-        "createdAt": "2026-05-27T21:24:11.104360600",
-        "updatedAt": "2026-05-27T21:24:11.104360700",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Contar total",
-        "sortPriority": 22.0,
-        "url": "${[baseUrl]}/veiculos/total-veiculos",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_EmCYedJ5Co",
-        "createdAt": "2026-05-27T21:24:11.104492200",
-        "updatedAt": "2026-05-27T21:24:11.104492300",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"placa\": \"${[veiculoPlaca]}\",\n  \"modelo\": \"Civic EX\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"cor\": \"Preto\",\n  \"quilometragem\": 16000,\n  \"clienteId\": \"${[clienteId]}\"\n}"
-        },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "PUT",
-        "name": "Atualizar",
-        "sortPriority": 23.0,
-        "url": "${[baseUrl]}/veiculos/${[veiculoId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_ktudZBdh5d",
-        "createdAt": "2026-05-27T21:24:11.104618300",
-        "updatedAt": "2026-05-27T21:24:11.104618500",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "DELETE",
-        "name": "Deletar por ID",
-        "sortPriority": 24.0,
-        "url": "${[baseUrl]}/veiculos/${[veiculoId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_WmTo4isTe8",
-        "createdAt": "2026-05-27T21:24:11.104724800",
-        "updatedAt": "2026-05-27T21:24:11.104724900",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_Cga4jpfGLx",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "DELETE",
-        "name": "Deletar por Placa",
-        "sortPriority": 25.0,
-        "url": "${[baseUrl]}/veiculos/placa/${[veiculoPlaca]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_gRjMVttZMY",
-        "createdAt": "2026-05-27T21:24:11.104830400",
-        "updatedAt": "2026-05-27T21:24:11.104830600",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"descricaoServico\": \"Troca de oleo e filtro\",\n  \"statusAtendimento\": \"AGUARDANDO\",\n  \"clienteId\": \"${[clienteId]}\",\n  \"veiculoPlaca\": \"${[veiculoPlaca]}\",\n  \"funcionarioId\": \"${[funcionarioId]}\"\n}"
-        },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "POST",
-        "name": "Cadastrar atendimento",
-        "sortPriority": 27.0,
-        "url": "${[baseUrl]}/atendimentos/cadastrar",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_iSei6zfzD4",
-        "createdAt": "2026-05-27T21:24:11.104940800",
-        "updatedAt": "2026-05-27T21:24:11.104940900",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar todos",
-        "sortPriority": 28.0,
-        "url": "${[baseUrl]}/atendimentos/listar-todos",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_9eoN8MYHvC",
-        "createdAt": "2026-05-27T21:24:11.105209600",
-        "updatedAt": "2026-05-27T21:24:11.105209700",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Buscar por ID",
-        "sortPriority": 29.0,
-        "url": "${[baseUrl]}/atendimentos/id/${[atendimentoId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_ma6fwtJXCJ",
-        "createdAt": "2026-05-27T21:24:11.105370100",
-        "updatedAt": "2026-05-27T21:24:11.105370300",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar por Cliente",
-        "sortPriority": 30.0,
-        "url": "${[baseUrl]}/atendimentos/cliente ID/${[clienteId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_X3kxoyXnjC",
-        "createdAt": "2026-05-27T21:24:11.105554700",
-        "updatedAt": "2026-05-27T21:24:11.105554800",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar — ordem decrescente",
-        "sortPriority": 31.0,
-        "url": "${[baseUrl]}/atendimentos/listar-ordem-decrescente",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_k4BEpF5z2b",
-        "createdAt": "2026-05-27T21:24:11.105664600",
-        "updatedAt": "2026-05-27T21:24:11.105664700",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Listar concluídos",
-        "sortPriority": 32.0,
-        "url": "${[baseUrl]}/atendimentos/listar-concluidos",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_VdoNgpV6Ex",
-        "createdAt": "2026-05-27T21:24:11.105771100",
-        "updatedAt": "2026-05-27T21:24:11.105771200",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"descricaoServico\": \"Troca de oleo, filtro e revisao geral\",\n  \"statusAtendimento\": \"ANDAMENTO\",\n  \"clienteId\": \"${[clienteId]}\",\n  \"veiculoPlaca\": \"${[veiculoPlaca]}\",\n  \"funcionarioId\": \"${[funcionarioId]}\"\n}"
-        },
-        "bodyType": "other",
-        "description": "",
-        "headers": [
-          { "enabled": true, "name": "Content-Type", "value": "application/json", "id": null }
-        ],
-        "method": "PUT",
-        "name": "Atualizar atendimento",
-        "sortPriority": 33.0,
-        "url": "${[baseUrl]}/atendimentos/atualizar/${[atendimentoId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_fkZwvoaVJC",
-        "createdAt": "2026-05-27T21:24:11.105992100",
-        "updatedAt": "2026-05-27T21:24:11.105992300",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_JLha7VvhoC",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "DELETE",
-        "name": "Deletar",
-        "sortPriority": 34.0,
-        "url": "${[baseUrl]}/atendimentos/delete/${[atendimentoId]}",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_3ukUSMLayb",
-        "createdAt": "2026-05-27T21:24:11.106171400",
-        "updatedAt": "2026-05-27T21:38:48.624195500",
-        "workspaceId": "wk_PdvZpF9mds",
-        "folderId": "fl_dAuMcko4yf",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "ViaCEP — buscar endereço",
-        "sortPriority": 36.0,
-        "url": "${[baseUrl]}/api/viacep/endereco/01001000",
-        "urlParameters": []
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
       },
       {
         "model": "http_request",
@@ -840,7 +346,1317 @@
         "name": "Brasil API — feriados 2025",
         "sortPriority": 37.0,
         "url": "${[baseUrl]}/api/feriados/2025",
-        "urlParameters": []
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_3ukUSMLayb",
+        "createdAt": "2026-05-27T21:24:11.106171400",
+        "updatedAt": "2026-05-27T21:38:48.624195500",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_dAuMcko4yf",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "ViaCEP — buscar endereço",
+        "sortPriority": 36.0,
+        "url": "${[baseUrl]}/api/viacep/endereco/01001000",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_fkZwvoaVJC",
+        "createdAt": "2026-05-27T21:24:11.105992100",
+        "updatedAt": "2026-05-27T21:24:11.105992300",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "DELETE",
+        "name": "Deletar",
+        "sortPriority": 34.0,
+        "url": "${[baseUrl]}/atendimentos/delete/${[atendimentoId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_VdoNgpV6Ex",
+        "createdAt": "2026-05-27T21:24:11.105771100",
+        "updatedAt": "2026-05-27T21:24:11.105771200",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"descricaoServico\": \"Troca de oleo, filtro e revisao geral\",\n  \"statusAtendimento\": \"ANDAMENTO\",\n  \"clienteId\": \"${[clienteId]}\",\n  \"veiculoPlaca\": \"${[veiculoPlaca]}\",\n  \"funcionarioId\": \"${[funcionarioId]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "PUT",
+        "name": "Atualizar atendimento",
+        "sortPriority": 33.0,
+        "url": "${[baseUrl]}/atendimentos/atualizar/${[atendimentoId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_k4BEpF5z2b",
+        "createdAt": "2026-05-27T21:24:11.105664600",
+        "updatedAt": "2026-05-27T21:24:11.105664700",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar concluídos",
+        "sortPriority": 32.0,
+        "url": "${[baseUrl]}/atendimentos/listar-concluidos",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_X3kxoyXnjC",
+        "createdAt": "2026-05-27T21:24:11.105554700",
+        "updatedAt": "2026-05-27T21:24:11.105554800",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar — ordem decrescente",
+        "sortPriority": 31.0,
+        "url": "${[baseUrl]}/atendimentos/listar-ordem-decrescente",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_ma6fwtJXCJ",
+        "createdAt": "2026-05-27T21:24:11.105370100",
+        "updatedAt": "2026-05-27T21:24:11.105370300",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar por Cliente",
+        "sortPriority": 30.0,
+        "url": "${[baseUrl]}/atendimentos/cliente ID/${[clienteId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_9eoN8MYHvC",
+        "createdAt": "2026-05-27T21:24:11.105209600",
+        "updatedAt": "2026-05-27T21:24:11.105209700",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Buscar por ID",
+        "sortPriority": 29.0,
+        "url": "${[baseUrl]}/atendimentos/id/${[atendimentoId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_iSei6zfzD4",
+        "createdAt": "2026-05-27T21:24:11.104940800",
+        "updatedAt": "2026-05-27T21:24:11.104940900",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar todos",
+        "sortPriority": 28.0,
+        "url": "${[baseUrl]}/atendimentos/listar-todos",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_gRjMVttZMY",
+        "createdAt": "2026-05-27T21:24:11.104830400",
+        "updatedAt": "2026-05-27T21:24:11.104830600",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_JLha7VvhoC",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"descricaoServico\": \"Troca de oleo e filtro\",\n  \"statusAtendimento\": \"AGUARDANDO\",\n  \"clienteId\": \"${[clienteId]}\",\n  \"veiculoPlaca\": \"${[veiculoPlaca]}\",\n  \"funcionarioId\": \"${[funcionarioId]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "POST",
+        "name": "Cadastrar atendimento",
+        "sortPriority": 27.0,
+        "url": "${[baseUrl]}/atendimentos/cadastrar",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_WmTo4isTe8",
+        "createdAt": "2026-05-27T21:24:11.104724800",
+        "updatedAt": "2026-05-27T21:24:11.104724900",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "DELETE",
+        "name": "Deletar por Placa",
+        "sortPriority": 25.0,
+        "url": "${[baseUrl]}/veiculos/placa/${[veiculoPlaca]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_ktudZBdh5d",
+        "createdAt": "2026-05-27T21:24:11.104618300",
+        "updatedAt": "2026-05-27T21:24:11.104618500",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "DELETE",
+        "name": "Deletar por ID",
+        "sortPriority": 24.0,
+        "url": "${[baseUrl]}/veiculos/${[veiculoId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_EmCYedJ5Co",
+        "createdAt": "2026-05-27T21:24:11.104492200",
+        "updatedAt": "2026-05-27T21:24:11.104492300",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"placa\": \"${[veiculoPlaca]}\",\n  \"modelo\": \"Civic EX\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"cor\": \"Preto\",\n  \"quilometragem\": 16000,\n  \"clienteId\": \"${[clienteId]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "PUT",
+        "name": "Atualizar",
+        "sortPriority": 23.0,
+        "url": "${[baseUrl]}/veiculos/${[veiculoId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_fdzdrLGYMK",
+        "createdAt": "2026-05-27T21:24:11.104360600",
+        "updatedAt": "2026-05-27T21:24:11.104360700",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Contar total",
+        "sortPriority": 22.0,
+        "url": "${[baseUrl]}/veiculos/total-veiculos",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_B4y4djehBM",
+        "createdAt": "2026-05-27T21:24:11.104251",
+        "updatedAt": "2026-05-27T21:24:11.104251100",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar por Cliente",
+        "sortPriority": 21.0,
+        "url": "${[baseUrl]}/veiculos/cliente/${[clienteId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_8MsDHchDR8",
+        "createdAt": "2026-05-27T21:24:11.104143500",
+        "updatedAt": "2026-05-27T21:24:11.104143600",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Buscar por Placa",
+        "sortPriority": 20.0,
+        "url": "${[baseUrl]}/veiculos/placa/${[veiculoPlaca]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_mK3PsuiCoP",
+        "createdAt": "2026-05-27T21:24:11.104028100",
+        "updatedAt": "2026-05-27T21:24:11.104028200",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Buscar por ID",
+        "sortPriority": 19.0,
+        "url": "${[baseUrl]}/veiculos/${[veiculoId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_XoLSbB8VWD",
+        "createdAt": "2026-05-27T21:24:11.103922800",
+        "updatedAt": "2026-05-27T21:24:11.103922900",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar todos",
+        "sortPriority": 18.0,
+        "url": "${[baseUrl]}/veiculos",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_EwVpF8JWi2",
+        "createdAt": "2026-05-27T21:24:11.103811200",
+        "updatedAt": "2026-05-27T21:24:11.103811300",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_Cga4jpfGLx",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"placa\": \"${[veiculoPlaca]}\",\n  \"modelo\": \"Civic\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"cor\": \"Prata\",\n  \"quilometragem\": 15000,\n  \"clienteId\": \"${[clienteId]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "POST",
+        "name": "Cadastrar veículo",
+        "sortPriority": 17.0,
+        "url": "${[baseUrl]}/veiculos",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_Crz5akNExw",
+        "createdAt": "2026-05-27T21:24:11.103700700",
+        "updatedAt": "2026-05-27T21:24:11.103700800",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_4ZLw5di3fJ",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "DELETE",
+        "name": "Deletar",
+        "sortPriority": 15.0,
+        "url": "${[baseUrl]}/clientes/${[clienteId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_neN2Un3ns5",
+        "createdAt": "2026-05-27T21:24:11.103577",
+        "updatedAt": "2026-05-27T21:24:11.103577200",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_4ZLw5di3fJ",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"nomeCompleto\": \"Joao da Silva Atualizado\",\n  \"email\": \"joao.novo@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 99999-0000\",\n  \"cep\": \"01001000\",\n  \"numero\": \"15\",\n  \"complemento\": \"\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "PUT",
+        "name": "Atualizar",
+        "sortPriority": 14.0,
+        "url": "${[baseUrl]}/clientes/${[clienteId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_VzD5CYr9J2",
+        "createdAt": "2026-05-27T21:24:11.103354300",
+        "updatedAt": "2026-05-27T21:48:29.013881600",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_4ZLw5di3fJ",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Buscar por CPF/CNPJ",
+        "sortPriority": 13.0,
+        "url": "${[baseUrl]}/clientes/cpfCNPJ/66168841090",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_A3dAjpcLAv",
+        "createdAt": "2026-05-27T21:24:11.103247400",
+        "updatedAt": "2026-05-27T21:24:11.103247500",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_4ZLw5di3fJ",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Buscar por ID",
+        "sortPriority": 12.0,
+        "url": "${[baseUrl]}/clientes/${[clienteId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_ysTPFi2koU",
+        "createdAt": "2026-05-27T21:24:11.103134300",
+        "updatedAt": "2026-05-27T21:24:11.103134400",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_4ZLw5di3fJ",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar todos",
+        "sortPriority": 11.0,
+        "url": "${[baseUrl]}/clientes",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_DZs3BBsEWi",
+        "createdAt": "2026-05-27T21:24:11.102994100",
+        "updatedAt": "2026-05-27T21:24:11.102994200",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_4ZLw5di3fJ",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"nomeCompleto\": \"Joao da Silva\",\n  \"email\": \"joao@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 91234-5678\",\n  \"cep\": \"01001000\",\n  \"numero\": \"10\",\n  \"complemento\": \"Apto 2\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "POST",
+        "name": "Cadastrar cliente",
+        "sortPriority": 10.0,
+        "url": "${[baseUrl]}/clientes",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_N52Nczhx5k",
+        "createdAt": "2026-05-27T21:24:11.102879700",
+        "updatedAt": "2026-05-27T21:24:11.102879800",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_KMcW5Gz9sv",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "DELETE",
+        "name": "Deletar",
+        "sortPriority": 8.0,
+        "url": "${[baseUrl]}/funcionarios/${[funcionarioId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_hae8mHvsk5",
+        "createdAt": "2026-05-27T21:24:11.102758300",
+        "updatedAt": "2026-05-27T21:24:11.102758400",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_KMcW5Gz9sv",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {
+          "text": "{\n  \"nome\": \"Admin Atualizado\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Diretor\",\n  \"telefone\": \"(11) 98765-0002\",\n  \"email\": \"admin2@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "PUT",
+        "name": "Atualizar",
+        "sortPriority": 7.0,
+        "url": "${[baseUrl]}/funcionarios/${[funcionarioId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_FjPay93aNW",
+        "createdAt": "2026-05-27T21:24:11.102640300",
+        "updatedAt": "2026-05-27T21:24:11.102640500",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_KMcW5Gz9sv",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Buscar por ID",
+        "sortPriority": 6.0,
+        "url": "${[baseUrl]}/funcionarios/${[funcionarioId]}",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_hVBwFr7H8g",
+        "createdAt": "2026-05-27T21:24:11.102499500",
+        "updatedAt": "2026-05-27T21:24:11.102499600",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_KMcW5Gz9sv",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "",
+        "headers": [],
+        "method": "GET",
+        "name": "Listar todos",
+        "sortPriority": 5.0,
+        "url": "${[baseUrl]}/funcionarios",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_xQNnpWGP7t",
+        "createdAt": "2026-05-27T21:24:11.101883400",
+        "updatedAt": "2026-06-01T22:00:00",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_tBTZVTX9ss",
+        "authentication": {},
+        "authenticationType": null,
+        "body": {},
+        "bodyType": null,
+        "description": "Retorna os dados do funcionário autenticado pelo token Bearer. Usa o bearer token do workspace.",
+        "headers": [],
+        "method": "GET",
+        "name": "5. GET /funcionarios/me",
+        "sortPriority": 4.0,
+        "url": "${[baseUrl]}/funcionarios/me",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_pWAKmJif3P",
+        "createdAt": "2026-05-27T21:24:11.101714100",
+        "updatedAt": "2026-06-01T22:00:00",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_tBTZVTX9ss",
+        "authentication": {},
+        "authenticationType": "none",
+        "body": {
+          "text": "{\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "Retorna accessToken (15 min) e refreshToken (7 dias). Copie o accessToken para a variável 'token' e o refreshToken para 'refreshToken'.",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "POST",
+        "name": "2. Login → salva token",
+        "sortPriority": 1.0,
+        "url": "${[baseUrl]}/auth/login",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
+      },
+      {
+        "model": "http_request",
+        "id": "rq_3ocXYeStvX",
+        "createdAt": "2026-05-27T21:24:11.101443300",
+        "updatedAt": "2026-06-01T22:00:00",
+        "workspaceId": "wk_PdvZpF9mds",
+        "folderId": "fl_tBTZVTX9ss",
+        "authentication": {},
+        "authenticationType": "none",
+        "body": {
+          "text": "{\n  \"nome\": \"Admin Teste\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Gerente\",\n  \"telefone\": \"(11) 98765-0001\",\n  \"email\": \"admin@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
+        },
+        "bodyType": "other",
+        "description": "Único endpoint público de criação. Não requer token.",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": null
+          }
+        ],
+        "method": "POST",
+        "name": "1. Cadastrar Funcionário (público)",
+        "sortPriority": 0.5,
+        "url": "${[baseUrl]}/funcionarios",
+        "urlParameters": [],
+        "settingSendCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingStoreCookies": {
+          "enabled": false,
+          "value": true
+        },
+        "settingValidateCertificates": {
+          "enabled": false,
+          "value": true
+        },
+        "settingFollowRedirects": {
+          "enabled": false,
+          "value": true
+        },
+        "settingRequestTimeout": {
+          "enabled": false,
+          "value": 0
+        }
       }
     ],
     "grpcRequests": [],

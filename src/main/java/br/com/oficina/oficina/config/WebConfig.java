@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:5173",   // Vite dev
-                        "http://localhost:4173"    // Vite preview
+                        "http://localhost:4173",    // Vite preview
+                        "http://localhost:3000"     // Docker (Nginx)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")

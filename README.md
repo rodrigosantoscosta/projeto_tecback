@@ -1,364 +1,424 @@
 # OFICINA - Sistema de Gestão para Oficina Mecânica
 
 ## Grupo
-* Alexander Augusto de Figueiredo Baxendale
-* Pedro Neto Amâncio de Lima
-* Rodrigo Santos Costa
 
-##  Stack e objetivo
+- Alexander Augusto de Figueiredo Baxendale
+- Pedro Neto Amâncio de Lima
+- Rodrigo Santos Costa
+
+## Stack
 
 ### Backend
 
-- **Framework**: Spring Boot 3.3.4
-- **Linguagem**: Java 21
-- **Dependencias**:
-  - Spring Web (APIs REST)
-  - Spring Data JPA (ORM)
-  - Spring Security (Autenticação e Autorização)
-  - Spring Validation (Bean Validation)
-  - Lombok 1.18.32 (Redução de boilerplate)
-  - MapStruct 1.6.3 (Mapeamento de DTOs)
-  - JJWT 0.11.5 (JWT Token)
-  - SpringDoc OpenAPI 2.5.0 (Swagger/OpenAPI)
-  - Flyway (Versionamento de banco de dados)
-  - PostgreSQL (Banco de dados)
-  - REST Template (Integração com APIs externas)
+| Tecnologia | Versão |
+|---|---|
+| Java | 21 |
+| Spring Boot | 3.3.4 |
+| Spring Web, Data JPA, Security, Validation | - |
+| PostgreSQL | 16 (produção) |
+| Flyway | Migration de banco |
+| Lombok | 1.18.32 |
+| MapStruct | 1.6.3 |
+| JJWT | 0.11.5 |
+| SpringDoc OpenAPI | 2.5.0 |
+| Maven | 3.9.6 (Wrapper incluso) |
 
 ### Frontend
 
-- **HTML5**: Estrutura semântica
-- **CSS3**: Styling responsivo com gradientes e animações
-- **JavaScript**: Funcionalidades interativas
-- **Integração ViaCEP**: Busca automática de endereços
+| Tecnologia | Versão |
+|---|---|
+| React | 19 |
+| TypeScript | 6.0 |
+| Vite | 8.0 |
+| Tailwind CSS | 4.3 |
+| React Router | 7.16 |
+| Zustand | 5.0 |
+| React Query (TanStack) | 5.100 |
+| React Hook Form + Zod | 7.77 / 4.4 |
+| Axios | 1.16 |
+| Lucide React | 1.17 |
+| Nginx (proxy reverso em Docker) | alpine |
 
 ### Ferramentas
 
-- **Build**: Maven 3.6+
-- **Versionamento DB**: Flyway
-- **Documentação API**: Swagger/OpenAPI (SpringDoc)
-- **Objetivo**: API para gestão de oficina mecânica com cadastro de clientes, veículos, atendimentos e integração com ViaCEP para endereços automáticos.
-- **Autenticação**: JWT (obrigatória para endpoints protegidos).
+- **Docker** + Docker Compose (todos os serviços)
+- **Swagger/OpenAPI** em `/swagger-ui/index.html`
+- **Postman** collection na raiz (`oficina_postman_collection.json`)
 
-### Estrutura de arquivos
+### Arquitetura de rede (Docker)
 
 ```
-src/main/java/com/oficina/
-├── OficinaApplication.java
-├── config/
-│   ├── RestTemplateConfig.java
-│   ├── SwaggerConfig.java
-│   └── WebConfig.java
-├── controller/
-│   ├── AtendimentoController.java
-│   ├── BrasilApiController.java
-│   ├── ClienteController.java
-│   ├── FuncionarioController.java
-│   ├── VeiculoController.java
-│   └── ViaCepController.java
-├── dto/
-│   ├── atendimento/
-│   │   ├── AtendimentoDTO.java
-│   │   └── CadastrarAtendimentoDTO.java
-│   ├── auth/
-│   │   ├── AuthenticationRequest.java
-│   │   └── AuthenticationResponse.java
-│   ├── cliente/
-│   │   ├── CadastrarClienteDTO.java
-│   │   ├── ClienteDTO.java
-│   │   └── ClienteListaDTO.java
-│   ├── endereco/
-│   │   └── EnderecoDTO.java
-│   ├── funcionario/
-│   │   ├── CadastrarFuncionarioDTO.java
-│   │   └── FuncionarioDTO.java
-│   ├── response/
-│   │   ├── BrasilApiCepResponse.java
-│   │   ├── EnderecoBasicoResponse.java
-│   │   ├── FeriadoNacionalResponse.java
-│   │   └── ViaCepResponse.java
-│   └── veiculo/
-│       ├── CadastrarVeiculoDTO.java
-│       └── VeiculoDTO.java
-├── exception/
-│   ├── AtendimentoNaoEncontrado.java
-│   ├── CepNaoEncontradoException.java
-│   ├── ClienteComVeiculosException.java
-│   ├── ClienteNaoEncontradoException.java
-│   ├── ErrorDetails.java
-│   ├── FuncionarioNaoEncontrado.java
-│   ├── GlobalExceptionHandler.java
-│   ├── RecursoJaCadastradoException.java
-│   ├── ResourceNotFoundException.java
-│   └── VeiculoNaoEncontradoException.java
-├── mapper/
-│   └── FuncionarioMapper.java
-├── model/
-│   ├── Atendimento.java
-│   ├── Cliente.java
-│   ├── Endereco.java
-│   ├── Funcionario.java
-│   ├── StatusAtendimento.java
-│   ├── TipoCliente.java
-│   └── Veiculo.java
-├── repository/
-│   ├── AtendimentoRepository.java
-│   ├── ClienteRepository.java
-│   ├── EnderecoRepository.java
-│   ├── FuncionarioRepository.java
-│   └── VeiculoRepository.java
-├── security/
-│   ├── JwtAuthenticationFilter.java
-│   ├── JwtUtil.java
-│   ├── SecurityConfig.java
-│   └── UsuarioPrincipal.java
-├── service/
-│   ├── AtendimentoService.java
-│   ├── BrasilApiService.java
-│   ├── ClienteService.java
-│   ├── CustomUserDetailsService.java
-│   ├── FuncionarioService.java
-│   ├── VeiculoService.java
-│   └── ViaCepService.java
-└── validator/
-    ├── CPFouCNPJValidator.java
-    └── annotation/
-        └── CPFouCNPJ.java
+Navegador → localhost:3000 (Nginx)
+  ├── /api/* → proxy reverso → backend :8080
+  └── /*     → arquivos estáticos (SPA React)
 ```
 
-## 2) Modelo relacional (tabelas) mapeado com ORM
+Em ambiente Docker o frontend nunca chama o backend diretamente. O Nginx do container `crm-oficina` escuta na porta 80 (mapeada para `3000` no host) e faz proxy reverso de requisições `/api/` para `oficina-app:8080`, eliminando problemas de CORS.
 
-### 2.1 `clientes`
+## Estrutura do projeto
 
-- `id` UUID **PK**
-- `nome_completo` VARCHAR(150) **NOT NULL**
-- `cpf_cnpj` VARCHAR(14) **UNIQUE NOT NULL**
-- `telefone` VARCHAR(20) **NOT NULL**
-- `email` VARCHAR(254) **UNIQUE NOT NULL**
-- `data_cadastro` TIMESTAMP **NOT NULL**
-- `endereco_id` UUID **FK** → `enderecos(id)`
+```
+projeto_tecback/
+├── crm-oficina/                        # Frontend React
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── store/
+│   │   ├── types/
+│   │   └── utils/
+│   ├── Dockerfile
+│   ├── nginx.conf                      # Proxy reverso (/api/ → backend)
+│   ├── .dockerignore
+│   ├── .env                            # Apenas dev local (VITE_API_URL)
+│   └── package.json
+├── src/                                # Backend Spring Boot
+│   ├── main/java/br/com/oficina/oficina/
+│   │   ├── config/                     # Swagger, CORS, RestTemplate
+│   │   ├── controller/                 # REST endpoints
+│   │   ├── dto/                        # Data Transfer Objects
+│   │   ├── exception/                  # Tratamento de erros
+│   │   ├── mapper/                     # MapStruct
+│   │   ├── model/                      # Entidades JPA
+│   │   ├── repository/                 # Spring Data JPA
+│   │   ├── security/                   # JWT, SecurityConfig
+│   │   ├── service/                    # Lógica de negócio
+│   │   └── validator/                  # CPF/CNPJ
+│   └── test/java/br/com/oficina/oficina/
+│       ├── controller/                 # Testes unitários
+│       ├── service/
+│       ├── security/
+│       ├── e2e/                        # Testes E2E (Docker)
+│       └── config/                     # Stubs de teste
+├── docker-compose.yml
+├── Dockerfile                          # Backend (multi-stage)
+├── pom.xml
+└── src/main/resources/
+│   ├── application.properties          # Produção (PostgreSQL + Flyway)
+│   ├── application-docker.properties   # Profile Docker
+│   └── application-railway.properties  # Profile Railway
+└── src/test/resources/
+    ├── application-test.properties     # Profile test
+    └── application-e2e.properties      # Profile E2E (PostgreSQL real)
+```
 
-### 2.2 `enderecos`
+## Modelo relacional
 
-- `id` BIGINT **PK** (auto-increment)
-- `cep` VARCHAR(9) **NOT NULL**
-- `logradouro` VARCHAR(200) **NOT NULL**
-- `numero` VARCHAR(10) **NOT NULL**
-- `complemento` VARCHAR(100)
-- `bairro` VARCHAR(100) **NOT NULL**
-- `cidade` VARCHAR(100) **NOT NULL**
-- `estado` VARCHAR(2) **NOT NULL**
+### `clientes`
 
-### 2.3 `veiculos`
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| id | UUID | PK |
+| nome_completo | VARCHAR(150) | NOT NULL |
+| cpf_cnpj | VARCHAR(14) | UNIQUE NOT NULL |
+| telefone | VARCHAR(20) | NOT NULL |
+| email | VARCHAR(254) | UNIQUE NOT NULL |
+| data_cadastro | TIMESTAMP | NOT NULL |
+| endereco_id | UUID | FK → enderecos(id) |
 
-- `id` UUID **PK**
-- `placa` VARCHAR(7) **UNIQUE NOT NULL**
-- `modelo` VARCHAR(50) **NOT NULL**
-- `marca` VARCHAR(50) **NOT NULL**
-- `ano` SMALLINT **NOT NULL**
-- `cor` VARCHAR(30)
-- `quilometragem` DOUBLE
-- `data_cadastro` TIMESTAMP **NOT NULL**
-- `cliente_id` UUID **FK** → `clientes(id)`
+### `enderecos`
 
-### 2.4 `funcionarios`
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| id | BIGINT | PK (auto-increment) |
+| cep | VARCHAR(9) | NOT NULL |
+| logradouro | VARCHAR(200) | NOT NULL |
+| numero | VARCHAR(10) | NOT NULL |
+| complemento | VARCHAR(100) | |
+| bairro | VARCHAR(100) | NOT NULL |
+| localidade | VARCHAR(100) | NOT NULL |
+| uf | VARCHAR(2) | NOT NULL |
 
-- `id` UUID **PK**
-- `nome` VARCHAR(150) **NOT NULL**
-- `cpf_cnpj` VARCHAR(14) **UNIQUE NOT NULL**
-- `usuario` VARCHAR(50) **UNIQUE NOT NULL**
-- `senha_hash` VARCHAR(60) **NOT NULL**
-- `cargo` VARCHAR(50) **NOT NULL**
-- `telefone` VARCHAR(20)
-- `email` VARCHAR(254)
-- `data_cadastro` TIMESTAMP **NOT NULL**
+### `veiculos`
 
-### 2.5 `atendimentos`
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| id | UUID | PK |
+| placa | VARCHAR(7) | UNIQUE NOT NULL |
+| modelo | VARCHAR(50) | NOT NULL |
+| marca | VARCHAR(50) | NOT NULL |
+| ano | SMALLINT | NOT NULL |
+| cor | VARCHAR(30) | |
+| quilometragem | DOUBLE | |
+| data_cadastro | TIMESTAMP | NOT NULL |
+| cliente_id | UUID | FK → clientes(id) |
 
-- `id` BIGINT **PK** (auto-increment)
-- `descricao_servico` TEXT
-- `status` VARCHAR(20) **NOT NULL** (`AGUARDANDO` | `AGENDADO` | `EM_ANDAMENTO` | `CONCLUIDO` | `CANCELADO`)
-- `data_entrada` TIMESTAMP **NOT NULL**
-- `data_conclusao` TIMESTAMP
-- `data_cadastro` TIMESTAMP **NOT NULL**
-- `cliente_id` UUID **FK** → `clientes(id)`
-- `veiculo_id` UUID **FK** → `veiculos(id)`
-- `funcionario_id` UUID **FK** → `funcionarios(id)`
+### `funcionarios`
 
-## 3) Validações
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| id | UUID | PK |
+| nome | VARCHAR(150) | NOT NULL |
+| cpf_cnpj | VARCHAR(14) | UNIQUE NOT NULL |
+| usuario | VARCHAR(50) | UNIQUE NOT NULL |
+| senha_hash | VARCHAR(60) | NOT NULL |
+| cargo | VARCHAR(50) | NOT NULL |
+| telefone | VARCHAR(20) | |
+| email | VARCHAR(254) | |
+| data_cadastro | TIMESTAMP | NOT NULL |
 
-- **Nome Completo**: obrigatório, máx. 150 caracteres
-- **CPF/CNPJ**: obrigatório, único, 11 ou 14 dígitos, com validação de dígitos verificadores
-- **Telefone**: obrigatório, formato válido
-- **E-mail**: obrigatório, único, formato válido, máx. 254 caracteres
-- **CEP**: obrigatório, formato válido, integração com ViaCEP
+### `atendimentos`
 
-## 4) APIs REST (Spring Web)
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| id | BIGINT | PK (auto-increment) |
+| descricao_servico | TEXT | |
+| status | VARCHAR(20) | NOT NULL (AGUARDANDO, AGENDADO, EM_ANDAMENTO, CONCLUIDO, CANCELADO) |
+| data_entrada | TIMESTAMP | NOT NULL |
+| data_conclusao | TIMESTAMP | |
+| data_cadastro | TIMESTAMP | NOT NULL |
+| cliente_id | UUID | FK → clientes(id) |
+| veiculo_id | UUID | FK → veiculos(id) |
+| funcionario_id | UUID | FK → funcionarios(id) |
 
-### Clientes
+### `refresh_tokens`
 
-- `POST /clientes/` - Cadastrar cliente com endereço automático
-- `GET /clientes` - Listar todos os clientes
-- `GET /clientes/{id}` - Buscar cliente por ID
-- `DELETE /clientes/{id}` - Deletar cliente
-- `GET /clientes/cpf/{cpf}` - Buscar cliente por CPF
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| id | UUID | PK |
+| token | VARCHAR(255) | UNIQUE NOT NULL |
+| revogado | BOOLEAN | NOT NULL |
+| criado_em | TIMESTAMP | NOT NULL |
+| expira_em | TIMESTAMP | NOT NULL |
+| funcionario_id | UUID | FK → funcionarios(id) |
 
-### Veículos
+## Endpoints REST
 
-- `POST /veiculos` - Cadastrar veículo
-- `GET /veiculos` - Listar veículos
-- `GET /veiculos/{id}` - Buscar veículo por ID
-- `GET /veiculos/placa/{placa}` - Buscar veículo por placa
-- `GET /veiculos/cliente/{clienteId}` - Listar veículos por cliente
-- `GET /veiculos/total-veiculos` - Contar total de veículos
-- `PUT /veiculos/{id}` - Atualizar veículo
-- `PUT /veiculos/{veiculoId}/associar/{clienteId}` - Associar veículo a cliente
-- `DELETE /veiculos/{id}` - Deletar veículo por ID
-- `DELETE /veiculos/placa/{placa}` - Deletar veículo por placa
+### Autenticação (públicos)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/auth/login` | Login — retorna accessToken + refreshToken |
+| POST | `/auth/refresh` | Renova accessToken usando refreshToken |
+| POST | `/auth/logout` | Revoga refreshToken |
 
 ### Funcionários
 
-- `POST /funcionarios` - Registrar funcionário
-- `POST /funcionarios/login` - Login de funcionário
-- `GET /funcionarios/me` - Obter funcionário autenticado
-- `GET /funcionarios` - Listar todos os funcionários
-- `GET /funcionarios/{id}` - Buscar funcionário por ID
-- `DELETE /funcionarios/{id}` - Deletar funcionário
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/funcionarios` | Cadastrar (público) |
+| GET | `/funcionarios` | Listar todos |
+| GET | `/funcionarios/{id}` | Buscar por ID |
+| GET | `/funcionarios/me` | Dados do funcionário logado |
+| PUT | `/funcionarios/{id}` | Atualizar |
+| DELETE | `/funcionarios/{id}` | Deletar |
+
+### Clientes
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/clientes` | Cadastrar (com endereço via CEP) |
+| GET | `/clientes` | Listar todos |
+| GET | `/clientes/{id}` | Buscar por ID |
+| GET | `/clientes/cpfCNPJ/{cpfCnpj}` | Buscar por CPF/CNPJ |
+| PUT | `/clientes/{id}` | Atualizar |
+| DELETE | `/clientes/{id}` | Deletar |
+
+### Veículos
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/veiculos` | Cadastrar |
+| GET | `/veiculos` | Listar todos |
+| GET | `/veiculos/{id}` | Buscar por ID |
+| GET | `/veiculos/placa/{placa}` | Buscar por placa |
+| GET | `/veiculos/cliente/{clienteId}` | Listar por cliente |
+| GET | `/veiculos/total-veiculos` | Contar total |
+| PUT | `/veiculos/{id}` | Atualizar |
+| DELETE | `/veiculos/{id}` | Deletar por ID |
+| DELETE | `/veiculos/placa/{placa}` | Deletar por placa |
 
 ### Atendimentos
 
-- `POST /atendimentos` - Criar atendimento
-- `GET /atendimentos` - Listar atendimentos
-- `GET /atendimentos/cliente/{clienteId}` - Atendimentos por cliente
-- `PUT /atendimentos/{id}/status` - Atualizar status
-- `PUT /atendimentos/{id}/concluir` - Concluir atendimento
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/atendimentos/cadastrar` | Cadastrar |
+| GET | `/atendimentos/listar-todos` | Listar todos |
+| GET | `/atendimentos/id/{id}` | Buscar por ID |
+| GET | `/atendimentos/cliente ID/{clienteId}` | Listar por cliente |
+| GET | `/atendimentos/listar-ordem-decrescente` | Listar ordem decrescente |
+| GET | `/atendimentos/listar-concluidos` | Listar concluídos |
+| PUT | `/atendimentos/atualizar/{id}` | Atualizar |
+| DELETE | `/atendimentos/delete/{id}` | Deletar |
 
-### Integrações Externas
+### Integrações externas
 
-- `GET /api/viacep/endereco/{cep}` - Buscar endereço por CEP
-- `GET /api/feriados/{ano}` - Listar feriados nacionais
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/api/viacep/endereco/{cep}` | Buscar endereço por CEP |
+| GET | `/api/feriados/{ano}` | Listar feriados nacionais |
 
-## 5) Consultas JPQL implementadas
-
-- Listar clientes por CPF/CNPJ
-- Listar veículos por cliente
-- Listar veículos por placa
-- Listar atendimentos por cliente
-- Listar atendimentos por status
-- Listar funcionários por usuário
-
-## 6) Integrações externas
-
-- **ViaCEP API**: Busca automática de endereços
-- **Brasil API**: Consulta de feriados nacionais
-- **REST Template**: Configurado para consumo de APIs externas
-
-## 7) Como executar
+## Como executar
 
 ### Pré-requisitos
 
-- [Docker](https://www.docker.com/) e Docker Compose instalados
+- [Docker](https://www.docker.com/) + Docker Compose
 - Git
+- Node.js 22+ (apenas para desenvolvimento do frontend)
 
-### Passo a passo — Docker com H2 (recomendado)
-
-**1. Clone o repositório**
-
-```bash
-git clone https://github.com/rodrigosantoscosta/projeto_tecback.git
-cd projeto_tecback
-```
-
-**2. Configure as variáveis de ambiente**
+### Subir todos os serviços (recomendado)
 
 ```bash
-cp .env.example .env
+docker compose up -d
 ```
 
-> O perfil `docker` já vem definido no `.env.example`. Não é necessário configurar banco de dados externo — a aplicação usa H2 in-memory.
+Aguardar todos os containers ficarem saudáveis. Serviços disponíveis:
 
-**3. Suba o container**
+| Serviço | URL | Observação |
+|---|---|---|
+| Frontend (React + Nginx) | `http://localhost:3000` | Servidor Nginx com proxy reverso |
+| API (direta) | `http://localhost:8080` | Acessível também via `/api/*` no frontend |
+| Swagger | `http://localhost:8080/swagger-ui/index.html` | |
+| PostgreSQL | `localhost:5432` | |
+
+### Parar tudo
 
 ```bash
-docker-compose up --build
+docker compose down
 ```
 
-Aguarde a mensagem `Started OficinaApplication` nos logs.
+Para remover também o volume do banco:
 
-**4. Acesse os serviços**
+```bash
+docker compose down -v
+```
 
-| Serviço | URL |
+### Desenvolvimento local (sem Docker)
+
+**Backend:**
+
+```bash
+# Requer Java 21 + Maven 3.6+
+./mvnw spring-boot:run -Dspring.profiles.active=docker
+```
+
+**Frontend:**
+
+```bash
+cd crm-oficina
+npm install
+npm run dev
+```
+
+O frontend em dev roda em `http://localhost:5173` com Vite.
+
+## Testes
+
+### Testes unitários
+
+```bash
+docker compose run --rm oficina-tests
+```
+
+Ou localmente (requer JDK 21):
+
+```bash
+./mvnw test
+```
+
+### Testes E2E (contra PostgreSQL real)
+
+```bash
+# Build + execução
+docker compose build oficina-e2e-tests; docker compose run --rm oficina-e2e-tests
+
+# Só executar (se já buildou)
+docker compose run --rm oficina-e2e-tests
+```
+
+22 testes E2E cobrindo:
+- `AuthE2ETest` (8 testes: login, refresh, logout)
+- `ClienteE2ETest` (14 testes: CRUD completo de clientes)
+
+### Cobertura de testes unitários
+
+| Classe | Escopo |
 |---|---|
-| API | `http://localhost:8080` |
-| Swagger / OpenAPI | `http://localhost:8080/swagger-ui/index.html` |
-| H2 Console | `http://localhost:8080/h2-console` |
+| `AuthControllerTest` | Login, refresh, logout |
+| `RefreshTokenServiceTest` | Rotacionar token, logout |
+| `JwtUtilTest` | Validação de JWT |
+| `ClienteServiceTest` | CRUD cliente |
+| `VeiculoServiceTest` | CRUD veículo |
+| `AtendimentoServiceTest` | CRUD atendimento |
 
-**Credenciais do H2 Console:**
-- JDBC URL: `jdbc:h2:mem:oficinadb`
-- User: `sa`
-- Password: *(deixar em branco)*
-
-**5. Parar o container**
-
-```bash
-docker-compose down
-```
----
-## 8) Testando a API com Postman
-
+## Testando a API com Postman
 
 ### Importar a collection
 
 1. Abra o Postman e clique em **Import**.
-2. Selecione o arquivo `oficina_postman_collection.json` na raiz do projeto.
-3. A collection **"Oficina Mecânica API"** aparecerá com 6 pastas organizadas.
+2. Selecione `oficina_postman_collection.json` na raiz do projeto.
+3. A collection "Oficina Mecânica API" aparecerá com 34 requisições em 6 pastas.
 
-### Variáveis globais disponíveis
+### Variáveis globais
 
-| Variável | Valor padrão | Descrição |
+| Variável | Padrão | Descrição |
 |---|---|---|
 | `baseUrl` | `http://localhost:8080` | URL base da API |
-| `token` | *(vazio)* | JWT preenchido automaticamente no login |
-| `funcionarioId` | *(vazio)* | UUID preenchido após cadastrar funcionário |
-| `clienteId` | *(vazio)* | UUID preenchido após cadastrar cliente |
-| `veiculoId` | *(vazio)* | UUID preenchido após cadastrar veículo |
-| `veiculoPlaca` | `ABC1D23` | Placa usada nos testes de veículo |
-| `atendimentoId` | *(vazio)* | UUID preenchido após cadastrar atendimento |
+| `token` | *(vazio)* | AccessToken (preenchido no login) |
+| `refreshToken` | *(vazio)* | RefreshToken (preenchido no login) |
 | `usuarioLogin` | `admin` | Usuário de autenticação |
 | `senhaLogin` | `senha123` | Senha de autenticação |
+| `funcionarioId` | *(vazio)* | ID do funcionário |
+| `clienteId` | *(vazio)* | ID do cliente |
+| `veiculoId` | *(vazio)* | ID do veículo |
+| `veiculoPlaca` | `ABC1D23` | Placa do veículo |
+| `atendimentoId` | *(vazio)* | ID do atendimento |
 
-> Os scripts de **Tests** de cada request preenchem os UUIDs automaticamente — não é necessário copiar IDs manualmente.
-
-### Fluxo de teste recomendado
-
-Execute as requests **nesta ordem** para um ciclo completo sem erros de dependência:
+### Fluxo recomendado
 
 ```
- Auth
-  └─ 1. Cadastrar Funcionário (público)   → salva {{funcionarioId}}
-  └─ 2. Login → salva token               → salva {{token}}
-  └─ GET /funcionarios/me                 → valida sessão ativa
+Auth
+  └─ 1. Cadastrar Funcionário (público)
+  └─ 2. Login → salva token
+  └─ GET /funcionarios/me
 
- Clientes
-  └─ Cadastrar cliente                    → salva {{clienteId}}
-  └─ Listar todos
-  └─ Buscar por ID / CPF-CNPJ
+Clientes
+  └─ Cadastrar cliente → salva {{clienteId}}
+  └─ Listar / Buscar
 
- Veículos
-  └─ Cadastrar veículo                    → salva {{veiculoId}} e {{veiculoPlaca}}
-  └─ Listar todos / Buscar por Placa
-  └─ Listar por Cliente
+Veículos
+  └─ Cadastrar veículo → salva {{veiculoId}}
+  └─ Listar / Buscar por placa
 
- Atendimentos
-  └─ Cadastrar atendimento                → salva {{atendimentoId}}
-  └─ Listar todos / Buscar por ID
-  └─ Atualizar (status: ANDAMENTO)
-  └─ Listar concluídos
+Atendimentos
+  └─ Cadastrar atendimento → salva {{atendimentoId}}
+  └─ Listar / Atualizar status
 
- Integrações Externas
-  └─ ViaCEP — buscar endereço             → não requer token
-  └─ Brasil API — feriados 2025           → não requer token
+Integrações Externas
+  └─ ViaCEP — buscar endereço
+  └─ Brasil API — feriados
 ```
 
-### Autenticação
+> A collection usa **Bearer Token** configurado no workspace. Após o login o token é injetado automaticamente.
 
-A collection usa **Bearer Token** configurado a nível de collection. Após executar o request **"2. Login → salva token"**, todas as requests protegidas funcionam automaticamente — o header `Authorization: Bearer {{token}}` é injetado pelo Postman.
+## Variáveis de ambiente
+
+### Backend
+
+Arquivo `.env` na raiz (usado apenas para execução local fora do Docker):
+
+```env
+SPRING_PROFILES_ACTIVE=docker
+JWT_SECRET=chave-para-ambiente-local
+JWT_EXPIRATION_MS=3600000
+```
+
+### Frontend
+
+Arquivo `crm-oficina/.env` (usado apenas em `npm run dev`; ignorado no build Docker):
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+> No Docker o `VITE_API_URL` é injetado como `/api` via build arg no `docker-compose.yml`, fazendo com que as chamadas passem pelo proxy reverso do Nginx.
+
+## Segurança
+
+- Autenticação via JWT (jjwt 0.11.5)
+- AccessToken: 15 min de validade
+- RefreshToken: 7 dias (armazenado no banco, revogável)
+- BCrypt para hash de senhas
+- Endpoints públicos: apenas `POST /funcionarios`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` e Swagger
+- Demais endpoints exigem header `Authorization: Bearer <token>`
+- CORS: origens permitidas — `http://localhost:5173` (Vite dev), `http://localhost:4173` (Vite preview), `http://localhost:3000` (Docker Nginx). Em Docker o proxy reverso elimina a necessidade de CORS para o frontend.

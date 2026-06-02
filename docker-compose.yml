@@ -48,5 +48,31 @@ services:
     profiles:
       - test
 
+  oficina-e2e-tests:
+    build:
+      context: .
+      target: build
+    container_name: oficina-e2e-tests
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: e2e
+    command: ["mvn", "test", "-Dtest=AuthE2ETest,ClienteE2ETest"]
+    profiles:
+      - test
+
+  crm-oficina:
+    build:
+      context: ./crm-oficina
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: crm-oficina
+    ports:
+      - "3000:80"
+    depends_on:
+      - oficina-app
+
 volumes:
   postgres_data:
