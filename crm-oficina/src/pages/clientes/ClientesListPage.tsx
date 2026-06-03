@@ -43,9 +43,9 @@ export function ClientesListPage() {
 
   const columns: ColumnDef<ClienteResponse>[] = [
     {
-      accessorKey: 'nome',
+      accessorKey: 'nomeCompleto',
       header: 'Nome',
-      cell: ({ row }) => <span className="font-medium">{row.original.nome}</span>,
+      cell: ({ row }) => <span className="font-medium">{row.original.nomeCompleto}</span>,
     },
     {
       accessorKey: 'cpfCNPJ',
@@ -137,7 +137,7 @@ export function ClientesListPage() {
           <DialogHeader>
             <DialogTitle>Excluir cliente</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja excluir <span className="font-medium text-foreground">{deleteTarget?.nome}</span>?
+              Tem certeza que deseja excluir <span className="font-medium text-foreground">{deleteTarget?.nomeCompleto}</span>?
               Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>

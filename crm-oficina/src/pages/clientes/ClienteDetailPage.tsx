@@ -16,7 +16,14 @@ export function ClienteDetailPage() {
   if (isLoading) return <main className="p-6 text-muted-foreground text-sm">Carregando...</main>
   if (!cliente) return <main className="p-6 text-muted-foreground text-sm">Cliente não encontrado.</main>
 
-  const endereco = [cliente.logradouro, cliente.numero, cliente.bairro, cliente.cidade, cliente.estado]
+  const endereco = cliente.endereco
+  const enderecoFormatado = [
+    endereco?.logradouro,
+    endereco?.numero,
+    endereco?.bairro,
+    endereco?.cidade,
+    endereco?.estado,
+  ]
     .filter(Boolean)
     .join(', ')
 
@@ -32,7 +39,7 @@ export function ClienteDetailPage() {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-ocean-900">{cliente.nome}</h1>
+          <h1 className="text-xl font-semibold text-ocean-900">{cliente.nomeCompleto}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Cadastrado em {formatDate(cliente.dataCadastro)}</p>
         </div>
         <Button
@@ -69,15 +76,15 @@ export function ClienteDetailPage() {
           </CardContent>
         </Card>
 
-        {endereco && (
+        {enderecoFormatado && (
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium">Endereço</CardTitle>
             </CardHeader>
             <CardContent className="text-sm">
-              <p>{endereco}</p>
-              {cliente.complemento && <p className="text-muted-foreground">{cliente.complemento}</p>}
-              {cliente.cep && <p className="text-muted-foreground mt-1">CEP {cliente.cep}</p>}
+              <p>{enderecoFormatado}</p>
+              {endereco?.complemento && <p className="text-muted-foreground">{endereco.complemento}</p>}
+              {endereco?.cep && <p className="text-muted-foreground mt-1">CEP {endereco.cep}</p>}
             </CardContent>
           </Card>
         )}
