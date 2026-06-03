@@ -47,7 +47,7 @@ export function VeiculosListPage() {
       accessorKey: 'placa',
       header: 'Placa',
       cell: ({ row }) => (
-        <span className="font-mono font-semibold text-blue-400">{row.original.placa}</span>
+        <span className="font-mono font-semibold text-ocean-600">{row.original.placa}</span>
       ),
     },
     {

@@ -104,7 +104,7 @@ export function ClienteFormPage() {
   }
 
   if (isEdit && loadingCliente) {
-    return <main className="p-6 text-zinc-500 text-sm">Carregando...</main>
+    return <main className="p-6 text-muted-foreground text-sm">Carregando...</main>
   }
 
   const mutationError = isEdit ? atualizar.error : cadastrar.error
@@ -116,24 +116,24 @@ export function ClienteFormPage() {
     <main className="p-6 max-w-2xl">
       <button
         onClick={() => navigate('/clientes')}
-        className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white mb-5 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-ocean-700 mb-5 transition-colors"
       >
         <ArrowLeft size={14} />
         Voltar
       </button>
 
-      <h1 className="text-xl font-semibold mb-6">{isEdit ? 'Editar cliente' : 'Novo cliente'}</h1>
+      <h1 className="text-xl font-semibold text-ocean-900 mb-6">{isEdit ? 'Editar cliente' : 'Novo cliente'}</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {errorMsg && (
-          <p className="text-sm text-red-400 bg-red-950/30 border border-red-800/50 rounded-md px-3 py-2">
+          <p className="text-sm text-destructive bg-red-50 border border-red-200 rounded-md px-3 py-2">
             {errorMsg}
           </p>
         )}
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-zinc-300">Dados pessoais</CardTitle>
+            <CardTitle className="text-sm font-medium">Dados pessoais</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
@@ -142,9 +142,8 @@ export function ClienteFormPage() {
                 id="nome"
                 {...register('nome')}
                 placeholder="Nome completo"
-                className="bg-zinc-950 border-zinc-700"
               />
-              {errors.nome && <p className="text-xs text-red-400">{errors.nome.message}</p>}
+              {errors.nome && <p className="text-xs text-destructive">{errors.nome.message}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -156,9 +155,8 @@ export function ClienteFormPage() {
                   placeholder="000.000.000-00"
                   onChange={e => setValue('cpfCNPJ', formatCpfCnpj(e.target.value))}
                   value={watch('cpfCNPJ') ?? ''}
-                  className="bg-zinc-950 border-zinc-700"
                 />
-                {errors.cpfCNPJ && <p className="text-xs text-red-400">{errors.cpfCNPJ.message}</p>}
+                {errors.cpfCNPJ && <p className="text-xs text-destructive">{errors.cpfCNPJ.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -169,9 +167,8 @@ export function ClienteFormPage() {
                   placeholder="(00) 00000-0000"
                   onChange={e => setValue('telefone', formatTelefone(e.target.value))}
                   value={watch('telefone') ?? ''}
-                  className="bg-zinc-950 border-zinc-700"
                 />
-                {errors.telefone && <p className="text-xs text-red-400">{errors.telefone.message}</p>}
+                {errors.telefone && <p className="text-xs text-destructive">{errors.telefone.message}</p>}
               </div>
             </div>
 
@@ -182,16 +179,15 @@ export function ClienteFormPage() {
                 type="email"
                 {...register('email')}
                 placeholder="email@exemplo.com"
-                className="bg-zinc-950 border-zinc-700"
               />
-              {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-zinc-300">Endereço</CardTitle>
+            <CardTitle className="text-sm font-medium">Endereço</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
@@ -202,7 +198,6 @@ export function ClienteFormPage() {
                   placeholder="00000-000"
                   value={watch('cep') ?? ''}
                   onChange={handleCepChange}
-                  className="bg-zinc-950 border-zinc-700"
                 />
               </div>
               <div className="col-span-2 space-y-1.5">
@@ -211,7 +206,6 @@ export function ClienteFormPage() {
                   id="logradouro"
                   {...register('logradouro')}
                   placeholder="Rua, Av..."
-                  className="bg-zinc-950 border-zinc-700"
                 />
               </div>
             </div>
@@ -219,18 +213,18 @@ export function ClienteFormPage() {
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="numero">Número</Label>
-                <Input id="numero" {...register('numero')} placeholder="123" className="bg-zinc-950 border-zinc-700" />
+                <Input id="numero" {...register('numero')} placeholder="123" />
               </div>
               <div className="col-span-2 space-y-1.5">
                 <Label htmlFor="complemento">Complemento</Label>
-                <Input id="complemento" {...register('complemento')} placeholder="Apto, sala..." className="bg-zinc-950 border-zinc-700" />
+                <Input id="complemento" {...register('complemento')} placeholder="Apto, sala..." />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-2 space-y-1.5">
                 <Label htmlFor="cidade">Cidade</Label>
-                <Input id="cidade" {...register('cidade')} className="bg-zinc-950 border-zinc-700" />
+                <Input id="cidade" {...register('cidade')} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="estado">UF</Label>
@@ -239,7 +233,7 @@ export function ClienteFormPage() {
                   {...register('estado')}
                   maxLength={2}
                   placeholder="PB"
-                  className="bg-zinc-950 border-zinc-700 uppercase"
+                  className="uppercase"
                   onChange={e => setValue('estado', e.target.value.toUpperCase())}
                 />
               </div>
@@ -247,7 +241,7 @@ export function ClienteFormPage() {
 
             <div className="space-y-1.5">
               <Label htmlFor="bairro">Bairro</Label>
-              <Input id="bairro" {...register('bairro')} className="bg-zinc-950 border-zinc-700" />
+              <Input id="bairro" {...register('bairro')} />
             </div>
           </CardContent>
         </Card>
