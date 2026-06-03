@@ -1,12 +1,10 @@
-export type CombustívelTipo = 'GASOLINA' | 'ETANOL' | 'DIESEL' | 'FLEX' | 'ELETRICO' | 'HIBRIDO' | 'GNV'
-
 export interface VeiculoRequest {
   placa: string
   marca: string
   modelo: string
-  anoFabricacao: number
+  ano: number
   cor?: string
-  combustivel?: CombustívelTipo
+  quilometragem?: number
   clienteId: string
 }
 
@@ -15,10 +13,8 @@ export interface VeiculoResponse {
   placa: string
   marca: string
   modelo: string
-  anoFabricacao: number
+  ano: number
   cor: string | null
-  combustivel: CombustívelTipo | null
-  clienteId: string
-  clienteNome: string
+  quilometragem: number | null
   dataCadastro: string
 }

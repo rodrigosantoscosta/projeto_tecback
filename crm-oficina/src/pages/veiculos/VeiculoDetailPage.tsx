@@ -1,4 +1,4 @@
-import { useNavigate, useParams, Link } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Pencil } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
@@ -26,7 +26,7 @@ export function VeiculoDetailPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-mono text-2xl font-bold tracking-widest text-blue-400">{veiculo.placa}</h1>
-          <p className="text-zinc-400 mt-0.5">{veiculo.marca} {veiculo.modelo} · {veiculo.anoFabricacao}</p>
+          <p className="text-zinc-400 mt-0.5">{veiculo.marca} {veiculo.modelo} · {veiculo.ano}</p>
         </div>
         <Button
           variant="outline"
@@ -50,27 +50,13 @@ export function VeiculoDetailPage() {
               <p>{veiculo.cor ?? '—'}</p>
             </div>
             <div>
-              <p className="text-zinc-500 text-xs mb-0.5">Combustível</p>
-              <p>{veiculo.combustivel ?? '—'}</p>
+              <p className="text-zinc-500 text-xs mb-0.5">Quilometragem</p>
+              <p>{veiculo.quilometragem != null ? `${veiculo.quilometragem.toLocaleString('pt-BR')} km` : '—'}</p>
             </div>
             <div>
               <p className="text-zinc-500 text-xs mb-0.5">Cadastrado em</p>
               <p>{formatDate(veiculo.dataCadastro)}</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-zinc-300">Proprietário</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Link
-              to={`/clientes/${veiculo.clienteId}`}
-              className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              {veiculo.clienteNome} →
-            </Link>
           </CardContent>
         </Card>
       </div>
