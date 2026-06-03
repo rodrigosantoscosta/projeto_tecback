@@ -1,6 +1,25 @@
 # OFICINA - Sistema de Gestão para Oficina Mecânica
 
+Sistema completo de CRM para oficina mecânica com backend Spring Boot (Java 21), frontend React + TypeScript e PostgreSQL. Gerencia clientes, veículos, atendimentos e funcionários com autenticação JWT, refresh token rotation, testes unitários e E2E, e deploy via Docker Compose.
+
 ## Grupo
+
+- Alexander Augusto de Figueiredo Baxendale
+- Pedro Neto Amâncio de Lima
+- Rodrigo Santos Costa
+
+## Sumário
+
+- [Stack](#stack)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Modelo relacional](#modelo-relacional)
+- [Endpoints REST](#endpoints-rest)
+- [Como executar](#como-executar)
+- [Testes](#testes)
+- [Regras de negócio e casos de borda](#regras-de-negócio-e-casos-de-borda)
+- [Testando a API com Postman](#testando-a-api-com-postman)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Segurança](#segurança)
 
 - Alexander Augusto de Figueiredo Baxendale
 - Pedro Neto Amâncio de Lima
