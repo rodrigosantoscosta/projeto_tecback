@@ -319,48 +319,106 @@ O frontend em dev roda em `http://localhost:5173` com Vite.
 
 ## Testes
 
+O projeto possui **222 testes automatizados** (153 unitários + 69 E2E), todos passando com `BUILD SUCCESS`.
+
 ### Testes unitários
 
-```bash
-docker compose run --rm oficina-tests
-```
+Testam serviços, controladores e utilitários de forma isolada com Mockito, sem necessidade de banco de dados ou Docker.
 
-Ou localmente (requer JDK 21):
+#### Executar
 
 ```bash
+# Via Docker (recomendado — sem necessidade de JDK local)
+docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=\!*E2ETest"
+
+# Localmente (requer JDK 21)
 ./mvnw test
 ```
 
-### Testes E2E (banco isolado `oficina_e2e_db`)
+#### Cobertura unitária
+
+| Classe | Testes | Escopo |
+|---|---|---|
+| `OficinaApplicationTests` | 1 | Context load do Spring |
+| `AuthControllerTest` | 19 | Login, refresh, logout — sucesso e falhas |
+| `JwtUtilTest` | 17 | Geração, extração de claims, expiração e tokens inválidos |
+| `RefreshTokenServiceTest` | 19 | Criar, rotacionar, validar, revogar tokens |
+| `ClienteServiceTest` | 19 | Cadastrar, buscar por ID/CPF, listar, atualizar (com/sem CEP), deletar |
+| `VeiculoServiceTest` | 18 | Cadastrar, buscar por ID/placa, listar, atualizar, deletar, contar |
+| `AtendimentoServiceTest` | 27 | Cadastrar, buscar, listar, atualizar, transições de status, deletar |
+| `FuncionarioServiceTest` | 23 | Cadastrar, buscar, autenticar, listar, atualizar, deletar |
+| **Total** | **153** | |
+
+#### Executar uma classe ou método específico
 
 ```bash
-# Build + execução
-docker compose build oficina-e2e-tests; docker compose up postgres-e2e oficina-e2e-tests --abort-on-container-exit --exit-code-from oficina-e2e-tests
+# Via Docker
+docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=ClienteServiceTest"
 
-# Só executar (se já buildou)
-docker compose up postgres-e2e oficina-e2e-tests
+# Nested class (escapar $ no PowerShell)
+docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=ClienteServiceTest`$AtualizarCliente"
+
+# Método específico
+docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=FuncionarioServiceTest#deveLancarExcecaoQuandoInexistente"
+
+# Localmente
+./mvnw test -Dtest="ClienteServiceTest"
+./mvnw test -Dtest="ClienteServiceTest\$AtualizarCliente"
 ```
 
-O serviço `postgres-e2e` é criado e destruído automaticamente junto com os testes — não interfere no banco principal `oficina_db`.
+#### Visualizar relatórios de testes
 
-69 testes E2E cobrindo:
-- `AuthE2ETest` (8 testes: login, refresh, logout)
-- `ClienteE2ETest` (14 testes: CRUD completo de clientes)
-- `VeiculoE2ETest` (16 testes: CRUD + deleção por placa)
-- `AtendimentoE2ETest` (13 testes: CRUD + transições de status)
-- `FuncionarioE2ETest` (9 testes: CRUD completo de funcionários)
+```bash
+# Relatório texto do Surefire (PowerShell)
+Get-Content "target\surefire-reports\br.com.oficina.oficina.service.ClienteServiceTest.txt"
+```
 
-### Cobertura de testes unitários
+---
 
-| Classe | Escopo |
-|---|---|
-| `AuthControllerTest` | Login, refresh, logout |
-| `RefreshTokenServiceTest` | Rotacionar token, logout |
-| `JwtUtilTest` | Validação de JWT |
-| `ClienteServiceTest` | CRUD cliente |
-| `VeiculoServiceTest` | CRUD veículo |
-| `AtendimentoServiceTest` | CRUD atendimento |
-| `FuncionarioServiceTest` | CRUD funcionário |
+### Testes E2E
+
+Testam a API de ponta a ponta com banco de dados PostgreSQL real e isolado (`oficina_e2e_db`), sem interferir no banco principal `oficina_db`.
+
+> **Bind mount ativo** — `./src` e `./pom.xml` são montados diretamente no container, por isso alterações locais são refletidas **sem necessidade de rebuild da imagem**.
+
+#### Executar
+
+```bash
+# Todos os E2E
+docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=*E2ETest"
+
+# Classe específica
+docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=AtendimentoE2ETest"
+```
+
+#### Cobertura E2E
+
+| Classe | Testes | Cenários cobertos |
+|---|---|---|
+| `AuthE2ETest` | 8 | Login com credenciais válidas/inválidas, refresh token, logout, token revogado |
+| `ClienteE2ETest` | 14 | CRUD completo, busca por CPF/CNPJ, 403 sem token, 409 por CPF/email duplicado |
+| `VeiculoE2ETest` | 16 | CRUD completo, busca por placa, deleção por placa, 409 por placa duplicada |
+| `AtendimentoE2ETest` | 13 | CRUD completo, transições de status válidas e inválidas |
+| `FuncionarioE2ETest` | 9 | CRUD completo, 409 por CPF/usuário/email duplicados |
+| **Total** | **69** | |
+
+#### Infraestrutura dos testes E2E
+
+```yaml
+# Serviços envolvidos no docker-compose.yml
+postgres-e2e:        # Banco PostgreSQL isolado (oficina_e2e_db)
+oficina-e2e-tests:   # Container Maven com bind mount do código-fonte
+```
+
+O serviço `postgres-e2e` é criado e destruído automaticamente junto com os testes — não interfere no banco principal.
+
+---
+
+### Pular testes no build
+
+```bash
+./mvnw clean package -DskipTests
+```
 
 ## Regras de negócio e casos de borda
 
@@ -374,8 +432,9 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 | CLI-04 | **CEP deve conter exatamente 8 dígitos** (formatado ou não) | `MethodArgumentNotValidException` | 400 |
 | CLI-05 | **Cliente deve existir** nas operações de busca, atualização e deleção por ID ou CPF/CNPJ | `ClienteNaoEncontradoException`: "Cliente não encontrado com ID: {id}" | 404 |
 | CLI-06 | **Cliente com veículos não pode ser deletado** — é necessário remover ou transferir os veículos primeiro | `ClienteComVeiculosException`: "Não é possível deletar o cliente. Existem {N} veículo(s) associado(s)." | 409 |
-| CLI-07 | **Endereço só é refeito via ViaCEP na atualização se CEP, número ou complemento forem alterados** — se os 3 forem iguais, o endereço existente é mantido | N/A | N/A |
-| CLI-08 | **Nome, telefone e email são normalizados** (trim; email minúsculo) | N/A | N/A |
+| CLI-07 | **Cliente com atendimentos não pode ser deletado** — é necessário remover ou encerrar os atendimentos antes | `ClienteComAtendimentosException`: "Não é possível deletar o cliente. Existem {N} atendimento(s) associado(s)." | 409 |
+| CLI-08 | **Endereço só é refeito via ViaCEP na atualização se CEP, número ou complemento forem alterados** — se os 3 forem iguais, o endereço existente é mantido | N/A | N/A |
+| CLI-09 | **Nome, telefone e email são normalizados** (trim; email minúsculo) | N/A | N/A |
 
 ### Veículo
 
@@ -389,7 +448,7 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 | VEI-06 | **Ano entre 1900 e 2100** | `MethodArgumentNotValidException` | 400 |
 | VEI-07 | **Quilometragem não pode ser negativa** (campo opcional) | `MethodArgumentNotValidException` | 400 |
 | VEI-08 | **Placa é normalizada** (maiúscula, sem espaços) antes de qualquer operação | N/A | N/A |
-| VEI-09 | **Deleção de veículo não verifica atendimentos vinculados** — se houver `atendimentos` com FK real no banco, pode causar `DataIntegrityViolationException` (500) | Caso de borda / risco | N/A |
+| VEI-09 | **Veículo com atendimentos não pode ser deletado** — tanto por ID quanto por placa, a deleção é bloqueada se houver atendimentos vinculados | `VeiculoComAtendimentosException`: "Não é possível deletar o veículo. Existem {N} atendimento(s) associado(s)." | 409 |
 
 ### Atendimento
 
@@ -399,7 +458,7 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 | ATD-02 | **Transições permitidas:** `AGUARDANDO → ANDAMENTO`, `AGUARDANDO → CANCELADO`, `ANDAMENTO → CONCLUIDO`, `ANDAMENTO → CANCELADO`. `CONCLUIDO` e `CANCELADO` são terminais | N/A | N/A |
 | ATD-03 | **Cliente associado deve existir** no cadastro, atualização e listagem por cliente | `ClienteNaoEncontradoException` | 404 |
 | ATD-04 | **Veículo associado deve existir** (buscado por placa) | `VeiculoNaoEncontradoException`: "Veículo não encontrado com a placa: {placa}" | 404 |
-| ATD-05 | **Funcionário associado deve existir** | `RuntimeException` (inconsistência: deveria ser `FuncionarioNaoEncontrado` → 404) | 400 |
+| ATD-05 | **Funcionário associado deve existir** no cadastro e atualização | `FuncionarioNaoEncontrado`: "Funcionário não encontrado com ID: {id}" | 404 |
 | ATD-06 | **Atendimento deve existir** nas operações de busca, atualização e deleção por ID | `AtendimentoNaoEncontrado`: "Atendimento não encontrado com ID: {id}" | 404 |
 | ATD-07 | **Status padrão é `AGUARDANDO`** se não informado no cadastro | N/A | N/A |
 | ATD-08 | **Data de entrada padrão é `LocalDateTime.now()`** se não informada | N/A | N/A |
@@ -420,7 +479,7 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 | FUN-08 | **Usuário não pode ser alterado** na atualização (evitaria invalidação de tokens) | N/A | N/A |
 | FUN-09 | **Senha é opcional na atualização** — se não fornecida, a senha existente é mantida | N/A | N/A |
 | FUN-10 | **Funcionário deve existir** nas operações de busca, atualização e deleção por ID | `FuncionarioNaoEncontrado`: "Funcionário não encontrado com ID: {id}" | 404 |
-| FUN-11 | **Deleção não verifica atendimentos vinculados** — mesmo risco de FK que VEI-09 | Caso de borda | N/A |
+| FUN-11 | **Funcionário com atendimentos não pode ser deletado** — a deleção é bloqueada se houver atendimentos vinculados ao funcionário | `FuncionarioComAtendimentosException`: "Não é possível deletar o funcionário. Existem {N} atendimento(s) associado(s)." | 409 |
 
 ### Autenticação / Segurança
 
