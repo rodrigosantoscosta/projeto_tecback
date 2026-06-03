@@ -14,14 +14,14 @@ import { formatCpfCnpj, formatTelefone, formatCep, stripMask } from '../../utils
 import { validarCpfOuCnpj } from '../../utils/validadores'
 
 const schema = z.object({
-  nome: z.string().min(2, 'Nome obrigatório'),
+  nomeCompleto: z.string().min(2, 'Nome obrigatório'),
   cpfCNPJ: z.string().refine(v => validarCpfOuCnpj(v), 'CPF ou CNPJ inválido'),
   telefone: z.string().min(10, 'Telefone obrigatório'),
-  email: z.string().email('E-mail inválido').optional().or(z.literal('')),
-  cep: z.string().optional(),
-  logradouro: z.string().optional(),
-  numero: z.string().optional(),
+  email: z.string().email('E-mail inválido'),
+  cep: z.string().min(8, 'CEP obrigatório'),
+  numero: z.string().min(1, 'Número obrigatório'),
   complemento: z.string().optional(),
+  logradouro: z.string().optional(),
   bairro: z.string().optional(),
   cidade: z.string().optional(),
   estado: z.string().max(2).optional(),
@@ -44,36 +44,31 @@ export function ClienteFormPage() {
     resolver: zodResolver(schema),
   })
 
-  // Preencher formulário no modo edição
   useEffect(() => {
     if (cliente) {
-      setValue('nome', cliente.nome)
+      setValue('nomeCompleto', cliente.nomeCompleto)
       setValue('cpfCNPJ', formatCpfCnpj(cliente.cpfCNPJ))
       setValue('telefone', formatTelefone(cliente.telefone))
       setValue('email', cliente.email ?? '')
-      setValue('cep', cliente.cep ?? '')
-      setValue('logradouro', cliente.logradouro ?? '')
-      setValue('numero', cliente.numero ?? '')
-      setValue('complemento', cliente.complemento ?? '')
-      setValue('bairro', cliente.bairro ?? '')
-      setValue('cidade', cliente.cidade ?? '')
-      setValue('estado', cliente.estado ?? '')
+      setValue('cep', cliente.endereco?.cep ?? '')
+      setValue('logradouro', cliente.endereco?.logradouro ?? '')
+      setValue('numero', cliente.endereco?.numero ?? '')
+      setValue('complemento', cliente.endereco?.complemento ?? '')
+      setValue('bairro', cliente.endereco?.bairro ?? '')
+      setValue('cidade', cliente.endereco?.cidade ?? '')
+      setValue('estado', cliente.endereco?.estado ?? '')
     }
   }, [cliente, setValue])
 
   const onSubmit = async (data: FormData) => {
     const payload = {
-      nome: data.nome,
+      nomeCompleto: data.nomeCompleto,
       cpfCNPJ: stripMask(data.cpfCNPJ),
       telefone: stripMask(data.telefone),
-      email: data.email || undefined,
-      cep: data.cep ? stripMask(data.cep) : undefined,
-      logradouro: data.logradouro || undefined,
-      numero: data.numero || undefined,
+      email: data.email,
+      cep: stripMask(data.cep),
+      numero: data.numero,
       complemento: data.complemento || undefined,
-      bairro: data.bairro || undefined,
-      cidade: data.cidade || undefined,
-      estado: data.estado || undefined,
     }
     if (isEdit) {
       await atualizar.mutateAsync(payload)
@@ -98,7 +93,7 @@ export function ClienteFormPage() {
             setValue('cidade', data.localidade)
             setValue('estado', data.uf)
           }
-        } catch { /* ViaCEP indisponível — usuário preenche manualmente */ }
+        } catch { /* ViaCEP indisponível */ }
       }, 500)
     }
   }
@@ -137,13 +132,13 @@ export function ClienteFormPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="nome">Nome *</Label>
+              <Label htmlFor="nomeCompleto">Nome *</Label>
               <Input
-                id="nome"
-                {...register('nome')}
+                id="nomeCompleto"
+                {...register('nomeCompleto')}
                 placeholder="Nome completo"
               />
-              {errors.nome && <p className="text-xs text-destructive">{errors.nome.message}</p>}
+              {errors.nomeCompleto && <p className="text-xs text-destructive">{errors.nomeCompleto.message}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -173,7 +168,7 @@ export function ClienteFormPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="email">E-mail *</Label>
               <Input
                 id="email"
                 type="email"
@@ -192,13 +187,14 @@ export function ClienteFormPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="cep">CEP</Label>
+                <Label htmlFor="cep">CEP *</Label>
                 <Input
                   id="cep"
                   placeholder="00000-000"
                   value={watch('cep') ?? ''}
                   onChange={handleCepChange}
                 />
+                {errors.cep && <p className="text-xs text-destructive">{errors.cep.message}</p>}
               </div>
               <div className="col-span-2 space-y-1.5">
                 <Label htmlFor="logradouro">Logradouro</Label>
@@ -212,8 +208,9 @@ export function ClienteFormPage() {
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="numero">Número</Label>
+                <Label htmlFor="numero">Número *</Label>
                 <Input id="numero" {...register('numero')} placeholder="123" />
+                {errors.numero && <p className="text-xs text-destructive">{errors.numero.message}</p>}
               </div>
               <div className="col-span-2 space-y-1.5">
                 <Label htmlFor="complemento">Complemento</Label>
