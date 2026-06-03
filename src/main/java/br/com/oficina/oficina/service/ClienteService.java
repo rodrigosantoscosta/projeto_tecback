@@ -122,7 +122,14 @@ public class ClienteService {
 
         // Atualiza os dados básicos do cliente
         clienteExistente.setNomeCompleto(clienteDTO.getNomeCompleto().trim());
-        clienteExistente.setCpfCNPJ(clienteDTO.getCpfCNPJ().replaceAll("\\D", ""));
+
+        String novoCpf = clienteDTO.getCpfCNPJ().replaceAll("\\D", "");
+        if (!clienteExistente.getCpfCNPJ().equals(novoCpf) && clienteRepository.existsByCpfCNPJ(novoCpf)) {
+            log.error("CPF/CNPJ já cadastrado: {}", novoCpf);
+            throw new RecursoJaCadastradoException("CPF/CNPJ já cadastrado no sistema");
+        }
+        clienteExistente.setCpfCNPJ(novoCpf);
+
         clienteExistente.setTelefone(clienteDTO.getTelefone().trim());
         clienteExistente.setEmail(clienteDTO.getEmail().trim().toLowerCase());
 

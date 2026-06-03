@@ -150,7 +150,14 @@ public class FuncionarioService {
                 });
 
         f.setNome(dto.getNome().trim());
-        f.setCpfCNPJ(dto.getCpfCNPJ().replaceAll("\\D", ""));
+
+        String novoCpf = dto.getCpfCNPJ().replaceAll("\\D", "");
+        if (!f.getCpfCNPJ().equals(novoCpf) && funcionarioRepository.existsByCpfCNPJ(novoCpf)) {
+            log.error("CPF/CNPJ já cadastrado: {}", novoCpf);
+            throw new RecursoJaCadastradoException("CPF/CNPJ já cadastrado no sistema");
+        }
+        f.setCpfCNPJ(novoCpf);
+
         f.setCargo(dto.getCargo().trim());
 
         if (dto.getTelefone() != null) {

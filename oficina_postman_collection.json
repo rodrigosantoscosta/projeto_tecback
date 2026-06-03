@@ -1155,7 +1155,7 @@
         "authentication": {},
         "authenticationType": null,
         "body": {
-          "text": "{\n  \"nomeCompleto\": \"Joao da Silva Atualizado\",\n  \"email\": \"joao.novo@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 99999-0000\",\n  \"cep\": \"01001000\",\n  \"numero\": \"15\",\n  \"complemento\": \"\"\n}"
+          "text": "{\n  \"nomeCompleto\": \"Joao da Silva Atualizado\",\n  \"email\": \"joao.novo@email.com\",\n  \"cpfCNPJ\": \"${[clienteCpf]}\",\n  \"telefone\": \"(11) 99999-0000\",\n  \"cep\": \"01001000\",\n  \"numero\": \"15\",\n  \"complemento\": \"\"\n}"
         },
         "bodyType": "other",
         "description": "",
@@ -1209,7 +1209,7 @@
         "method": "GET",
         "name": "Buscar por CPF/CNPJ",
         "sortPriority": 13.0,
-        "url": "${[baseUrl]}/clientes/cpfCNPJ/66168841090",
+        "url": "${[baseUrl]}/clientes/cpfCNPJ/${[clienteCpf]}",
         "urlParameters": [],
         "settingSendCookies": {
           "enabled": false,
@@ -1320,7 +1320,7 @@
         "authentication": {},
         "authenticationType": null,
         "body": {
-          "text": "{\n  \"nomeCompleto\": \"Joao da Silva\",\n  \"email\": \"joao@email.com\",\n  \"cpfCNPJ\": \"98765432100\",\n  \"telefone\": \"(11) 91234-5678\",\n  \"cep\": \"01001000\",\n  \"numero\": \"10\",\n  \"complemento\": \"Apto 2\"\n}"
+          "text": "{\n  \"nomeCompleto\": \"Joao da Silva\",\n  \"email\": \"joao@email.com\",\n  \"cpfCNPJ\": \"${[clienteCpf]}\",\n  \"telefone\": \"(11) 91234-5678\",\n  \"cep\": \"01001000\",\n  \"numero\": \"10\",\n  \"complemento\": \"Apto 2\"\n}"
         },
         "bodyType": "other",
         "description": "",
@@ -1407,7 +1407,7 @@
         "authentication": {},
         "authenticationType": null,
         "body": {
-          "text": "{\n  \"nome\": \"Admin Atualizado\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Diretor\",\n  \"telefone\": \"(11) 98765-0002\",\n  \"email\": \"admin2@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
+          "text": "{\n  \"nome\": \"Admin Atualizado\",\n  \"cpfCNPJ\": \"${[funcionarioCpf]}\",\n  \"cargo\": \"Diretor\",\n  \"telefone\": \"(11) 98765-0002\",\n  \"email\": \"admin2@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
         },
         "bodyType": "other",
         "description": "",
@@ -1620,7 +1620,7 @@
         "authentication": {},
         "authenticationType": "none",
         "body": {
-          "text": "{\n  \"nome\": \"Admin Teste\",\n  \"cpfCNPJ\": \"12345678909\",\n  \"cargo\": \"Gerente\",\n  \"telefone\": \"(11) 98765-0001\",\n  \"email\": \"admin@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
+          "text": "{\n  \"nome\": \"Admin Teste\",\n  \"cpfCNPJ\": \"${[funcionarioCpf]}\",\n  \"cargo\": \"Gerente\",\n  \"telefone\": \"(11) 98765-0001\",\n  \"email\": \"admin@oficina.com\",\n  \"usuario\": \"${[usuarioLogin]}\",\n  \"senha\": \"${[senhaLogin]}\"\n}"
         },
         "bodyType": "other",
         "description": "Único endpoint público de criação. Não requer token.",

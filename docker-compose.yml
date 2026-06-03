@@ -44,6 +44,10 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
+      - ./target:/app/target
     command: ["mvn", "test", "-Dspring.profiles.active=test"]
     profiles:
       - test

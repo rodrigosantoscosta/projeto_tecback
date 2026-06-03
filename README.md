@@ -319,23 +319,48 @@ O frontend em dev roda em `http://localhost:5173` com Vite.
 
 ## Testes
 
-O projeto possui **222 testes automatizados** (153 unitários + 69 E2E), todos passando com `BUILD SUCCESS`.
+O projeto possui **testes automatizados em múltiplas camadas**: unitários, integração, segurança, concorrência e E2E. Todos são executados via Docker, sem necessidade de JDK local.
 
-### Testes unitários
+> **Atenção:** existem dois perfis de teste independentes:
+> - **`test`** — roda no container `oficina-tests` contra o banco `postgres` (usado para integração, segurança, concorrência, performance e E2E de exceções)
+> - **`e2e`** — roda no container `oficina-e2e-tests` contra o banco `postgres-e2e` (usado para E2E de CRUD)
 
-Testam serviços, controladores e utilitários de forma isolada com Mockito, sem necessidade de banco de dados ou Docker.
-
-#### Executar
+### Executar todos os testes (perfil `test`)
 
 ```bash
-# Via Docker (recomendado — sem necessidade de JDK local)
-docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=\!*E2ETest"
+# Todos os testes do perfil test (unitários + integração + segurança + concorrência + performance + E2E de exceções)
+docker compose --profile test run --rm oficina-tests mvn test
 
-# Localmente (requer JDK 21)
-./mvnw test
+# Após a primeira execção, o banco pode conter dados de testes anteriores.
+# Para garantir um estado limpo, recrie o volume do banco:
+docker compose --profile test down -v && docker compose --profile test run --rm oficina-tests mvn test
 ```
 
-#### Cobertura unitária
+### Executar uma classe ou método específico
+
+```bash
+# Via Docker (perfil test)
+docker compose --profile test run --rm oficina-tests mvn test -Dtest=ClienteServiceTest
+docker compose --profile test run --rm oficina-tests mvn test -Dtest="ClienteServiceTest\$AtualizarCliente"
+docker compose --profile test run --rm oficina-tests mvn test -Dtest=FuncionarioServiceTest#deveLancarExcecaoQuandoInexistente
+
+# Localmente (requer JDK 21)
+./mvnw test -Dtest="ClienteServiceTest"
+./mvnw test -Dtest="ClienteServiceTest\$AtualizarCliente"
+```
+
+### Visualizar relatórios de testes
+
+```bash
+# Relatório texto do Surefire (PowerShell)
+Get-Content "target\surefire-reports\br.com.oficina.oficina.service.ClienteServiceTest.txt"
+```
+
+---
+
+### 1. Testes unitários
+
+Testam serviços, controladores e utilitários de forma isolada com Mockito.
 
 | Classe | Testes | Escopo |
 |---|---|---|
@@ -347,51 +372,58 @@ docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e
 | `VeiculoServiceTest` | 18 | Cadastrar, buscar por ID/placa, listar, atualizar, deletar, contar |
 | `AtendimentoServiceTest` | 27 | Cadastrar, buscar, listar, atualizar, transições de status, deletar |
 | `FuncionarioServiceTest` | 23 | Cadastrar, buscar, autenticar, listar, atualizar, deletar |
+| `GlobalExceptionHandlerTest` | 10 | Mapeamento de exceções customizadas, mascaramento de erros de banco |
 | **Total** | **153** | |
-
-#### Executar uma classe ou método específico
-
-```bash
-# Via Docker
-docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=ClienteServiceTest"
-
-# Nested class (escapar $ no PowerShell)
-docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=ClienteServiceTest`$AtualizarCliente"
-
-# Método específico
-docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=FuncionarioServiceTest#deveLancarExcecaoQuandoInexistente"
-
-# Localmente
-./mvnw test -Dtest="ClienteServiceTest"
-./mvnw test -Dtest="ClienteServiceTest\$AtualizarCliente"
-```
-
-#### Visualizar relatórios de testes
-
-```bash
-# Relatório texto do Surefire (PowerShell)
-Get-Content "target\surefire-reports\br.com.oficina.oficina.service.ClienteServiceTest.txt"
-```
 
 ---
 
-### Testes E2E
+### 2. Testes de integração
 
-Testam a API de ponta a ponta com banco de dados PostgreSQL real e isolado (`oficina_e2e_db`), sem interferir no banco principal `oficina_db`.
+Validam comportamentos reais com banco PostgreSQL (Docker).
 
-> **Bind mount ativo** — `./src` e `./pom.xml` são montados diretamente no container, por isso alterações locais são refletidas **sem necessidade de rebuild da imagem**.
+| Classe | Testes | Escopo |
+|---|---|---|
+| `DataIntegrityExceptionIntegrationTest` | 4 | Violações de FK em PostgreSQL real (funcionário, cliente, veículo com atendimentos vinculados) |
 
-#### Executar
+---
+
+### 3. Testes de segurança
+
+| Classe | Testes | Escopo |
+|---|---|---|
+| `SecurityInputValidationTest` | 18 | SQL injection em buscas, XSS em campos de entrada, CPF/CNPJ inválidos, credenciais vazias |
+
+---
+
+### 4. Testes de concorrência
+
+| Classe | Testes | Escopo |
+|---|---|---|
+| `DeleteConcurrencyTest` | 4 | Race conditions entre `countBy` e `delete` — documenta a rede de segurança `DataIntegrityViolationException` |
+
+---
+
+### 5. Testes E2E
+
+#### E2E — Contrato de erro (`test`)
+
+Testam o `GlobalExceptionHandler` via HTTP real com token JWT.
+
+| Classe | Testes | Escopo |
+|---|---|---|
+| `ExceptionHandlerE2ETest` | 7 | 403 sem token, 401 credenciais inválidas, 404 ID inexistente, 409 duplicado, 500 RuntimeException (documenta information leakage), 400 validação |
+
+#### E2E — CRUD completo (`e2e`)
+
+Roda no container `oficina-e2e-tests` com banco `postgres-e2e` isolado.
 
 ```bash
-# Todos os E2E
-docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=*E2ETest"
+# Todos os E2E de CRUD
+docker compose --profile e2e run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=*E2ETest"
 
 # Classe específica
-docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=AtendimentoE2ETest"
+docker compose --profile e2e run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e" "-Dtest=AtendimentoE2ETest"
 ```
-
-#### Cobertura E2E
 
 | Classe | Testes | Cenários cobertos |
 |---|---|---|
@@ -400,17 +432,7 @@ docker compose run --rm oficina-e2e-tests mvn test "-Dspring.profiles.active=e2e
 | `VeiculoE2ETest` | 16 | CRUD completo, busca por placa, deleção por placa, 409 por placa duplicada |
 | `AtendimentoE2ETest` | 13 | CRUD completo, transições de status válidas e inválidas |
 | `FuncionarioE2ETest` | 9 | CRUD completo, 409 por CPF/usuário/email duplicados |
-| **Total** | **69** | |
-
-#### Infraestrutura dos testes E2E
-
-```yaml
-# Serviços envolvidos no docker-compose.yml
-postgres-e2e:        # Banco PostgreSQL isolado (oficina_e2e_db)
-oficina-e2e-tests:   # Container Maven com bind mount do código-fonte
-```
-
-O serviço `postgres-e2e` é criado e destruído automaticamente junto com os testes — não interfere no banco principal.
+| **Total** | **60** | |
 
 ---
 
@@ -469,7 +491,7 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 
 | ID | Regra | Violação | Status HTTP |
 |---|---|---|---|
-| FUN-01 | **CPF/CNPJ único** no cadastro | `RecursoJaCadastradoException`: "CPF/CNPJ já cadastrado no sistema" | 409 |
+| FUN-01 | **CPF/CNPJ único** — não podem existir dois funcionários com o mesmo documento | `RecursoJaCadastradoException`: "CPF/CNPJ já cadastrado no sistema" | 409 |
 | FUN-02 | **Usuário único** no cadastro | `RecursoJaCadastradoException`: "Usuário já cadastrado no sistema" | 409 |
 | FUN-03 | **Email único** no cadastro (campo opcional, mas se fornecido deve ser único) | `RecursoJaCadastradoException`: "Email já cadastrado no sistema" | 409 |
 | FUN-04 | **DTO de cadastro não pode ser nulo** | `IllegalArgumentException`: "Dados do funcionário são obrigatórios" | 400 |
@@ -523,7 +545,9 @@ O serviço `postgres-e2e` é criado e destruído automaticamente junto com os te
 | `usuarioLogin` | `admin` | Usuário de autenticação |
 | `senhaLogin` | `senha123` | Senha de autenticação |
 | `funcionarioId` | *(vazio)* | ID do funcionário |
+| `funcionarioCpf` | *(vazio)* | CPF do funcionário (ex: `52998224725`) — deve ser único e válido |
 | `clienteId` | *(vazio)* | ID do cliente |
+| `clienteCpf` | *(vazio)* | CPF do cliente (ex: `11144477735`) — deve ser único e válido |
 | `veiculoId` | *(vazio)* | ID do veículo |
 | `veiculoPlaca` | `ABC1D23` | Placa do veículo |
 | `atendimentoId` | *(vazio)* | ID do atendimento |
@@ -555,6 +579,8 @@ Integrações Externas
 
 > A collection usa **Bearer Token** configurado no workspace. Após o login o token é injetado automaticamente.
 
+> **Importante:** Os CPFs usados nos requests de cadastro (`funcionarioCpf` e `clienteCpf`) devem ser **válidos** (com dígitos verificadores corretos) e **únicos** no banco. CPFs duplicados retornam **409 Conflict**. Use um gerador de CPF online antes de executar a collection, ou altere os valores das variáveis a cada execução.
+
 ## Variáveis de ambiente
 
 ### Backend
@@ -585,4 +611,3 @@ VITE_API_URL=http://localhost:8080
 - BCrypt para hash de senhas
 - Endpoints públicos: apenas `POST /funcionarios`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` e Swagger
 - Demais endpoints exigem header `Authorization: Bearer <token>`
-- CORS: origens permitidas — `http://localhost:5173` (Vite dev), `http://localhost:4173` (Vite preview), `http://localhost:3000` (Docker Nginx). Em Docker o proxy reverso elimina a necessidade de CORS para o frontend.
