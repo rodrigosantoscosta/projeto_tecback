@@ -2,10 +2,12 @@ package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
+import br.com.oficina.oficina.exception.FuncionarioComAtendimentosException;
 import br.com.oficina.oficina.exception.FuncionarioNaoEncontrado;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
+import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,9 +31,10 @@ import static org.mockito.Mockito.*;
 @DisplayName("FuncionarioService — testes unitários")
 class FuncionarioServiceTest {
 
-    @Mock FuncionarioRepository funcionarioRepository;
-    @Mock PasswordEncoder        passwordEncoder;
-    @Mock FuncionarioMapper      funcionarioMapper;
+    @Mock FuncionarioRepository    funcionarioRepository;
+    @Mock PasswordEncoder           passwordEncoder;
+    @Mock FuncionarioMapper         funcionarioMapper;
+    @Mock AtendimentoRepository     atendimentoRepository;
 
     @InjectMocks
     FuncionarioService service;
@@ -335,6 +338,18 @@ class FuncionarioServiceTest {
 
             assertThatThrownBy(() -> service.deletarFuncionarioPorId(UUID.randomUUID()))
                     .isInstanceOf(FuncionarioNaoEncontrado.class);
+            verify(funcionarioRepository, never()).deleteById(any());
+        }
+
+        @Test
+        @DisplayName("[REGRA] deve lancar FuncionarioComAtendimentosException ao deletar funcionario com atendimentos")
+        void deveLancarExcecaoFuncionarioComAtendimentos() {
+            when(funcionarioRepository.findById(FUNC_ID)).thenReturn(Optional.of(funcionario));
+            when(atendimentoRepository.countByFuncionarioId(FUNC_ID)).thenReturn(3L);
+
+            assertThatThrownBy(() -> service.deletarFuncionarioPorId(FUNC_ID))
+                    .isInstanceOf(FuncionarioComAtendimentosException.class)
+                    .hasMessageContaining("3 atendimento(s)");
             verify(funcionarioRepository, never()).deleteById(any());
         }
     }

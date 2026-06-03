@@ -1,13 +1,21 @@
 package br.com.oficina.oficina.e2e;
 
+import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
+import br.com.oficina.oficina.dto.atendimento.CadastrarAtendimentoDTO;
 import br.com.oficina.oficina.dto.auth.AuthResponse;
 import br.com.oficina.oficina.dto.auth.LoginRequest;
+import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
+import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
+import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.model.Veiculo;
+import java.util.List;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -26,6 +34,8 @@ class FuncionarioE2ETest {
 
     private String accessToken;
     private UUID funcionarioIdA;
+    private UUID clienteId;
+    private String veiculoPlaca;
 
     @BeforeAll
     void setUp() {
@@ -49,6 +59,46 @@ class FuncionarioE2ETest {
         loginReq.setSenha("senha123");
         ResponseEntity<AuthResponse> loginResp = rest.postForEntity("/auth/login", loginReq, AuthResponse.class);
         accessToken = loginResp.getBody().getAccessToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(accessToken);
+
+        CadastrarClienteDTO clienteDTO = new CadastrarClienteDTO();
+        clienteDTO.setNomeCompleto("Cliente Func E2E");
+        clienteDTO.setCpfCNPJ("11222333000181");
+        clienteDTO.setTelefone("11911111111");
+        clienteDTO.setEmail("cliente.func.e2e@email.com");
+        clienteDTO.setCep("01001000");
+        clienteDTO.setNumero("50");
+
+        ResponseEntity<String> clienteResp = rest.exchange(
+                "/clientes", HttpMethod.POST, new HttpEntity<>(clienteDTO, headers), String.class);
+        if (clienteResp.getStatusCode() != HttpStatus.CREATED) {
+            throw new IllegalStateException("Falha ao criar cliente: " + clienteResp.getStatusCode());
+        }
+
+        ResponseEntity<List<ClienteListaDTO>> listResp = rest.exchange(
+                "/clientes", HttpMethod.GET, new HttpEntity<>(headers),
+                new ParameterizedTypeReference<List<ClienteListaDTO>>() {});
+        clienteId = listResp.getBody().stream()
+                .filter(c -> c.getCpfCNPJ().equals("11222333000181"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Cliente nao encontrado"))
+                .getId();
+
+        CadastrarVeiculoDTO veiculoDTO = new CadastrarVeiculoDTO();
+        veiculoDTO.setPlaca("FNC1E99");
+        veiculoDTO.setModelo("Uno");
+        veiculoDTO.setMarca("Fiat");
+        veiculoDTO.setAno(2020);
+        veiculoDTO.setClienteId(clienteId);
+        ResponseEntity<Veiculo> veicResp = rest.exchange(
+                "/veiculos", HttpMethod.POST, new HttpEntity<>(veiculoDTO, headers), Veiculo.class);
+        if (veicResp.getStatusCode() != HttpStatus.CREATED) {
+            throw new IllegalStateException("Falha ao criar veiculo: " + veicResp.getStatusCode());
+        }
+        veiculoPlaca = veicResp.getBody().getPlaca();
     }
 
     private HttpEntity<?> authHeader(Object body) {
@@ -168,6 +218,34 @@ class FuncionarioE2ETest {
                 "/funcionarios/" + UUID.randomUUID(), HttpMethod.PUT, authHeader(dto), String.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("DELETE /funcionarios/{id} — deve retornar 409 ao deletar funcionario com atendimentos")
+    void deveRetornar409AoDeletarFuncionarioComAtendimentos() {
+        UUID funcId = criarFuncionarioRetornarId("12345678909", "com.atend.e2e");
+
+        CadastrarAtendimentoDTO atdDTO = new CadastrarAtendimentoDTO();
+        atdDTO.setDescricaoServico("Atendimento para teste exclusão funcionario");
+        atdDTO.setClienteId(clienteId);
+        atdDTO.setVeiculoPlaca(veiculoPlaca);
+        atdDTO.setFuncionarioId(funcId);
+
+        ResponseEntity<AtendimentoDTO> atdResp = rest.exchange(
+                "/atendimentos/cadastrar", HttpMethod.POST, authHeader(atdDTO), AtendimentoDTO.class);
+        assertThat(atdResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        UUID atendimentoId = atdResp.getBody().getId();
+
+        ResponseEntity<String> deleteResp = rest.exchange(
+                "/funcionarios/" + funcId, HttpMethod.DELETE, authHeader(), String.class);
+
+        assertThat(deleteResp.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+        rest.exchange("/atendimentos/delete/" + atendimentoId, HttpMethod.DELETE, authHeader(), String.class);
+
+        ResponseEntity<Void> deleteOk = rest.exchange(
+                "/funcionarios/" + funcId, HttpMethod.DELETE, authHeader(), Void.class);
+        assertThat(deleteOk.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test

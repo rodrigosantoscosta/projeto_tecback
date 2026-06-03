@@ -197,6 +197,19 @@ public class VeiculoService {
                     );
                 });
 
+        long quantidadeAtendimentos = atendimentoRepository.countByVeiculoId(veiculo.getId());
+
+        if (quantidadeAtendimentos > 0) {
+            log.warn("Tentativa de deletar veículo {} com {} atendimento(s)", placaNormalizada, quantidadeAtendimentos);
+            throw new VeiculoComAtendimentosException(
+                    String.format(
+                            "Não é possível deletar o veículo. Existem %d atendimento(s) associado(s). " +
+                                    "Remova ou encerre os atendimentos antes de deletar o veículo.",
+                            quantidadeAtendimentos
+                    )
+            );
+        }
+
         veiculoRepository.delete(veiculo);
         log.info("Veículo deletado com sucesso - Placa: {}", placaNormalizada);
     }

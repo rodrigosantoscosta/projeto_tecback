@@ -3,11 +3,13 @@ package br.com.oficina.oficina.service;
 import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
 import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import br.com.oficina.oficina.exception.CepNaoEncontradoException;
+import br.com.oficina.oficina.exception.ClienteComAtendimentosException;
 import br.com.oficina.oficina.exception.ClienteComVeiculosException;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.model.Endereco;
+import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import br.com.oficina.oficina.repository.VeiculoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +35,10 @@ import static org.mockito.Mockito.*;
 @DisplayName("ClienteService — testes unitários")
 class ClienteServiceTest {
 
-    @Mock ClienteRepository clienteRepository;
-    @Mock VeiculoRepository veiculoRepository;
-    @Mock ViaCepService     viaCepService;
+    @Mock ClienteRepository     clienteRepository;
+    @Mock VeiculoRepository     veiculoRepository;
+    @Mock AtendimentoRepository atendimentoRepository;
+    @Mock ViaCepService         viaCepService;
 
     @InjectMocks
     ClienteService service;
@@ -379,6 +382,19 @@ class ClienteServiceTest {
 
             assertThatThrownBy(() -> service.deletarClientePorId(UUID.randomUUID()))
                     .isInstanceOf(ClienteNaoEncontradoException.class);
+            verify(clienteRepository, never()).delete(any());
+        }
+
+        @Test
+        @DisplayName("[REGRA] deve lançar ClienteComAtendimentosException ao deletar cliente com atendimentos diretos")
+        void deveLancarExcecaoClienteComAtendimentos() {
+            when(clienteRepository.findById(clienteSalvo.getId())).thenReturn(Optional.of(clienteSalvo));
+            when(veiculoRepository.countByClienteId(clienteSalvo.getId())).thenReturn(0L);
+            when(atendimentoRepository.countByClienteId(clienteSalvo.getId())).thenReturn(2L);
+
+            assertThatThrownBy(() -> service.deletarClientePorId(clienteSalvo.getId()))
+                    .isInstanceOf(ClienteComAtendimentosException.class)
+                    .hasMessageContaining("2 atendimento(s)");
             verify(clienteRepository, never()).delete(any());
         }
     }

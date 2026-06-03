@@ -4,6 +4,7 @@ import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.dto.veiculo.VeiculoDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
+import br.com.oficina.oficina.exception.VeiculoComAtendimentosException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.model.Veiculo;
@@ -283,6 +284,19 @@ class VeiculoServiceTest {
 
             assertThatThrownBy(() -> service.deletarVeiculoPorPlaca("ZZZ0000"))
                     .isInstanceOf(VeiculoNaoEncontradoException.class);
+            verify(veiculoRepository, never()).delete(any());
+        }
+
+        @Test
+        @DisplayName("[REGRA] deve lançar VeiculoComAtendimentosException ao deletar por placa de veículo com atendimentos")
+        void deveLancarExcecaoAoDeletarPorPlacaComAtendimentos() {
+            Veiculo v = veiculoExistente("ABC1D23", 5000.0);
+            when(veiculoRepository.findByPlaca("ABC1D23")).thenReturn(Optional.of(v));
+            when(atendimentoRepository.countByVeiculoId(v.getId())).thenReturn(2L);
+
+            assertThatThrownBy(() -> service.deletarVeiculoPorPlaca("ABC1D23"))
+                    .isInstanceOf(VeiculoComAtendimentosException.class)
+                    .hasMessageContaining("2 atendimento(s)");
             verify(veiculoRepository, never()).delete(any());
         }
     }

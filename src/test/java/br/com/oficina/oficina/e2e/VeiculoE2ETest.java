@@ -10,6 +10,7 @@ import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
 import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.model.StatusAtendimento;
 import br.com.oficina.oficina.model.Veiculo;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -343,6 +344,35 @@ class VeiculoE2ETest {
                 "/veiculos/placa/ZZZ9999", HttpMethod.DELETE, authHeader(), String.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("DELETE /veiculos/placa/{placa} — deve retornar 409 ao deletar veiculo com atendimentos")
+    void deveRetornar409AoDeletarPorPlacaComAtendimentos() {
+        String placa = "ZZZ2B34";
+        String veiculoId = createAndReturnId(criarVeiculoDTO(placa));
+
+        CadastrarAtendimentoDTO atdDTO = new CadastrarAtendimentoDTO();
+        atdDTO.setDescricaoServico("Atendimento para teste exclusão por placa");
+        atdDTO.setClienteId(clienteId);
+        atdDTO.setVeiculoPlaca(placa);
+        atdDTO.setFuncionarioId(funcionarioId);
+
+        ResponseEntity<AtendimentoDTO> atdResp = rest.exchange(
+                "/atendimentos/cadastrar", HttpMethod.POST, authHeader(atdDTO), AtendimentoDTO.class);
+        assertThat(atdResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        UUID atendimentoId = atdResp.getBody().getId();
+
+        ResponseEntity<String> deleteResp = rest.exchange(
+                "/veiculos/placa/" + placa, HttpMethod.DELETE, authHeader(), String.class);
+
+        assertThat(deleteResp.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+        rest.exchange("/atendimentos/delete/" + atendimentoId, HttpMethod.DELETE, authHeader(), String.class);
+
+        ResponseEntity<Void> deleteOk = rest.exchange(
+                "/veiculos/placa/" + placa, HttpMethod.DELETE, authHeader(), Void.class);
+        assertThat(deleteOk.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test

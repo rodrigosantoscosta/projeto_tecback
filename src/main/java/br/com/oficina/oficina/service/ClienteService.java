@@ -2,11 +2,13 @@ package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
 import br.com.oficina.oficina.exception.CepNaoEncontradoException;
+import br.com.oficina.oficina.exception.ClienteComAtendimentosException;
 import br.com.oficina.oficina.exception.ClienteComVeiculosException;
 import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.model.Cliente;
+import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import br.com.oficina.oficina.repository.VeiculoRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final VeiculoRepository veiculoRepository;
+    private final AtendimentoRepository atendimentoRepository;
     private final ViaCepService viaCepService;
 
     @Transactional
@@ -196,6 +199,20 @@ public class ClienteService {
                             "Não é possível deletar o cliente. Existem %d veículo(s) associado(s). " +
                                     "Remova ou transfira os veículos antes de deletar o cliente.",
                             quantidadeVeiculos
+                    )
+            );
+        }
+
+        // Verifica se há atendimentos diretamente associados ao cliente
+        long quantidadeAtendimentos = atendimentoRepository.countByClienteId(id);
+
+        if (quantidadeAtendimentos > 0) {
+            log.warn("Tentativa de deletar cliente {} com {} atendimento(s) diretos", id, quantidadeAtendimentos);
+            throw new ClienteComAtendimentosException(
+                    String.format(
+                            "Não é possível deletar o cliente. Existem %d atendimento(s) associado(s). " +
+                                    "Remova ou encerre os atendimentos antes de deletar o cliente.",
+                            quantidadeAtendimentos
                     )
             );
         }

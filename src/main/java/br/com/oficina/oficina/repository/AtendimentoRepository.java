@@ -14,6 +14,8 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, UUID> 
     Optional<Atendimento> findById(UUID id);
     List<Atendimento> findByClienteId(UUID clienteId);
     long countByVeiculoId(UUID veiculoId);
+    long countByFuncionarioId(UUID funcionarioId);
+    long countByClienteId(UUID clienteId);
 
     @Query("SELECT a FROM Atendimento a WHERE a.status = 'CONCLUIDO'")
     List<Atendimento> findByStatusConcluido();

@@ -205,6 +205,38 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(FuncionarioComAtendimentosException.class)
+    public ResponseEntity<ErrorDetails> handleFuncionarioComAtendimentos(
+            FuncionarioComAtendimentosException e,
+            HttpServletRequest request) {
+
+        log.warn("Operação não permitida: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(ClienteComAtendimentosException.class)
+    public ResponseEntity<ErrorDetails> handleClienteComAtendimentos(
+            ClienteComAtendimentosException e,
+            HttpServletRequest request) {
+
+        log.warn("Operação não permitida: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ResponseEntity<ErrorDetails> handleCredenciaisInvalidas(
             CredenciaisInvalidasException e,

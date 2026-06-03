@@ -3,10 +3,12 @@ package br.com.oficina.oficina.service;
 import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
 import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
+import br.com.oficina.oficina.exception.FuncionarioComAtendimentosException;
 import br.com.oficina.oficina.exception.FuncionarioNaoEncontrado;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.mapper.FuncionarioMapper;
 import br.com.oficina.oficina.model.Funcionario;
+import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.FuncionarioRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class FuncionarioService {
     private final FuncionarioRepository funcionarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final FuncionarioMapper funcionarioMapper;
+    private final AtendimentoRepository atendimentoRepository;
 
     @Transactional(readOnly = true)
     public List<Funcionario> listarTodosFuncionarios() {
@@ -111,6 +114,20 @@ public class FuncionarioService {
                             "Funcionário não encontrado com ID: " + id
                     );
                 });
+
+        long quantidadeAtendimentos = atendimentoRepository.countByFuncionarioId(id);
+
+        if (quantidadeAtendimentos > 0) {
+            log.warn("Tentativa de deletar funcionário {} com {} atendimento(s)", id, quantidadeAtendimentos);
+            throw new FuncionarioComAtendimentosException(
+                    String.format(
+                            "Não é possível deletar o funcionário. Existem %d atendimento(s) associado(s). " +
+                                    "Remova ou encerre os atendimentos antes de deletar o funcionário.",
+                            quantidadeAtendimentos
+                    )
+            );
+        }
+
         funcionarioRepository.deleteById(id);
         log.info("Funcionário deletado com sucesso: {}", id);
     }
