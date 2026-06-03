@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import type { AtendimentoResponse, AtendimentoRequest, StatusAtendimento } from '../../types/atendimento'
 
 const BACKEND_ENDPOINTS = {

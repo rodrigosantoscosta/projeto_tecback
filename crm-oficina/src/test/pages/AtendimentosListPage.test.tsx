@@ -58,7 +58,7 @@ vi.mock('../../hooks/useFuncionarios', () => ({
   })),
 }))
 
-import { useAtendimentos, useExcluirAtendimento } from '../../hooks/useAtendimentos'
+import { useAtendimentos } from '../../hooks/useAtendimentos'
 
 function createWrapper() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
