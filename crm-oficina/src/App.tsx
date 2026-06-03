@@ -10,6 +10,9 @@ import { ClienteDetailPage } from './pages/clientes/ClienteDetailPage'
 import { VeiculosListPage } from './pages/veiculos/VeiculosListPage'
 import { VeiculoFormPage } from './pages/veiculos/VeiculoFormPage'
 import { VeiculoDetailPage } from './pages/veiculos/VeiculoDetailPage'
+import { AtendimentosListPage } from './pages/atendimentos/AtendimentosListPage'
+import { AtendimentoFormPage } from './pages/atendimentos/AtendimentoFormPage'
+import { AtendimentoDetailPage } from './pages/atendimentos/AtendimentoDetailPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +37,10 @@ export default function App() {
               <Route path="/veiculos/novo" element={<VeiculoFormPage />} />
               <Route path="/veiculos/:id" element={<VeiculoDetailPage />} />
               <Route path="/veiculos/:id/editar" element={<VeiculoFormPage />} />
+              <Route path="/atendimentos" element={<AtendimentosListPage />} />
+              <Route path="/atendimentos/novo" element={<AtendimentoFormPage />} />
+              <Route path="/atendimentos/:id" element={<AtendimentoDetailPage />} />
+              <Route path="/atendimentos/:id/editar" element={<AtendimentoFormPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -1,6 +1,7 @@
 import { Users, Car, Wrench } from 'lucide-react'
 import { useClientes } from '../hooks/useClientes'
 import { useVeiculos } from '../hooks/useVeiculos'
+import { useAtendimentos } from '../hooks/useAtendimentos'
 
 function StatCard({ label, value, icon: Icon }: { label: string; value: number | string; icon: React.ElementType }) {
   return (
@@ -19,6 +20,7 @@ function StatCard({ label, value, icon: Icon }: { label: string; value: number |
 export function DashboardPage() {
   const { data: clientes = [] } = useClientes()
   const { data: veiculos = [] } = useVeiculos()
+  const { data: atendimentos = [] } = useAtendimentos()
 
   return (
     <main className="p-6">
@@ -27,9 +29,8 @@ export function DashboardPage() {
       <div className="grid grid-cols-3 gap-4 mb-8">
         <StatCard label="Clientes" value={clientes.length} icon={Users} />
         <StatCard label="Veículos" value={veiculos.length} icon={Car} />
-        <StatCard label="Atendimentos" value="—" icon={Wrench} />
+        <StatCard label="Atendimentos" value={atendimentos.length} icon={Wrench} />
       </div>
-      <p className="text-muted-foreground text-sm">Módulo de atendimentos em breve.</p>
     </main>
   )
 }
