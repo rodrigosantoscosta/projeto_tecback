@@ -1,11 +1,14 @@
 package br.com.oficina.oficina.e2e;
 
 import br.com.oficina.oficina.config.TestConfig;
+import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
+import br.com.oficina.oficina.dto.atendimento.CadastrarAtendimentoDTO;
 import br.com.oficina.oficina.dto.auth.AuthResponse;
 import br.com.oficina.oficina.dto.auth.LoginRequest;
 import br.com.oficina.oficina.dto.cliente.CadastrarClienteDTO;
 import br.com.oficina.oficina.dto.cliente.ClienteListaDTO;
 import br.com.oficina.oficina.dto.funcionario.CadastrarFuncionarioDTO;
+import br.com.oficina.oficina.dto.funcionario.FuncionarioDTO;
 import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.model.Veiculo;
 import org.junit.jupiter.api.*;
@@ -34,6 +37,7 @@ class VeiculoE2ETest {
 
     private String accessToken;
     private UUID clienteId;
+    private UUID funcionarioId;
 
     @BeforeAll
     void setUp() {
@@ -46,10 +50,11 @@ class VeiculoE2ETest {
         funcDTO.setUsuario("func.veiculo");
         funcDTO.setSenha("senha123");
 
-        ResponseEntity<Object> createResp = rest.postForEntity("/funcionarios", funcDTO, Object.class);
+        ResponseEntity<FuncionarioDTO> createResp = rest.postForEntity("/funcionarios", funcDTO, FuncionarioDTO.class);
         if (createResp.getStatusCode() != HttpStatus.OK) {
             throw new IllegalStateException("Falha ao criar funcionario: " + createResp.getStatusCode());
         }
+        funcionarioId = createResp.getBody().getId();
 
         LoginRequest loginReq = new LoginRequest();
         loginReq.setUsuario("func.veiculo");
@@ -284,6 +289,35 @@ class VeiculoE2ETest {
                 "/veiculos/" + UUID.randomUUID(), HttpMethod.DELETE, authHeader(), String.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("DELETE /veiculos/{id} — deve retornar 409 ao deletar veiculo com atendimentos")
+    void deveRetornar409AoDeletarVeiculoComAtendimentos() {
+        String placa = "ZZZ1A23";
+        String veiculoId = createAndReturnId(criarVeiculoDTO(placa));
+
+        CadastrarAtendimentoDTO atdDTO = new CadastrarAtendimentoDTO();
+        atdDTO.setDescricaoServico("Atendimento para teste de exclusão");
+        atdDTO.setClienteId(clienteId);
+        atdDTO.setVeiculoPlaca(placa);
+        atdDTO.setFuncionarioId(funcionarioId);
+
+        ResponseEntity<AtendimentoDTO> atdResp = rest.exchange(
+                "/atendimentos/cadastrar", HttpMethod.POST, authHeader(atdDTO), AtendimentoDTO.class);
+        assertThat(atdResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        UUID atendimentoId = atdResp.getBody().getId();
+
+        ResponseEntity<String> deleteResp = rest.exchange(
+                "/veiculos/" + veiculoId, HttpMethod.DELETE, authHeader(), String.class);
+
+        assertThat(deleteResp.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+        rest.exchange("/atendimentos/delete/" + atendimentoId, HttpMethod.DELETE, authHeader(), String.class);
+
+        ResponseEntity<Void> deleteOk = rest.exchange(
+                "/veiculos/" + veiculoId, HttpMethod.DELETE, authHeader(), Void.class);
+        assertThat(deleteOk.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test

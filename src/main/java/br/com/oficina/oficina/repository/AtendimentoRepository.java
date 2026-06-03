@@ -13,6 +13,7 @@ import java.util.UUID;
 public interface AtendimentoRepository extends JpaRepository<Atendimento, UUID> {
     Optional<Atendimento> findById(UUID id);
     List<Atendimento> findByClienteId(UUID clienteId);
+    long countByVeiculoId(UUID veiculoId);
 
     @Query("SELECT a FROM Atendimento a WHERE a.status = 'CONCLUIDO'")
     List<Atendimento> findByStatusConcluido();

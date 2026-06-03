@@ -4,6 +4,7 @@ import br.com.oficina.oficina.dto.atendimento.AtendimentoDTO;
 import br.com.oficina.oficina.dto.atendimento.CadastrarAtendimentoDTO;
 import br.com.oficina.oficina.exception.AtendimentoNaoEncontrado;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
+import br.com.oficina.oficina.exception.FuncionarioNaoEncontrado;
 import br.com.oficina.oficina.exception.TransicaoStatusInvalidaException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.Atendimento;
@@ -67,7 +68,7 @@ public class AtendimentoService {
         Funcionario funcionario = funcionarioRepository.findById(atendimentoDto.getFuncionarioId())
                 .orElseThrow(() -> {
                     log.error("Funcionário não encontrado: {}", atendimentoDto.getFuncionarioId());
-                    return new RuntimeException("Funcionário não encontrado com ID: " + atendimentoDto.getFuncionarioId());
+                    return new FuncionarioNaoEncontrado("Funcionário não encontrado com ID: " + atendimentoDto.getFuncionarioId());
                 });
         log.info("Funcionário  foi encontrado: {} - {}", funcionario.getId(), funcionario.getNome());
 

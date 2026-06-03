@@ -7,6 +7,7 @@ import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.model.Veiculo;
+import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import br.com.oficina.oficina.repository.VeiculoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class VeiculoServiceTest {
 
     @Mock VeiculoRepository veiculoRepository;
     @Mock ClienteRepository clienteRepository;
+    @Mock AtendimentoRepository atendimentoRepository;
 
     @InjectMocks
     VeiculoService service;

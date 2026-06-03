@@ -4,9 +4,11 @@ import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
 import br.com.oficina.oficina.dto.veiculo.VeiculoDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
+import br.com.oficina.oficina.exception.VeiculoComAtendimentosException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
 import br.com.oficina.oficina.model.Cliente;
 import br.com.oficina.oficina.model.Veiculo;
+import br.com.oficina.oficina.repository.AtendimentoRepository;
 import br.com.oficina.oficina.repository.ClienteRepository;
 import br.com.oficina.oficina.repository.VeiculoRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +24,13 @@ public class VeiculoService {
 
     private final VeiculoRepository veiculoRepository;
     private final ClienteRepository clienteRepository;
+    private final AtendimentoRepository atendimentoRepository;
 
-    public VeiculoService(VeiculoRepository veiculoRepository, ClienteRepository clienteRepository) {
+    public VeiculoService(VeiculoRepository veiculoRepository, ClienteRepository clienteRepository,
+                          AtendimentoRepository atendimentoRepository) {
         this.veiculoRepository = veiculoRepository;
         this.clienteRepository = clienteRepository;
+        this.atendimentoRepository = atendimentoRepository;
     }
 
     @Transactional
@@ -160,6 +165,19 @@ public class VeiculoService {
                             "Veículo não encontrado com ID: " + id
                     );
                 });
+
+        long quantidadeAtendimentos = atendimentoRepository.countByVeiculoId(id);
+
+        if (quantidadeAtendimentos > 0) {
+            log.warn("Tentativa de deletar veículo {} com {} atendimento(s)", id, quantidadeAtendimentos);
+            throw new VeiculoComAtendimentosException(
+                    String.format(
+                            "Não é possível deletar o veículo. Existem %d atendimento(s) associado(s). " +
+                                    "Remova ou encerre os atendimentos antes de deletar o veículo.",
+                            quantidadeAtendimentos
+                    )
+            );
+        }
 
         veiculoRepository.delete(veiculo);
         log.info("Veículo deletado com sucesso: {}", id);

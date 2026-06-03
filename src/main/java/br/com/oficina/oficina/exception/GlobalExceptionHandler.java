@@ -2,6 +2,7 @@ package br.com.oficina.oficina.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -81,6 +82,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    @ExceptionHandler(VeiculoComAtendimentosException.class)
+    public ResponseEntity<ErrorDetails> handleVeiculoComAtendimentos(
+            VeiculoComAtendimentosException e,
+            HttpServletRequest request) {
+
+        log.warn("Operação não permitida: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(RecursoJaCadastradoException.class)
     public ResponseEntity<ErrorDetails> handleRecursoJaCadastrado(
             RecursoJaCadastradoException e,
@@ -91,6 +108,22 @@ public class GlobalExceptionHandler {
         ErrorDetails error = new ErrorDetails(
                 LocalDateTime.now(),
                 e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDetails> handleDataIntegrityViolation(
+            DataIntegrityViolationException e,
+            HttpServletRequest request) {
+
+        log.error("Violação de integridade referencial: {}", e.getMessage());
+
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                "Operação não permitida: registro possui vínculos com outros dados",
                 request.getRequestURI()
         );
 
@@ -201,7 +234,7 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     @ExceptionHandler(Exception.class)
