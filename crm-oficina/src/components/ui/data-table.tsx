@@ -47,16 +47,16 @@ export function DataTable<TData, TValue>({
           placeholder={searchPlaceholder}
           value={globalFilter}
           onChange={e => setGlobalFilter(e.target.value)}
-          className="max-w-sm bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+          className="max-w-sm"
         />
       ) : null}
-      <div className="rounded-md border border-zinc-800 overflow-hidden">
+      <div className="rounded-md border border-border overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(hg => (
-              <TableRow key={hg.id} className="border-zinc-800 hover:bg-transparent">
+              <TableRow key={hg.id} className="border-border hover:bg-transparent">
                 {hg.headers.map(h => (
-                  <TableHead key={h.id} className="text-zinc-400 font-medium">
+                  <TableHead key={h.id} className="text-muted-foreground font-medium">
                     {h.isPlaceholder ? null : flexRender(h.column.columnDef.header, h.getContext())}
                   </TableHead>
                 ))}
@@ -66,9 +66,9 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} className="border-zinc-800 hover:bg-zinc-900">
+                <TableRow key={row.id} className="border-border hover:bg-muted">
                   {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id} className="text-zinc-200">
+                    <TableCell key={cell.id} className="text-foreground">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center text-zinc-500 py-8">
+                <TableCell colSpan={columns.length} className="text-center text-muted-foreground py-8">
                   Nenhum resultado encontrado.
                 </TableCell>
               </TableRow>

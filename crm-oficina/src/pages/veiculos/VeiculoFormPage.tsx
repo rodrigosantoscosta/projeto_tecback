@@ -59,6 +59,7 @@ export function VeiculoFormPage() {
       setValue('modelo', veiculo.modelo)
       setValue('ano', String(veiculo.ano))
       setValue('cor', veiculo.cor ?? '')
+      setValue('clienteId', veiculo.clienteId)
       if (veiculo.quilometragem != null) setValue('quilometragem', String(veiculo.quilometragem))
     }
   }, [veiculo, setValue])
@@ -87,7 +88,7 @@ export function VeiculoFormPage() {
   }
 
   if (isEdit && loadingVeiculo) {
-    return <main className="p-6 text-zinc-500 text-sm">Carregando...</main>
+    return <main className="p-6 text-muted-foreground text-sm">Carregando...</main>
   }
 
   const mutationError = isEdit ? atualizar.error : cadastrar.error
@@ -101,7 +102,7 @@ export function VeiculoFormPage() {
     <main className="p-6 max-w-xl">
       <button
         onClick={() => navigate('/veiculos')}
-        className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white mb-5 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-ocean-900 mb-5 transition-colors"
       >
         <ArrowLeft size={14} />
         Voltar
@@ -111,14 +112,14 @@ export function VeiculoFormPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {errorMsg && (
-          <p className="text-sm text-red-400 bg-red-950/30 border border-red-800/50 rounded-md px-3 py-2">
+          <p className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-md px-3 py-2">
             {errorMsg}
           </p>
         )}
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-zinc-300">Dados do veículo</CardTitle>
+            <CardTitle className="text-sm font-medium">Dados do veículo</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
@@ -136,7 +137,7 @@ export function VeiculoFormPage() {
                   />
                 )}
               />
-              {errors.clienteId && <p className="text-xs text-red-400">{errors.clienteId.message}</p>}
+              {errors.clienteId && <p className="text-xs text-destructive">{errors.clienteId.message}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -146,39 +147,39 @@ export function VeiculoFormPage() {
                   placeholder="ABC1D23"
                   value={watch('placa') ?? ''}
                   onChange={e => setValue('placa', formatPlaca(e.target.value))}
-                  className="bg-zinc-950 border-zinc-700 font-mono uppercase"
+                  className="font-mono uppercase"
                   maxLength={7}
                 />
-                {errors.placa && <p className="text-xs text-red-400">{errors.placa.message}</p>}
+                {errors.placa && <p className="text-xs text-destructive">{errors.placa.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label>Ano *</Label>
                 <Input
                   type="number"
                   {...register('ano')}
-                  className="bg-zinc-950 border-zinc-700"
+                  className=""
                 />
-                {errors.ano && <p className="text-xs text-red-400">{errors.ano.message}</p>}
+                {errors.ano && <p className="text-xs text-destructive">{errors.ano.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>Marca *</Label>
-                <Input {...register('marca')} placeholder="Toyota" className="bg-zinc-950 border-zinc-700" />
-                {errors.marca && <p className="text-xs text-red-400">{errors.marca.message}</p>}
+                <Input {...register('marca')} placeholder="Toyota" className="" />
+                {errors.marca && <p className="text-xs text-destructive">{errors.marca.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label>Modelo *</Label>
-                <Input {...register('modelo')} placeholder="Corolla" className="bg-zinc-950 border-zinc-700" />
-                {errors.modelo && <p className="text-xs text-red-400">{errors.modelo.message}</p>}
+                <Input {...register('modelo')} placeholder="Corolla" className="" />
+                {errors.modelo && <p className="text-xs text-destructive">{errors.modelo.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>Cor</Label>
-                <Input {...register('cor')} placeholder="Prata" className="bg-zinc-950 border-zinc-700" />
+                <Input {...register('cor')} placeholder="Prata" className="" />
               </div>
               <div className="space-y-1.5">
                 <Label>Quilometragem</Label>
@@ -186,7 +187,7 @@ export function VeiculoFormPage() {
                   type="number"
                   {...register('quilometragem')}
                   placeholder="50000"
-                  className="bg-zinc-950 border-zinc-700"
+                  className=""
                 />
               </div>
             </div>

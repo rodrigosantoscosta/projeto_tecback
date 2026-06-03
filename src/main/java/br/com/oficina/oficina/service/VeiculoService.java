@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.dto.veiculo.VeiculoDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
@@ -28,20 +29,17 @@ public class VeiculoService {
     }
 
     @Transactional
-    public Veiculo cadastrarVeiculo(CadastrarVeiculoDTO dto) {
+    public VeiculoDTO cadastrarVeiculo(CadastrarVeiculoDTO dto) {
         log.info("Cadastrando veículo - Placa: {}", dto.getPlaca());
 
-        // Normaliza a placa
         String placaNormalizada = dto.getPlaca().replaceAll("\\s+", "").toUpperCase();
         log.debug("Placa normalizada: {}", placaNormalizada);
 
-        // Verifica se a placa já existe
         if (veiculoRepository.existsByPlaca(placaNormalizada)) {
             log.error("Placa já cadastrada: {}", placaNormalizada);
             throw new RecursoJaCadastradoException("Placa já cadastrada no sistema");
         }
 
-        // Busca o cliente
         Cliente cliente = clienteRepository.findById(dto.getClienteId())
                 .orElseThrow(() -> {
                     log.error("Cliente não encontrado: {}", dto.getClienteId());
@@ -52,7 +50,6 @@ public class VeiculoService {
 
         log.info("Cliente encontrado: {} - {}", cliente.getId(), cliente.getNomeCompleto());
 
-        // Cria o veículo
         Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(placaNormalizada);
         veiculo.setModelo(dto.getModelo());
@@ -66,51 +63,54 @@ public class VeiculoService {
         log.info("Veículo cadastrado com sucesso - ID: {}, Placa: {}, Cliente: {}",
                 veiculoSalvo.getId(), veiculoSalvo.getPlaca(), cliente.getNomeCompleto());
 
-        return veiculoSalvo;
+        return toDTO(veiculoSalvo);
     }
 
     @Transactional(readOnly = true)
-    public List<Veiculo> listarTodosVeiculos() {
+    public List<VeiculoDTO> listarTodosVeiculos() {
         log.info("Listando todos os veículos");
-        return veiculoRepository.findAll();
+        List<Veiculo> veiculos = veiculoRepository.findAll();
+        return veiculos.stream().map(this::toDTO).toList();
     }
 
     @Transactional(readOnly = true)
-    public Veiculo buscarVeiculoPorId(UUID id) {
+    public VeiculoDTO buscarVeiculoPorId(UUID id) {
         log.info("Buscando veículo por ID: {}", id);
-        return veiculoRepository.findById(id)
+        Veiculo veiculo = veiculoRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Veículo não encontrado: {}", id);
                     return new VeiculoNaoEncontradoException(
                             "Veículo não encontrado com ID: " + id
                     );
                 });
+        return toDTO(veiculo);
     }
 
     @Transactional(readOnly = true)
-    public Veiculo buscarVeiculoPorPlaca(String placa) {
+    public VeiculoDTO buscarVeiculoPorPlaca(String placa) {
         log.info("Buscando veículo por placa: {}", placa);
         String placaNormalizada = placa.replaceAll("\\s+", "").toUpperCase();
-        return veiculoRepository.findByPlaca(placaNormalizada)
+        Veiculo veiculo = veiculoRepository.findByPlaca(placaNormalizada)
                 .orElseThrow(() -> {
                     log.error("Veículo não encontrado: {}", placa);
                     return new VeiculoNaoEncontradoException(
                             "Veículo não encontrado com ID: " + placa
                     );
                 });
+        return toDTO(veiculo);
     }
 
     @Transactional(readOnly = true)
-    public List<Veiculo> listarVeiculosPorCliente(UUID clienteId) {
+    public List<VeiculoDTO> listarVeiculosPorCliente(UUID clienteId) {
         log.info("Listando veículos do cliente: {}", clienteId);
-        return veiculoRepository.findVeiculoByClienteId(clienteId);
+        List<Veiculo> veiculos = veiculoRepository.findVeiculoByClienteId(clienteId);
+        return veiculos.stream().map(this::toDTO).toList();
     }
 
     @Transactional
-    public Veiculo atualizarVeiculo(UUID id, CadastrarVeiculoDTO dto) {
+    public VeiculoDTO atualizarVeiculo(UUID id, CadastrarVeiculoDTO dto) {
         log.info("Atualizando veículo: {}", id);
 
-        // Verifica se o veículo existe
         Veiculo veiculoExistente = veiculoRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Veículo não encontrado: {}", id);
@@ -119,17 +119,14 @@ public class VeiculoService {
                     );
                 });
 
-        // Normaliza a placa
         String placaNormalizada = dto.getPlaca().replaceAll("\\s+", "").toUpperCase();
 
-        // Verifica se a nova placa já pertence a outro veículo
         if (!veiculoExistente.getPlaca().equals(placaNormalizada)
                 && veiculoRepository.existsByPlaca(placaNormalizada)) {
             log.error("Placa já cadastrada para outro veículo: {}", placaNormalizada);
             throw new RecursoJaCadastradoException("Placa já cadastrada para outro veículo");
         }
 
-        // Busca o cliente
         Cliente cliente = clienteRepository.findById(dto.getClienteId())
                 .orElseThrow(() -> {
                     log.error("Cliente não encontrado: {}", dto.getClienteId());
@@ -138,7 +135,6 @@ public class VeiculoService {
                     );
                 });
 
-        // Atualiza os dados
         veiculoExistente.setPlaca(placaNormalizada);
         veiculoExistente.setMarca(dto.getMarca());
         veiculoExistente.setModelo(dto.getModelo());
@@ -150,35 +146,8 @@ public class VeiculoService {
         Veiculo veiculoAtualizado = veiculoRepository.save(veiculoExistente);
         log.info("Veículo atualizado com sucesso: {}", veiculoAtualizado.getId());
 
-        return veiculoAtualizado;
+        return toDTO(veiculoAtualizado);
     }
-
-//    @Transactional
-//    public Veiculo associarVeiculoAoCliente(UUID veiculoId, UUID clienteId) {
-//        log.info("Associando veículo {} ao cliente {}", veiculoId, clienteId);
-//
-//        Veiculo veiculo = veiculoRepository.findById(veiculoId)
-//                .orElseThrow(() -> {
-//                    log.error("Veículo não encontrado: {}", veiculoId);
-//                    return new VeiculoNaoEncontradoException(
-//                            "Veículo não encontrado com ID: " + veiculoId
-//                    );
-//                });
-//
-//        Cliente cliente = clienteRepository.findById(clienteId)
-//                .orElseThrow(() -> {
-//                    log.error("Cliente não encontrado: {}", clienteId);
-//                    return new ClienteNaoEncontradoException(
-//                            "Cliente não encontrado com ID: " + clienteId
-//                    );
-//                });
-//
-//        veiculo.setCliente(cliente);
-//        Veiculo veiculoAtualizado = veiculoRepository.save(veiculo);
-//
-//        log.info("Veículo {} associado ao cliente {} com sucesso", veiculoId, clienteId);
-//        return veiculoAtualizado;
-//    }
 
     @Transactional
     public void deletarVeiculoPorId(UUID id) {
@@ -220,5 +189,19 @@ public class VeiculoService {
         Long total = veiculoRepository.contarTotalVeiculos();
         log.debug("Total de veículos: {}", total);
         return total;
+    }
+
+    private VeiculoDTO toDTO(Veiculo veiculo) {
+        VeiculoDTO dto = new VeiculoDTO();
+        dto.setId(veiculo.getId());
+        dto.setPlaca(veiculo.getPlaca());
+        dto.setMarca(veiculo.getMarca());
+        dto.setModelo(veiculo.getModelo());
+        dto.setAno(veiculo.getAno());
+        dto.setCor(veiculo.getCor());
+        dto.setQuilometragem(veiculo.getQuilometragem());
+        dto.setDataCadastro(veiculo.getDataCadastro());
+        dto.setClienteId(veiculo.getCliente().getId());
+        return dto;
     }
 }

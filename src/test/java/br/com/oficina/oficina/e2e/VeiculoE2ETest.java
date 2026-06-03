@@ -78,7 +78,7 @@ class VeiculoE2ETest {
                 "/clientes", HttpMethod.GET, new HttpEntity<>(headers),
                 new ParameterizedTypeReference<List<ClienteListaDTO>>() {});
         clienteId = listResp.getBody().stream()
-                .filter(c -> c.getCpfCNPJ().equals("12345678909"))
+                .filter(c -> c.getCpfCNPJ().equals("40808737430"))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Cliente nao encontrado apos criacao"))
                 .getId();

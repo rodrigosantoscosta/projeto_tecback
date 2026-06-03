@@ -17,4 +17,5 @@ export interface VeiculoResponse {
   cor: string | null
   quilometragem: number | null
   dataCadastro: string
+  clienteId: string
 }

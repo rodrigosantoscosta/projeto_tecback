@@ -78,7 +78,7 @@ export function ClientesListPage() {
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8 text-muted-foreground hover:text-ocean-700"
+            className="h-8 w-8 text-muted-foreground hover:text-teal-600"
             onClick={() => navigate(`/clientes/${row.original.id}`)}
             title="Visualizar"
           >
@@ -87,7 +87,7 @@ export function ClientesListPage() {
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8 text-muted-foreground hover:text-ocean-700"
+            className="h-8 w-8 text-muted-foreground hover:text-teal-600"
             onClick={() => navigate(`/clientes/${row.original.id}/editar`)}
             title="Editar"
           >

@@ -1,6 +1,7 @@
 package br.com.oficina.oficina.service;
 
 import br.com.oficina.oficina.dto.veiculo.CadastrarVeiculoDTO;
+import br.com.oficina.oficina.dto.veiculo.VeiculoDTO;
 import br.com.oficina.oficina.exception.ClienteNaoEncontradoException;
 import br.com.oficina.oficina.exception.RecursoJaCadastradoException;
 import br.com.oficina.oficina.exception.VeiculoNaoEncontradoException;
@@ -90,11 +91,11 @@ class VeiculoServiceTest {
                 return v;
             });
 
-            Veiculo resultado = service.cadastrarVeiculo(dto("ABC1D23", 10000.0));
+            VeiculoDTO resultado = service.cadastrarVeiculo(dto("ABC1D23", 10000.0));
 
             assertThat(resultado).isNotNull();
             assertThat(resultado.getPlaca()).isEqualTo("ABC1D23");
-            assertThat(resultado.getCliente()).isEqualTo(cliente);
+            assertThat(resultado.getClienteId()).isEqualTo(cliente.getId());
             verify(veiculoRepository).save(any(Veiculo.class));
         }
 
@@ -105,7 +106,7 @@ class VeiculoServiceTest {
             when(clienteRepository.findById(cliente.getId())).thenReturn(Optional.of(cliente));
             when(veiculoRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-            Veiculo resultado = service.cadastrarVeiculo(dto("abc1d23", 0.0));
+            VeiculoDTO resultado = service.cadastrarVeiculo(dto("abc1d23", 0.0));
 
             assertThat(resultado.getPlaca()).isEqualTo("ABC1D23");
         }
@@ -148,7 +149,7 @@ class VeiculoServiceTest {
             Veiculo v = veiculoExistente("ABC1D23", 5000.0);
             when(veiculoRepository.findById(v.getId())).thenReturn(Optional.of(v));
 
-            Veiculo resultado = service.buscarVeiculoPorId(v.getId());
+            VeiculoDTO resultado = service.buscarVeiculoPorId(v.getId());
 
             assertThat(resultado.getPlaca()).isEqualTo("ABC1D23");
         }
@@ -168,7 +169,7 @@ class VeiculoServiceTest {
             Veiculo v = veiculoExistente("ABC1D23", 5000.0);
             when(veiculoRepository.findByPlaca("ABC1D23")).thenReturn(Optional.of(v));
 
-            Veiculo resultado = service.buscarVeiculoPorPlaca("ABC1D23");
+            VeiculoDTO resultado = service.buscarVeiculoPorPlaca("ABC1D23");
 
             assertThat(resultado.getPlaca()).isEqualTo("ABC1D23");
         }
@@ -202,7 +203,7 @@ class VeiculoServiceTest {
 
             CadastrarVeiculoDTO update = dto("ABC1D23", 20000.0);
             update.setModelo("Civic EX");
-            Veiculo resultado = service.atualizarVeiculo(existente.getId(), update);
+            VeiculoDTO resultado = service.atualizarVeiculo(existente.getId(), update);
 
             assertThat(resultado.getModelo()).isEqualTo("Civic EX");
             assertThat(resultado.getQuilometragem()).isEqualTo(20000.0);
@@ -299,7 +300,7 @@ class VeiculoServiceTest {
                     List.of(veiculoExistente("ABC1D23", 5000.0), veiculoExistente("XYZ9A87", 1000.0))
             );
 
-            List<Veiculo> resultado = service.listarVeiculosPorCliente(cliente.getId());
+            List<VeiculoDTO> resultado = service.listarVeiculosPorCliente(cliente.getId());
 
             assertThat(resultado).hasSize(2);
         }
@@ -309,7 +310,7 @@ class VeiculoServiceTest {
         void deveRetornarListaVaziaQuandoClienteSemVeiculos() {
             when(veiculoRepository.findVeiculoByClienteId(any())).thenReturn(List.of());
 
-            List<Veiculo> resultado = service.listarVeiculosPorCliente(UUID.randomUUID());
+            List<VeiculoDTO> resultado = service.listarVeiculosPorCliente(UUID.randomUUID());
 
             assertThat(resultado).isEmpty();
         }

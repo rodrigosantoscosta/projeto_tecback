@@ -111,7 +111,7 @@ export function ClienteFormPage() {
     <main className="p-6 max-w-2xl">
       <button
         onClick={() => navigate('/clientes')}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-ocean-700 mb-5 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-teal-600 mb-5 transition-colors"
       >
         <ArrowLeft size={14} />
         Voltar

@@ -31,7 +31,7 @@ export function ClienteDetailPage() {
     <main className="p-6 max-w-2xl">
       <button
         onClick={() => navigate('/clientes')}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-ocean-700 mb-5 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-teal-600 mb-5 transition-colors"
       >
         <ArrowLeft size={14} />
         Voltar
@@ -100,7 +100,7 @@ export function ClienteDetailPage() {
             <Button
               size="sm"
               variant="ghost"
-              className="h-7 text-xs gap-1 text-muted-foreground hover:text-ocean-700"
+              className="h-7 text-xs gap-1 text-muted-foreground hover:text-teal-600"
               onClick={() => navigate(`/veiculos/novo?clienteId=${id}`)}
             >
               <Car size={12} />
@@ -116,13 +116,13 @@ export function ClienteDetailPage() {
                   <Link
                     key={v.id}
                     to={`/veiculos/${v.id}`}
-                    className="flex items-center justify-between p-3 rounded-md bg-ocean-50 hover:bg-ocean-100 transition-colors text-sm"
+                    className="flex items-center justify-between p-3 rounded-md bg-sand-100 hover:bg-sand-200 transition-colors text-sm"
                   >
                     <div>
-                      <span className="font-mono font-medium text-ocean-700">{v.placa}</span>
+                      <span className="font-mono font-medium text-teal-600">{v.placa}</span>
                       <span className="text-muted-foreground ml-2">{v.marca} {v.modelo}</span>
                     </div>
-                    <span className="text-muted-foreground">{v.anoFabricacao}</span>
+                    <span className="text-muted-foreground">{v.ano}</span>
                   </Link>
                 ))}
               </div>

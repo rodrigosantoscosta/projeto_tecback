@@ -42,30 +42,30 @@ export function Combobox({
           aria-expanded={open}
           disabled={disabled}
           className={cn(
-            'w-full justify-between bg-zinc-900 border-zinc-700 text-white hover:bg-zinc-800 font-normal',
-            !selected && 'text-zinc-500'
+            'w-full justify-between font-normal',
+            !selected && 'text-muted-foreground'
           )}
         >
           {selected ? selected.label : placeholder}
-          <ChevronsUpDown size={14} className="ml-2 shrink-0 text-zinc-400" />
+          <ChevronsUpDown size={14} className="ml-2 shrink-0 text-muted-foreground" />
         </Button>
       </Popover.Trigger>
 
       <Popover.Portal>
         <Popover.Content
-          className="z-50 w-[var(--radix-popover-trigger-width)] rounded-md border border-zinc-700 bg-zinc-900 shadow-xl p-0"
+          className="z-50 w-[var(--radix-popover-trigger-width)] rounded-md border border-border bg-popover text-popover-foreground shadow-xl p-0"
           align="start"
           sideOffset={4}
         >
           <Command className="flex flex-col">
-            <div className="flex items-center border-b border-zinc-700 px-3">
+            <div className="flex items-center border-b border-border px-3">
               <Command.Input
                 placeholder={searchPlaceholder}
-                className="flex h-9 w-full bg-transparent py-3 text-sm text-white placeholder:text-zinc-500 outline-none"
+                className="flex h-9 w-full bg-transparent py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
               />
             </div>
             <Command.List className="max-h-60 overflow-y-auto py-1">
-              <Command.Empty className="py-6 text-center text-sm text-zinc-500">
+              <Command.Empty className="py-6 text-center text-sm text-muted-foreground">
                 {emptyMessage}
               </Command.Empty>
               {options.map(opt => (
@@ -76,7 +76,7 @@ export function Combobox({
                     onChange(opt.value === value ? '' : opt.value)
                     setOpen(false)
                   }}
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 cursor-pointer hover:bg-zinc-800 data-[selected=true]:bg-zinc-800"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-foreground cursor-pointer hover:bg-muted data-[selected=true]:bg-muted"
                 >
                   <Check
                     size={14}
