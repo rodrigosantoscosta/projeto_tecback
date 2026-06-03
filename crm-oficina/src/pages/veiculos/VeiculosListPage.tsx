@@ -12,24 +12,16 @@ import {
   DialogFooter,
   DialogDescription,
 } from '../../components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
 import { useVeiculos, useExcluirVeiculo } from '../../hooks/useVeiculos'
-import { useClientes } from '../../hooks/useClientes'
 import type { VeiculoResponse } from '../../types/veiculo'
 
 export function VeiculosListPage() {
   const navigate = useNavigate()
   const { data: veiculos = [], isLoading } = useVeiculos()
-  const { data: clientes = [] } = useClientes()
   const excluir = useExcluirVeiculo()
 
-  const [clienteFilter, setClienteFilter] = useState<string>('all')
   const [deleteTarget, setDeleteTarget] = useState<VeiculoResponse | null>(null)
   const [deleteError, setDeleteError] = useState<string | null>(null)
-
-  const filtered = clienteFilter === 'all'
-    ? veiculos
-    : veiculos.filter(v => v.clienteId === clienteFilter)
 
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -54,21 +46,14 @@ export function VeiculosListPage() {
       id: 'veiculo',
       header: 'Veículo',
       cell: ({ row }) => (
-        <span>{row.original.marca} {row.original.modelo} · {row.original.anoFabricacao}</span>
+        <span>{row.original.marca} {row.original.modelo} · {row.original.ano}</span>
       ),
     },
     {
-      accessorKey: 'clienteNome',
-      header: 'Cliente',
+      accessorKey: 'cor',
+      header: 'Cor',
       cell: ({ row }) => (
-        <span className="text-zinc-300">{row.original.clienteNome}</span>
-      ),
-    },
-    {
-      accessorKey: 'combustivel',
-      header: 'Combustível',
-      cell: ({ row }) => (
-        <span className="text-zinc-400 text-sm">{row.original.combustivel ?? '—'}</span>
+        <span className="text-zinc-400 text-sm">{row.original.cor ?? '—'}</span>
       ),
     },
     {
@@ -106,24 +91,10 @@ export function VeiculosListPage() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-3 mb-4">
-        <Select value={clienteFilter} onValueChange={setClienteFilter}>
-          <SelectTrigger className="w-56 bg-zinc-900 border-zinc-700 text-white">
-            <SelectValue placeholder="Filtrar por cliente" />
-          </SelectTrigger>
-          <SelectContent className="bg-zinc-900 border-zinc-700">
-            <SelectItem value="all" className="text-zinc-200">Todos os clientes</SelectItem>
-            {clientes.map(c => (
-              <SelectItem key={c.id} value={c.id} className="text-zinc-200">{c.nome}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {isLoading ? (
         <div className="flex items-center justify-center py-16 text-zinc-500 text-sm">Carregando...</div>
       ) : (
-        <DataTable columns={columns} data={filtered} searchPlaceholder="Buscar por placa, modelo..." />
+        <DataTable columns={columns} data={veiculos} searchPlaceholder="Buscar por placa, modelo..." />
       )}
 
       <Dialog open={!!deleteTarget} onOpenChange={open => { if (!open) { setDeleteTarget(null); setDeleteError(null) } }}>

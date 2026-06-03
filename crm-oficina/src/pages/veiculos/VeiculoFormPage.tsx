@@ -8,26 +8,22 @@ import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
 import { Combobox } from '../../components/ui/combobox'
 import { useVeiculo, useCadastrarVeiculo, useAtualizarVeiculo } from '../../hooks/useVeiculos'
 import { useClientes } from '../../hooks/useClientes'
 import { formatPlaca } from '../../utils/formatadores'
 import { PLACA_MERCOSUL_REGEX } from '../../utils/validadores'
-import type { CombustívelTipo } from '../../types/veiculo'
-
-const COMBUSTIVEIS: CombustívelTipo[] = ['GASOLINA', 'ETANOL', 'FLEX', 'DIESEL', 'GNV', 'ELETRICO', 'HIBRIDO']
 
 const schema = z.object({
   placa: z.string().regex(PLACA_MERCOSUL_REGEX, 'Placa inválida — formato Mercosul (ex: ABC1D23)'),
   marca: z.string().min(1, 'Marca obrigatória'),
   modelo: z.string().min(1, 'Modelo obrigatório'),
-  anoFabricacao: z.string().refine(v => {
+  ano: z.string().refine(v => {
     const n = Number(v)
     return Number.isInteger(n) && n >= 1900 && n <= new Date().getFullYear() + 1
   }, 'Ano inválido'),
   cor: z.string().optional(),
-  combustivel: z.enum(['GASOLINA', 'ETANOL', 'DIESEL', 'FLEX', 'ELETRICO', 'HIBRIDO', 'GNV']).optional(),
+  quilometragem: z.string().optional(),
   clienteId: z.string().min(1, 'Selecione um cliente'),
 })
 
@@ -53,7 +49,7 @@ export function VeiculoFormPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { anoFabricacao: String(new Date().getFullYear()) },
+    defaultValues: { ano: String(new Date().getFullYear()) },
   })
 
   useEffect(() => {
@@ -61,10 +57,9 @@ export function VeiculoFormPage() {
       setValue('placa', veiculo.placa)
       setValue('marca', veiculo.marca)
       setValue('modelo', veiculo.modelo)
-      setValue('anoFabricacao', String(veiculo.anoFabricacao))
+      setValue('ano', String(veiculo.ano))
       setValue('cor', veiculo.cor ?? '')
-      if (veiculo.combustivel) setValue('combustivel', veiculo.combustivel)
-      setValue('clienteId', veiculo.clienteId)
+      if (veiculo.quilometragem != null) setValue('quilometragem', String(veiculo.quilometragem))
     }
   }, [veiculo, setValue])
 
@@ -75,8 +70,13 @@ export function VeiculoFormPage() {
 
   const onSubmit = async (data: FormData) => {
     const payload = {
-      ...data,
-      anoFabricacao: Number(data.anoFabricacao),
+      placa: data.placa,
+      marca: data.marca,
+      modelo: data.modelo,
+      ano: Number(data.ano),
+      cor: data.cor || undefined,
+      quilometragem: data.quilometragem ? Number(data.quilometragem) : undefined,
+      clienteId: data.clienteId,
     }
     if (isEdit) {
       await atualizar.mutateAsync(payload)
@@ -95,7 +95,7 @@ export function VeiculoFormPage() {
     ? ((mutationError as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Erro ao salvar. Tente novamente.')
     : null
 
-  const clienteOptions = clientes.map(c => ({ value: c.id, label: c.nome }))
+  const clienteOptions = clientes.map(c => ({ value: c.id, label: c.nomeCompleto }))
 
   return (
     <main className="p-6 max-w-xl">
@@ -155,10 +155,10 @@ export function VeiculoFormPage() {
                 <Label>Ano *</Label>
                 <Input
                   type="number"
-                  {...register('anoFabricacao')}
+                  {...register('ano')}
                   className="bg-zinc-950 border-zinc-700"
                 />
-                {errors.anoFabricacao && <p className="text-xs text-red-400">{errors.anoFabricacao.message}</p>}
+                {errors.ano && <p className="text-xs text-red-400">{errors.ano.message}</p>}
               </div>
             </div>
 
@@ -181,22 +181,12 @@ export function VeiculoFormPage() {
                 <Input {...register('cor')} placeholder="Prata" className="bg-zinc-950 border-zinc-700" />
               </div>
               <div className="space-y-1.5">
-                <Label>Combustível</Label>
-                <Controller
-                  control={control}
-                  name="combustivel"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="bg-zinc-950 border-zinc-700 text-white">
-                        <SelectValue placeholder="Selecionar..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-700">
-                        {COMBUSTIVEIS.map(c => (
-                          <SelectItem key={c} value={c} className="text-zinc-200">{c}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                <Label>Quilometragem</Label>
+                <Input
+                  type="number"
+                  {...register('quilometragem')}
+                  placeholder="50000"
+                  className="bg-zinc-950 border-zinc-700"
                 />
               </div>
             </div>
