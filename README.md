@@ -21,10 +21,6 @@ Sistema completo de CRM para oficina mecânica com backend Spring Boot (Java 21)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
 - [Segurança](#segurança)
 
-- Alexander Augusto de Figueiredo Baxendale
-- Pedro Neto Amâncio de Lima
-- Rodrigo Santos Costa
-
 ## Stack
 
 ### Backend
