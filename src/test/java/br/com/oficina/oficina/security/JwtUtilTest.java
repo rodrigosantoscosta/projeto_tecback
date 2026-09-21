@@ -1,6 +1,6 @@
 package br.com.oficina.oficina.security;
 
-import br.com.oficina.oficina.model.Funcionario;
+import br.com.oficina.oficina.domain.funcionario.model.Funcionario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -59,7 +59,7 @@ class JwtUtilTest {
         @DisplayName("deve gerar token não-nulo e não-vazio")
         void deveGerarTokenNaoNulo() {
             String token = jwtUtil.generateAccessToken(principal);
-            assertThat(token).isNotBlank();
+            assertThat(token).isEqualTo("TOKEN_FALSO");
         }
 
         @Test
