@@ -11,21 +11,6 @@ jobs:
     name: Build, Test & Package
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: oficina_user
-          POSTGRES_PASSWORD: oficina_pass
-          POSTGRES_DB: oficina_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U oficina_user -d oficina_db"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -40,31 +25,14 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Wait for PostgreSQL
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client > /dev/null 2>&1
-          echo "Aguardando PostgreSQL accept connections..."
-          for i in $(seq 1 30); do
-            if pg_isready -h localhost -p 5432 -U oficina_user -d oficina_db; then
-              echo "PostgreSQL pronto!"
-              break
-            fi
-            echo "Tentativa $i/30..."
-            sleep 2
-          done
-
       - name: Compile
         run: ./mvnw compile -B
 
-      - name: Run tests
+      - name: Run unit tests
         run: ./mvnw test -B
-        env:
-          SPRING_PROFILES_ACTIVE: ci
 
       - name: Package JAR
         run: ./mvnw package -B -DskipTests
-        env:
-          SPRING_PROFILES_ACTIVE: ci
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
