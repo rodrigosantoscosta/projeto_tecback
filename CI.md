@@ -1,8 +1,8 @@
 # CI Pipeline — GitHub Actions
 
-## Visao Geral
+## Visão Geral
 
-Pipeline de Integracao Continua configurada com GitHub Actions para o projeto **oficina** (backend Java/Spring Boot).
+Pipeline de Integração Contínua configurada com GitHub Actions para o projeto **oficina** (backend Java/Spring Boot).
 
 **Arquivo:** `.github/workflows/ci.yml`
 
@@ -13,17 +13,17 @@ Pipeline de Integracao Continua configurada com GitHub Actions para o projeto **
 ```
 Push para qualquer branch
     ↓
-Checkout do codigo
+Checkout do código
     ↓
-Correcao de permissao do Maven wrapper (chmod +x)
+Correção de permissão do Maven wrapper (chmod +x)
     ↓
-Configuracao do Java 21 (Eclipse Temurin)
+Configuração do Java 21 (Eclipse Temurin)
     ↓
-Compilacao (mvnw compile)
+Compilação (mvnw compile)
     ↓
-Execucao dos testes unitarios (mvnw test)
+Execução dos testes unitários (mvnw test)
     ↓
-Geracao do JAR (mvnw package -DskipTests)
+Geração do JAR (mvnw package -DskipTests)
     ↓
 Upload do artefato (oficina-0.0.1-SNAPSHOT.jar)
 ```
@@ -34,7 +34,7 @@ Upload do artefato (oficina-0.0.1-SNAPSHOT.jar)
 
 **Commit:** `ci: run only unit tests in CI, remove PostgreSQL dependency`
 **Resultado:** Sucesso
-**Duracao:** 53s
+**Duração:** 53s
 
 | Etapa | Tempo | Status |
 |---|---|---|
@@ -47,7 +47,7 @@ Upload do artefato (oficina-0.0.1-SNAPSHOT.jar)
 | Package JAR | 6s | Passou |
 | Upload JAR artifact | 2s | Passou |
 
-**Resultado esperado:** Todos os 9 testes unitarios passaram. O JAR foi gerado e disponibilizado como artifact para download (30 dias de retencao).
+**Resultado esperado:** Todos os 9 testes unitários passaram. O JAR foi gerado e disponibilizado como artifact para download (30 dias de retenção).
 
 ---
 
@@ -56,38 +56,38 @@ Upload do artefato (oficina-0.0.1-SNAPSHOT.jar)
 **Commit:** `test: break JwtUtilTest to demonstrate CI failure`
 **Branch:** `ci/unit-tests-only`
 **Resultado:** Falha
-**Duracao:** 21s
+**Duração:** 21s
 
 | Etapa | Tempo | Status |
 |---|---|---|
 | Set up job | 0s | Passou |
- Checkout | 1s | Passou |
+| Checkout | 1s | Passou |
 | Fix Maven wrapper permission | 0s | Passou |
 | Set up Java 21 | 0s | Passou |
 | Compile | ~19s | Falhou |
-| Run unit tests | — | Nao executou |
-| Package JAR | — | Nao executou |
-| Upload JAR artifact | — | Nao executou |
+| Run unit tests | — | Não executou |
+| Package JAR | — | Não executou |
+| Upload JAR artifact | — | Não executou |
 
-**Causa da falha:** Teste propositalmente alterado em `JwtUtilTest.java` — a assercao `assertThat(token).isEqualTo("TOKEN_FALSO")` falha porque o token JWT real nunca sera igual a essa string.
+**Causa da falha:** Teste propositalmente alterado em `JwtUtilTest.java` — a asserção `assertThat(token).isEqualTo("TOKEN_FALSO")` falha porque o token JWT real nunca será igual a essa string.
 
 **Comportamento esperado da pipeline:**
-- Compilacao passa (o codigo e valido)
-- Teste falha (assercao incorreta)
-- Etapas posteriores (Package, Upload) nao sao executadas
-- Artefato JAR **nao** e disponibilizado
+- Compilação passa (o código é válido)
+- Teste falha (asserção incorreta)
+- Etapas posteriores (Package, Upload) não são executadas
+- Artefato JAR **não** é disponibilizado
 
 ---
 
-## Configuracao
+## Configuração
 
-### Servico PostgreSQL
+### Serviço PostgreSQL
 
-O PostgreSQL **nao** e utilizado na pipeline CI. Os testes rodam apenas com Mockito (unit tests puros), sem dependencia de banco de dados.
+O PostgreSQL **não** é utilizado na pipeline CI. Os testes rodam apenas com Mockito (unit tests puros), sem dependência de banco de dados.
 
 ### Maven Surefire
 
-Configurado no `pom.xml` para rodar apenas testes unitarios:
+Configurado no `pom.xml` para rodar apenas testes unitários:
 
 ```xml
 <plugin>
@@ -104,7 +104,7 @@ Configurado no `pom.xml` para rodar apenas testes unitarios:
 </plugin>
 ```
 
-### Testes Incluidos (9 classes)
+### Testes Incluídos (9 classes)
 
 | Pacote | Classes |
 |---|---|
@@ -113,7 +113,7 @@ Configurado no `pom.xml` para rodar apenas testes unitarios:
 | `security/` | JwtUtilTest, SecurityInputValidationTest |
 | `exception/` | GlobalExceptionHandlerTest |
 
-### Testes Excluidos (nao rodam no CI)
+### Testes Excluídos (não rodam no CI)
 
 - `e2e/*` — precisam de Docker Compose completo (PostgreSQL dedicado)
 - `integration/*` — precisam de PostgreSQL real
