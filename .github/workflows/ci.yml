@@ -24,7 +24,7 @@ jobs:
           --health-cmd "pg_isready -U oficina_user -d oficina_db"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
 
     steps:
       - name: Checkout
@@ -42,8 +42,14 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h localhost -p 5432 -U oficina_user -d oficina_db; do
-            echo "Aguardando PostgreSQL..."
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client > /dev/null 2>&1
+          echo "Aguardando PostgreSQL accept connections..."
+          for i in $(seq 1 30); do
+            if pg_isready -h localhost -p 5432 -U oficina_user -d oficina_db; then
+              echo "PostgreSQL pronto!"
+              break
+            fi
+            echo "Tentativa $i/30..."
             sleep 2
           done
 
